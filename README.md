@@ -1,13 +1,10 @@
-# unWrapp
+# IIHS Safety App
 
-Time has come to unwrap an app from your beloved one!
-
-Give him/her a self made, personalized app as a present or suprise!
+IIHS Official Mobile Application Project
 
 ## Getting Started
 
-1) There are two parties, one is the creator (sender) and the other one is receiver.
-2) The receiver obtains a code created automatic after finalizing the personal app by the creator (sender):
+Main Page design view:
 
 <img src="https://github.com/sadilak85/IIHS/blob/main/git_pics/Page1.png" width="30%"> 
 

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import '../providers/auth.dart';
 //import '../helpers/custom_route.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -29,10 +27,6 @@ class AppDrawer extends StatelessWidget {
             onTap: () {
               Navigator.of(context).pop();
               Navigator.of(context).pushReplacementNamed('/');
-
-              // Navigator.of(context)
-              //     .pushReplacementNamed(UserProductsScreen.routeName);
-              Provider.of<Auth>(context, listen: false).logout();
             },
           ),
         ],

@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
-
-//import './favorites_screen.dart';
-import './categories_screen.dart';
-import './profiles_screen.dart';
-import '../models/meal.dart';
+import 'package:iihs/screens/categories_screen.dart';
 
 class TabsScreen extends StatefulWidget {
-  final List<Meal> favoriteMeals;
-
-  TabsScreen(this.favoriteMeals);
-
+  static const routeName = '/tabs-screen';
   @override
   _TabsScreenState createState() => _TabsScreenState();
 }
@@ -36,10 +29,6 @@ class _TabsScreenState extends State<TabsScreen> {
       {
         'page': CategoriesScreen(),
         'title': 'Statistics',
-      },
-      {
-        'page': ProfilesScreen(),
-        'title': 'Your Profile',
       },
     ];
     super.initState();
@@ -107,11 +96,6 @@ class _TabsScreenState extends State<TabsScreen> {
             backgroundColor: Theme.of(context).primaryColor,
             icon: Icon(Icons.location_searching),
             label: 'Statistics',
-          ),
-          BottomNavigationBarItem(
-            backgroundColor: Theme.of(context).primaryColor,
-            icon: Icon(Icons.account_circle),
-            label: 'My Profile',
           ),
         ],
       ),

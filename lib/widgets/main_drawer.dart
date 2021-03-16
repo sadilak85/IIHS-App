@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../screens/filters_screen.dart';
-
 class MainDrawer extends StatelessWidget {
   Widget buildListTile(String title, IconData icon, Function tapHandler) {
     return ListTile(
@@ -36,20 +34,6 @@ class MainDrawer extends StatelessWidget {
             title: Text('Shop'),
             onTap: () {
               Navigator.of(context).pushReplacementNamed('/');
-            },
-          ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('Filtreler'),
-            onTap: () {
-              Navigator.of(context)
-                  .pushReplacementNamed(FiltersScreen.routeName);
-              // Navigator.of(context).pushReplacement(
-              //   CustomRoute(
-              //     builder: (ctx) => OrdersScreen(),
-              //   ),
-              // );
             },
           ),
           Divider(),

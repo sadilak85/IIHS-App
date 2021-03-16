@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../screens/category_meals_screen.dart';
+import 'package:iihs/screens/loading_screen.dart';
 
 class CategoryItem extends StatelessWidget {
   final String id;
@@ -9,16 +8,6 @@ class CategoryItem extends StatelessWidget {
   final String buttonimage;
 
   CategoryItem(this.id, this.title, this.color, this.buttonimage);
-
-  void selectCategory(BuildContext ctx) {
-    Navigator.of(ctx).pushNamed(
-      CategoryMealsScreen.routeName,
-      arguments: {
-        'id': id,
-        'title': title,
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +48,9 @@ class CategoryItem extends StatelessWidget {
             child: Material(
               color: Colors.transparent,
               child: InkWell(
-                onTap: () => selectCategory(context),
+                onTap: () {
+                  Navigator.of(context).pushNamed(LoadingScreen.routeName);
+                },
                 splashColor: Color.fromRGBO(255, 255, 255, 0.5),
                 borderRadius: BorderRadius.circular(15),
               ),

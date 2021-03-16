@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intro_slider/intro_slider.dart';
 import 'package:intro_slider/slide_object.dart';
-import './root.dart';
+import 'screens/root.dart';
 
 void main() => runApp(new MyApp());
 
@@ -24,7 +24,7 @@ class IntroScreen extends StatefulWidget {
 
 //------------------ Default config ------------------
 class IntroScreenState extends State<IntroScreen> {
-  List<Slide> slides = new List();
+  List<Slide> slides = [];
 
   @override
   void initState() {

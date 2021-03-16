@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/main_drawer.dart';
-import '../dummy_data.dart';
-import '../widgets/category_item.dart';
+import 'package:iihs/widgets/main_drawer.dart';
+import 'package:iihs/helpers/dummy_data.dart';
+import 'package:iihs/widgets/category_item.dart';
 
 class CategoriesScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -79,7 +79,7 @@ class CategoriesScreen extends StatelessWidget {
             Expanded(
               child: GridView(
                 padding: const EdgeInsets.all(10),
-                children: DUMMY_CATEGORIES
+                children: MAIN_CATEGORIES
                     .map(
                       (catData) => CategoryItem(
                         catData.id,
@@ -91,7 +91,7 @@ class CategoriesScreen extends StatelessWidget {
                     .toList(),
                 gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: 400,
-                  childAspectRatio: DUMMY_CATEGORIES.length / 1.8,
+                  childAspectRatio: MAIN_CATEGORIES.length / 1.8,
                   crossAxisSpacing: 20,
                   mainAxisSpacing: 10,
                 ),

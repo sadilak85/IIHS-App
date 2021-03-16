@@ -30,6 +30,7 @@ class _MyAppRootState extends State<MyAppRoot> {
               ),
               headline2: TextStyle(
                 fontSize: 22,
+                fontWeight: FontWeight.bold,
                 color: Colors.yellow,
               ),
             ),
@@ -40,7 +41,7 @@ class _MyAppRootState extends State<MyAppRoot> {
           },
         ),
       ),
-      home: CategoriesScreen(),
+      home: TabsScreen(),
       routes: {
         LoadingScreen.routeName: (ctx) => LoadingScreen(),
         TabsScreen.routeName: (ctx) => TabsScreen(),

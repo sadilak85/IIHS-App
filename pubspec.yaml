@@ -33,6 +33,7 @@ dependencies:
   flutter_spinkit: ^5.0.0
   xml: ^4.5.1
   xml2json: ^4.4.0
+  dart_jsonwebtoken: ^1.6.2
 
 dev_dependencies:
   flutter_test:

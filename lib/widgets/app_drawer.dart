@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:iihs/screens/drawer_contact_screen.dart';
 //import '../helpers/custom_route.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -9,13 +9,17 @@ class AppDrawer extends StatelessWidget {
       child: Column(
         children: <Widget>[
           AppBar(
-            title: Text('Profil'),
+            actions: <Widget>[
+              Container(),
+            ],
+            title: Text('Explore'),
             automaticallyImplyLeading: false,
           ),
           Divider(),
+          Divider(),
           ListTile(
             leading: Icon(Icons.shop),
-            title: Text('Shop'),
+            title: Text('IIHS Vehicle Rating'),
             onTap: () {
               Navigator.of(context).pushReplacementNamed('/');
             },
@@ -23,10 +27,41 @@ class AppDrawer extends StatelessWidget {
           Divider(),
           ListTile(
             leading: Icon(Icons.exit_to_app),
-            title: Text('Logout'),
+            title: Text('Find my Car Model'),
             onTap: () {
-              Navigator.of(context).pop();
-              Navigator.of(context).pushReplacementNamed('/');
+              Navigator.of(context).pushNamed(ContactScreen.routeName);
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.exit_to_app),
+            title: Text('My Profile'),
+            onTap: () {
+              Navigator.of(context).pushNamed(ContactScreen.routeName);
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.exit_to_app),
+            title: Text('Read more '),
+            onTap: () {
+              Navigator.of(context).pushNamed(ContactScreen.routeName);
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.exit_to_app),
+            title: Text('About Crash Ratings'),
+            onTap: () {
+              Navigator.of(context).pushNamed(ContactScreen.routeName);
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.exit_to_app),
+            title: Text('Contact IIHS'),
+            onTap: () {
+              Navigator.of(context).pushNamed(ContactScreen.routeName);
             },
           ),
         ],

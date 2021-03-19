@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intro_slider/intro_slider.dart';
 import 'package:intro_slider/slide_object.dart';
-import 'screens/root.dart';
+import 'package:iihs/root.dart';
 
-void main() => runApp(new MyApp());
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
@@ -76,7 +76,7 @@ Route _createRoute() {
   return PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) => MyAppRoot(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      var begin = Offset(0.0, 1.0);
+      var begin = Offset(1.0, 1.0);
       var end = Offset.zero;
       var curve = Curves.ease;
 

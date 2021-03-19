@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:iihs/helpers/app_theme.dart';
 import 'package:iihs/helpers/custom_route.dart';
-import 'package:iihs/screens/tabs_screen.dart';
-import 'package:iihs/screens/categories_screen.dart';
-import 'package:iihs/screens/loading_screen.dart';
+import 'package:iihs/screens/vehicle_ratings.dart';
+import 'package:iihs/screens/drawer_contact_screen.dart';
+import 'package:iihs/screens/main_page.dart';
 
 class MyAppRoot extends StatefulWidget {
   @override
@@ -18,9 +19,9 @@ class _MyAppRootState extends State<MyAppRoot> {
       theme: ThemeData(
         backgroundColor: Colors.grey[400],
         primaryColor: Colors.white,
-        accentColor: Colors.yellow[700],
-        bottomAppBarColor: Color.fromRGBO(52, 52, 52, 1),
-        canvasColor: Color.fromRGBO(205, 204, 51, 1),
+        accentColor: Colors.grey,
+        bottomAppBarColor: Colors.grey,
+        canvasColor: Colors.white,
         //canvasColor: Color.fromRGBO(255, 254, 229, 1),
         fontFamily: 'Roboto',
         textTheme: ThemeData.light().textTheme.copyWith(
@@ -31,7 +32,7 @@ class _MyAppRootState extends State<MyAppRoot> {
               headline2: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Colors.yellow,
+                color: AppTheme.iihsyellow,
               ),
             ),
         pageTransitionsTheme: PageTransitionsTheme(
@@ -41,14 +42,14 @@ class _MyAppRootState extends State<MyAppRoot> {
           },
         ),
       ),
-      home: TabsScreen(),
+      home: MainPageScreen(),
       routes: {
-        LoadingScreen.routeName: (ctx) => LoadingScreen(),
-        TabsScreen.routeName: (ctx) => TabsScreen(),
+        ContactScreen.routeName: (ctx) => ContactScreen(),
+        VehicleRatings.routeName: (ctx) => VehicleRatings(),
       },
       onUnknownRoute: (settings) {
         return MaterialPageRoute(
-          builder: (ctx) => CategoriesScreen(),
+          builder: (ctx) => MainPageScreen(),
         );
       },
     );

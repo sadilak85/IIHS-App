@@ -15,7 +15,7 @@ class Categories {
     Categories(
       id: 'c1',
       title: 'Vehicle Ratings',
-      buttonimage: // 'http://www.engnear.com/img/portfolio/01-full.jpg'
+      buttonimage:
           'https://www.iihs.org/media/653f765f-66cc-4df3-b92d-fa5b49e6555c/YIUE5w/Home/dummy-tsp2020.jpg',
     ),
     Categories(

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:iihs/models/categories.dart';
 import 'package:iihs/widgets/app_drawer.dart';
 import 'package:iihs/screens/vehicle_ratings.dart';
 import 'package:iihs/helpers/app_theme.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class MainPageScreen extends StatefulWidget {
   const MainPageScreen({Key key}) : super(key: key);
@@ -120,8 +120,11 @@ class _MainPageScreenState extends State<MainPageScreen>
                                   index % 2 == 0 ? 100 : -100,
                               listData: templateList[index],
                               callBack: () {
-                                if (templateList[index].title ==
-                                    'Vehicle Ratings') {
+                                if (templateList[index].id == 'c1') {
+                                  Navigator.of(context).pushNamed(
+                                    VehicleRatings.routeName,
+                                  );
+                                } else if (templateList[index].id == 'c2') {
                                   Navigator.of(context).pushNamed(
                                     VehicleRatings.routeName,
                                   );

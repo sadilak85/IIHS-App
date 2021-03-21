@@ -34,6 +34,7 @@ dependencies:
   xml: ^4.5.1
   xml2json: ^4.4.0
   dart_jsonwebtoken: ^1.6.2
+  autocomplete_textfield: ^1.7.3
 
 dev_dependencies:
   flutter_test:

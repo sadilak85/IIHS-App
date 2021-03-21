@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:iihs/helpers/app_theme.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:iihs/models/modelyears.dart';
-import 'package:iihs/models/ratings.dart';
+import 'package:iihs/constants/app_theme.dart';
+import 'package:iihs/operations/modelyears.dart';
+import 'package:iihs/operations/vehiclemakes.dart';
+import 'package:iihs/operations/ratings.dart';
 import 'package:iihs/constants/networkimages.dart';
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 
 import 'dart:developer';
 
@@ -22,20 +23,16 @@ class _VehicleRatingsState extends State<VehicleRatings>
   double opacity2 = 0.0;
   double opacity3 = 0.0;
 
-  GlobalKey<FormState> formkey = GlobalKey<FormState>();
-  bool showSpinner = false;
-  String dropdownValue = 'Enter';
-  String _currentSelectedValue;
-  var _currencies = [
-    "Food",
-    "Transport",
-    "Personal",
-    "Shopping",
-    "Medical",
-    "Rent",
-    "Movie",
-    "Salary"
-  ];
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  GlobalKey<AutoCompleteTextFieldState<String>> key = GlobalKey();
+
+  GlobalKey<AutoCompleteTextFieldState<String>> key2 = GlobalKey();
+  String _selectedMake;
+  bool keyboardison;
+
+  List<Map<dynamic, dynamic>> allvehiclemakesData;
+  List<String> allvehiclemakesDataNames = [];
 
   @override
   void initState() {
@@ -45,7 +42,7 @@ class _VehicleRatingsState extends State<VehicleRatings>
         parent: animationController,
         curve: Interval(0, 1.0, curve: Curves.fastOutSlowIn)));
     setData();
-    getRatingsData();
+    getALLMakeModelData();
     super.initState();
   }
 
@@ -65,6 +62,15 @@ class _VehicleRatingsState extends State<VehicleRatings>
     });
   }
 
+  void getALLMakeModelData() async {
+    var tempList = await VehicleMakes().getALLMakes();
+    allvehiclemakesData = tempList;
+
+    for (int i = 0; i <= allvehiclemakesData.length - 1; i++) {
+      allvehiclemakesDataNames.add(allvehiclemakesData[i]['name'].toString());
+    }
+  }
+
   void getRatingsData() async {
     var yearsData = await ModelYears().getModelYears();
     String year = yearsData[yearsData.length - 1]; // a sample
@@ -77,274 +83,256 @@ class _VehicleRatingsState extends State<VehicleRatings>
 
   @override
   Widget build(BuildContext context) {
-    final double tempHeight = MediaQuery.of(context).size.height -
-        (MediaQuery.of(context).size.width / 1.2) +
-        24.0;
-    return Container(
-      color: AppTheme.nearlyWhite,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Stack(
-          children: <Widget>[
-            Column(
-              children: <Widget>[
-                AspectRatio(
-                  aspectRatio: 1.2,
-                  child: Image.network(
-                    crashratingpage,
-                    alignment: Alignment.center,
-                    fit: BoxFit.cover,
-                    loadingBuilder: (BuildContext context, Widget child,
-                        ImageChunkEvent loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Center(
-                        child: CircularProgressIndicator(
-                          value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
-                                  loadingProgress.expectedTotalBytes
-                              : null,
-                        ),
-                      );
-                    },
-                  ),
+    if (WidgetsBinding.instance.window.viewInsets.bottom > 0.0) {
+      keyboardison = true;
+    } else {
+      keyboardison = false;
+    }
+
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.transparent,
+      body: Stack(
+        children: <Widget>[
+          Column(
+            children: <Widget>[
+              AspectRatio(
+                aspectRatio: 1.2,
+                child: Image.network(
+                  crashratingpage,
+                  alignment: Alignment.center,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (BuildContext context, Widget child,
+                      ImageChunkEvent loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes
+                            : null,
+                      ),
+                    );
+                  },
                 ),
-              ],
-            ),
-            Positioned(
-              top: (MediaQuery.of(context).size.width / 1.2) - 24.0,
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppTheme.nearlyWhite,
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(12.0),
-                      topRight: Radius.circular(12.0)),
-                  boxShadow: <BoxShadow>[
-                    BoxShadow(
-                        color: AppTheme.grey.withOpacity(0.2),
-                        offset: const Offset(1.1, 1.1),
-                        blurRadius: 10.0),
+              ),
+            ],
+          ),
+          Positioned(
+            top: keyboardison
+                ? (MediaQuery.of(context).size.height * 0.15)
+                : (MediaQuery.of(context).size.height * 0.4),
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppTheme.nearlyWhite,
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(12.0),
+                    topRight: Radius.circular(12.0)),
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                      color: AppTheme.grey.withOpacity(0.2),
+                      offset: const Offset(1.1, 1.1),
+                      blurRadius: 10.0),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8, right: 8),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    // SizedBox(
+                    //   height: MediaQuery.of(context).size.height * 0.08,
+                    // ),
+                    Expanded(
+                      child: Column(
+                        // mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Form(
+                            key: _formKey,
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 32.0,
+                                      right: 62,
+                                      top: 32,
+                                      bottom: 12),
+                                  child: SimpleAutoCompleteTextField(
+                                    key: key,
+                                    suggestions: allvehiclemakesDataNames,
+                                    decoration: InputDecoration(
+                                      icon:
+                                          Icon(Icons.directions_car, size: 30),
+                                      errorStyle: TextStyle(
+                                          color: Colors.redAccent,
+                                          fontSize: 16.0),
+                                      filled: true,
+                                      fillColor: AppTheme.iihsbackground,
+                                      hintText: 'Vehicle Make',
+                                      border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(5.0),
+                                      ),
+                                    ),
+
+                                    textChanged: (text) => _selectedMake = text,
+
+                                    textSubmitted: (text) => log(text),
+
+//  (String newValue) {
+//                                                 setState(() {
+//                                                   _currentSelectedValue =
+//                                                       newValue;
+//                                                   state.didChange(newValue);
+//                                                 });
+
+                                    // (text) => setState(() {
+
+                                    //     }),
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      EdgeInsets.only(left: 32.0, right: 62),
+                                  child: SimpleAutoCompleteTextField(
+                                    key: key2,
+                                    suggestions: allvehiclemakesDataNames,
+                                    decoration: InputDecoration(
+                                      icon: Icon(Icons.content_copy, size: 30),
+                                      errorStyle: TextStyle(
+                                          color: Colors.redAccent,
+                                          fontSize: 16.0),
+                                      filled: true,
+                                      fillColor: AppTheme.iihsbackground,
+                                      hintText: 'Vehicle Model',
+                                      border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(5.0),
+                                      ),
+                                    ),
+                                    textChanged: (text) => _selectedMake = text,
+                                    textSubmitted: (text) => log(text),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    AnimatedOpacity(
+                      duration: const Duration(milliseconds: 500),
+                      opacity: opacity3,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 16, bottom: 16, right: 16),
+                        child: TextButton(
+                          child: Text('Okay'),
+                          onPressed: () {
+                            // if (this._formKey.currentState.validate()) {
+                            //   // log(this._formKey.currentState.toString());
+                            //   this._formKey.currentState.save();
+                            // }
+                          },
+
+                          // height: 48,
+                          // decoration: BoxDecoration(
+                          //   color: AppTheme.iihsyellow,
+                          //   borderRadius: const BorderRadius.all(
+                          //     Radius.circular(16.0),
+                          //   ),
+                          //   boxShadow: <BoxShadow>[
+                          //     BoxShadow(
+                          //         color: AppTheme.iihsyellow.withOpacity(0.5),
+                          //         offset: const Offset(1.1, 1.1),
+                          //         blurRadius: 10.0),
+                          //   ],
+                          // ),
+                          // child: Center(
+                          //   child: Text(
+                          //     'Join Course',
+                          //     textAlign: TextAlign.left,
+                          //     style: TextStyle(
+                          //       fontWeight: FontWeight.w600,
+                          //       fontSize: 18,
+                          //       letterSpacing: 0.0,
+                          //       color: AppTheme.nearlyWhite,
+                          //     ),
+                          //   ),
+                          // ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 8),
-                  child: SingleChildScrollView(
-                    child: Container(
-                      constraints: BoxConstraints(
-                          minHeight: infoHeight,
-                          maxHeight: tempHeight > infoHeight
-                              ? tempHeight
-                              : infoHeight),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 32.0, left: 18, right: 16),
-                            child: Text(
-                              'Vehicle Crash Rating',
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 22,
-                                letterSpacing: 0.27,
-                                color: AppTheme.darkerText,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: AnimatedOpacity(
-                              duration: const Duration(milliseconds: 500),
-                              opacity: opacity2,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 16, right: 16, top: 8, bottom: 8),
-                                child: FormField<String>(
-                                  builder: (FormFieldState<String> state) {
-                                    return InputDecorator(
-                                      decoration: InputDecoration(
-                                          //  labelStyle: ,
-                                          errorStyle: TextStyle(
-                                              color: Colors.redAccent,
-                                              fontSize: 16.0),
-                                          hintText: 'Please select expense',
-                                          border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(5.0))),
-                                      isEmpty: _currentSelectedValue == '',
-                                      child: DropdownButtonHideUnderline(
-                                        child: DropdownButton<String>(
-                                          value: _currentSelectedValue,
-                                          isDense: true,
-                                          onChanged: (String newValue) {
-                                            setState(() {
-                                              _currentSelectedValue = newValue;
-                                              state.didChange(newValue);
-                                            });
-                                          },
-                                          items:
-                                              _currencies.map((String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-
-                                // Container(
-                                //     color: AppTheme.white,
-                                //     child: DropdownButton<String>(
-                                //       icon:
-                                //           const Icon(Icons.keyboard_arrow_down),
-                                //       iconSize: 24,
-                                //       elevation: 16,
-                                //       style: const TextStyle(
-                                //           color: Colors.deepPurple),
-                                //       items: <String>['A', 'B', 'C', 'D']
-                                //           .map((String value) {
-                                //         return DropdownMenuItem<String>(
-                                //           value: value,
-                                //           child: Text(value),
-                                //         );
-                                //       }).toList(),
-                                //       onChanged: (_) {},
-                                //     )),
-                              ),
-                            ),
-                          ),
-                          AnimatedOpacity(
-                            duration: const Duration(milliseconds: 500),
-                            opacity: opacity3,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 16, bottom: 16, right: 16),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Container(
-                                    width: 48,
-                                    height: 48,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: AppTheme.nearlyWhite,
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.circular(16.0),
-                                        ),
-                                        border: Border.all(
-                                            color:
-                                                AppTheme.grey.withOpacity(0.2)),
-                                      ),
-                                      child: Icon(
-                                        Icons.arrow_downward,
-                                        color: AppTheme.iihsyellow,
-                                        size: 28,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 16,
-                                  ),
-                                  Expanded(
-                                    child: Container(
-                                      height: 48,
-                                      decoration: BoxDecoration(
-                                        color: AppTheme.iihsyellow,
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.circular(16.0),
-                                        ),
-                                        boxShadow: <BoxShadow>[
-                                          BoxShadow(
-                                              color: AppTheme.iihsyellow
-                                                  .withOpacity(0.5),
-                                              offset: const Offset(1.1, 1.1),
-                                              blurRadius: 10.0),
-                                        ],
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          'Join Course',
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 18,
-                                            letterSpacing: 0.0,
-                                            color: AppTheme.nearlyWhite,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).padding.bottom,
-                          )
-                        ],
+              ),
+            ),
+          ),
+          Positioned(
+            top: keyboardison
+                ? (MediaQuery.of(context).size.height * 0.10)
+                : (MediaQuery.of(context).size.height * 0.35),
+            right: MediaQuery.of(context).size.width * 0.2,
+            child: ScaleTransition(
+              alignment: Alignment.center,
+              scale: CurvedAnimation(
+                  parent: animationController, curve: Curves.fastOutSlowIn),
+              child: Card(
+                color: AppTheme.iihsbackground,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16.0)),
+                //elevation: 5.0,
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  // height: MediaQuery.of(context).size.height * 0.08,
+                  height: 50,
+                  child: Center(
+                    child: Text(
+                      'Vehicle Ratings',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 22,
+                        letterSpacing: 0.27,
+                        color: AppTheme.darkerText,
                       ),
                     ),
                   ),
                 ),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-              child: SizedBox(
-                width: AppBar().preferredSize.height,
-                height: AppBar().preferredSize.height,
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    borderRadius:
-                        BorderRadius.circular(AppBar().preferredSize.height),
-                    child: Icon(
-                      Icons.arrow_back,
-                      color: AppTheme.white,
-                    ),
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+            child: SizedBox(
+              width: AppBar().preferredSize.height,
+              height: AppBar().preferredSize.height,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius:
+                      BorderRadius.circular(AppBar().preferredSize.height),
+                  child: Icon(
+                    Icons.arrow_back,
+                    color: AppTheme.white,
                   ),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
                 ),
               ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
     );
   }
 }
-
-//  DropdownButton<String>(
-//             value: dropdownValue,
-//             icon: const Icon(Icons.arrow_downward),
-//             iconSize: 24,
-//             elevation: 16,
-//             style: const TextStyle(color: Colors.deepPurple),
-//             underline: Container(
-//               height: 2,
-//               color: Colors.deepPurpleAccent,
-//             ),
-//             onChanged: (_) {},
-//             items: <String>['One', 'Two', 'Free', 'Four']
-//                 .map<DropdownMenuItem<String>>((String value) {
-//               return DropdownMenuItem<String>(
-//                 value: value,
-//                 child: Text(value),
-//               );
-//             }).toList(),
-//           ),
-
-//home_filled
 
 // void _showErrorDialog(String message) {
 //     showDialog(
@@ -363,3 +351,59 @@ class _VehicleRatingsState extends State<VehicleRatings>
 //       ),
 //     );
 //   }
+
+// FormField<String>(
+//                                       builder: (FormFieldState<String> state) {
+//                                         return InputDecorator(
+//                                           decoration: InputDecoration(
+//                                               //  labelStyle: ,
+//                                               icon:
+//                                                   Icon(Icons.search, size: 50),
+//                                               errorStyle: TextStyle(
+//                                                   color: Colors.redAccent,
+//                                                   fontSize: 16.0),
+//                                               hintText: 'Please select expense',
+//                                               border: OutlineInputBorder(
+//                                                   borderRadius:
+//                                                       BorderRadius.circular(
+//                                                           5.0))),
+//                                           isEmpty: _currentSelectedValue == '',
+//                                           child: DropdownButtonHideUnderline(
+//                                             child: DropdownButton<String>(
+//                                               value: _currentSelectedValue,
+//                                               isDense: true,
+//                                               onChanged: (String newValue) {
+//                                                 setState(() {
+//                                                   _currentSelectedValue =
+//                                                       newValue;
+//                                                   state.didChange(newValue);
+//                                                 });
+//                                               },
+//                                               items:
+
+//                                                   // allvehiclemakesData?.map(
+//                                                   //         (VehicleMakesData value) {
+//                                                   //       return DropdownMenuItem<
+//                                                   //           VehicleMakesData>(
+//                                                   //         value: value,
+//                                                   //         child: Text(
+//                                                   //           value.name,
+//                                                   //           style: TextStyle(
+//                                                   //               fontSize: 16.0),
+//                                                   //         ),
+//                                                   //       );
+//                                                   //     })?.toList() ??
+//                                                   //     [],
+
+//                                                   ['a', 'b', 'c']
+//                                                       .map((String value) {
+//                                                 return DropdownMenuItem<String>(
+//                                                   value: value,
+//                                                   child: Text(value),
+//                                                 );
+//                                               }).toList(),
+//                                             ),
+//                                           ),
+//                                         );
+//                                       },
+//                                     ),

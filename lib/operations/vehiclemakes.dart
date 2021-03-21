@@ -1,6 +1,8 @@
 import 'package:xml/xml.dart' as xml;
 import 'package:iihs/helpers/networking.dart';
 import 'package:iihs/constants/apiauth.dart';
+// import 'package:iihs/models/vehiclemakesData.dart';
+// import 'dart:developer';
 
 class VehicleMakes {
   Future<dynamic> getMakes(String year) async {
@@ -42,6 +44,8 @@ class VehicleMakes {
     var xmlData = await networkHelper.getData();
     var rawdata = xml.XmlDocument.parse(xmlData);
 
+    // List<VehicleMakesData> vehiclemakesDataList = [];
+
     List<String> makeNames =
         rawdata.findAllElements("make").map((e) => e.text).toList();
 
@@ -63,6 +67,16 @@ class VehicleMakes {
       map['name'] = makeNames[i];
       makeListALL.add(map);
     }
+
+    // for (int i = 0; i <= makeNames.length - 1; i++) {
+    //   vehiclemakesDataList.add(
+    //     VehicleMakesData(
+    //       id: int.parse(makeIds[i]),
+    //       slug: makeSlugs[i],
+    //       name: makeNames[i],
+    //     ),
+    //   );
+    // }
     return makeListALL;
   }
 }

@@ -35,6 +35,8 @@ dependencies:
   xml2json: ^4.4.0
   dart_jsonwebtoken: ^1.6.2
   autocomplete_textfield: ^1.7.3
+  #direct_select: ^1.1.0
+  direct_select_flutter: ^1.1.0
 
 dev_dependencies:
   flutter_test:

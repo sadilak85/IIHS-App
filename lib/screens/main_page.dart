@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:iihs/models/categories.dart';
-import 'package:iihs/widgets/app_drawer.dart';
+import 'package:iihs/utils/widgets/app_drawer.dart';
 import 'package:iihs/screens/vehicle_ratings.dart';
-import 'package:iihs/constants/app_theme.dart';
+import 'package:iihs/models/constants/app_theme.dart';
 
 class MainPageScreen extends StatefulWidget {
   const MainPageScreen({Key key}) : super(key: key);

@@ -1,6 +1,6 @@
 import 'package:xml/xml.dart' as xml;
-import 'package:iihs/helpers/networking.dart';
-import 'package:iihs/constants/apiauth.dart';
+import 'package:iihs/utils/networking.dart';
+import 'package:iihs/models/constants/apiauth.dart';
 
 class CrashRatings {
   Future<dynamic> crashRatings(String year, String make, String series) async {

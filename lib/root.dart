@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:iihs/constants/app_theme.dart';
-import 'package:iihs/helpers/custom_route.dart';
+import 'package:iihs/models/constants/app_theme.dart';
+import 'package:iihs/utils/custom_route.dart';
 import 'package:iihs/screens/vehicle_ratings.dart';
 import 'package:iihs/screens/drawer_contact_screen.dart';
 import 'package:iihs/screens/main_page.dart';

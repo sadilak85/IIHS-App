@@ -1,6 +1,6 @@
 import 'package:xml/xml.dart' as xml;
-import 'package:iihs/helpers/networking.dart';
-import 'package:iihs/constants/apiauth.dart';
+import 'package:iihs/utils/networking.dart';
+import 'package:iihs/models/constants/apiauth.dart';
 
 class VehicleSeries {
   Future<dynamic> getSeries(String year, String make) async {

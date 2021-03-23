@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:iihs/constants/app_theme.dart';
-import 'package:iihs/operations/modelyears.dart';
-import 'package:iihs/operations/vehiclemakes.dart';
-import 'package:iihs/operations/ratings.dart';
-import 'package:iihs/constants/networkimages.dart';
-import 'package:autocomplete_textfield/autocomplete_textfield.dart';
-//import 'package:direct_select/direct_select.dart';
-import 'package:direct_select_flutter/direct_select_container.dart';
-import 'package:direct_select_flutter/direct_select_item.dart';
-import 'package:direct_select_flutter/direct_select_list.dart';
-import 'package:iihs/widgets/directselect.dart';
+import 'package:iihs/models/constants/app_theme.dart';
+import 'package:iihs/utils/operations/modelyears.dart';
+import 'package:iihs/utils/operations/vehiclemakes.dart';
+import 'package:iihs/utils/operations/vehiclemodels.dart';
+import 'package:iihs/utils/operations/ratings.dart';
+import 'package:iihs/models/constants/networkimages.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 
 import 'dart:developer';
 
@@ -31,16 +27,12 @@ class _VehicleRatingsState extends State<VehicleRatings>
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  GlobalKey<AutoCompleteTextFieldState<String>> key = GlobalKey();
+  List<String> allvehicleMakeNamesListed;
+  List<String> allvehicleMakeSlugsListed;
+  List<String> vehiclemodelNamesListed;
+  List<String> _selectedMake;
 
-  GlobalKey<AutoCompleteTextFieldState<String>> key2 = GlobalKey();
-  String _selectedMake;
-  bool keyboardison;
-
-  List<Map<dynamic, dynamic>> allvehiclemakesData;
-  List<String> allvehiclemakesDataNames = [];
-
-  int selectedIndex1 = 0;
+  bool loading = true;
 
   @override
   void initState() {
@@ -49,8 +41,10 @@ class _VehicleRatingsState extends State<VehicleRatings>
     animation = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
         parent: animationController,
         curve: Interval(0, 1.0, curve: Curves.fastOutSlowIn)));
+
     setData();
-    getALLMakeModelData();
+    getALLMakesData();
+
     super.initState();
   }
 
@@ -70,14 +64,31 @@ class _VehicleRatingsState extends State<VehicleRatings>
     });
   }
 
-  Future<List<String>> getALLMakeModelData() async {
-    var tempList = await VehicleMakes().getALLMakes();
-    allvehiclemakesData = tempList;
-
-    for (int i = 0; i <= allvehiclemakesData.length - 1; i++) {
-      allvehiclemakesDataNames.add(allvehiclemakesData[i]['name'].toString());
+  List<String> mapData2List(data, key) {
+    List<String> allDataListed = [];
+    for (int i = 0; i <= data.length - 1; i++) {
+      allDataListed.add(data[i][key].toString());
     }
-    return allvehiclemakesDataNames;
+    return allDataListed;
+  }
+
+  Future<List<String>> getALLMakesData() async {
+    List<Map<dynamic, dynamic>> _allvehicleData =
+        await VehicleMakes().getALLMakes();
+
+    allvehicleMakeNamesListed = mapData2List(_allvehicleData, 'name');
+    allvehicleMakeSlugsListed = mapData2List(_allvehicleData, 'slug');
+
+    return allvehicleMakeNamesListed;
+  }
+
+  void getModelsforMake(String make) async {
+    List<Map<dynamic, dynamic>> _vehiclemodelsformake =
+        await VehicleModels().getModels(make);
+
+    setState(() {
+      vehiclemodelNamesListed = mapData2List(_vehiclemodelsformake, 'name');
+    });
   }
 
   void getRatingsData() async {
@@ -90,45 +101,13 @@ class _VehicleRatingsState extends State<VehicleRatings>
     log(data.toString());
   }
 
-  List<Widget> _buildItems1() {
-    return allvehiclemakesDataNames
-        .map((val) => MySelectionItem(
-              title: val,
-            ))
-        .toList();
-  }
-
-  DirectSelectItem<String> getDropDownMenuItem(String value) {
-    return DirectSelectItem<String>(
-        itemHeight: 56,
-        value: value,
-        itemBuilder: (context, value) {
-          return Text(value);
-        });
-  }
-
-  _getDslDecoration() {
-    return BoxDecoration(
-      border: BorderDirectional(
-        bottom: BorderSide(width: 1, color: Colors.black12),
-        top: BorderSide(width: 1, color: Colors.black12),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (WidgetsBinding.instance.window.viewInsets.bottom > 0.0) {
-      keyboardison = true;
-    } else {
-      keyboardison = false;
-    }
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
       body: FutureBuilder<List<String>>(
-        future: getALLMakeModelData(), // a Future<String> or null
+        future: getALLMakesData(), // a Future<String> or null
         builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
           if (!snapshot.hasData) {
             return Center(
@@ -145,283 +124,247 @@ class _VehicleRatingsState extends State<VehicleRatings>
               ),
             );
           } else {
-            return DirectSelectContainer(
-              child: Stack(
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      AspectRatio(
-                        aspectRatio: 1.2,
-                        child: Image.network(
-                          crashratingpage,
-                          alignment: Alignment.center,
-                          fit: BoxFit.cover,
-                          loadingBuilder: (BuildContext context, Widget child,
-                              ImageChunkEvent loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return Center(
-                              child: CircularProgressIndicator(
-                                value: loadingProgress.expectedTotalBytes !=
-                                        null
-                                    ? loadingProgress.cumulativeBytesLoaded /
-                                        loadingProgress.expectedTotalBytes
-                                    : null,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  Positioned(
-                    top: keyboardison
-                        ? (MediaQuery.of(context).size.height * 0.15)
-                        : (MediaQuery.of(context).size.height * 0.4),
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: AppTheme.nearlyWhite,
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(12.0),
-                            topRight: Radius.circular(12.0)),
-                        boxShadow: <BoxShadow>[
-                          BoxShadow(
-                              color: AppTheme.grey.withOpacity(0.2),
-                              offset: const Offset(1.1, 1.1),
-                              blurRadius: 10.0),
-                        ],
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8, right: 8),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            // SizedBox(
-                            //   height: MediaQuery.of(context).size.height * 0.08,
-                            // ),
-                            Expanded(
-                              child: Column(
-                                // mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Form(
-                                    key: _formKey,
-                                    child: Column(
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 32.0,
-                                              right: 62,
-                                              top: 32,
-                                              bottom: 12),
-                                          child: SimpleAutoCompleteTextField(
-                                            key: key,
-                                            suggestions:
-                                                allvehiclemakesDataNames,
-                                            decoration: InputDecoration(
-                                              icon: Icon(Icons.directions_car,
-                                                  size: 30),
-                                              errorStyle: TextStyle(
-                                                  color: Colors.redAccent,
-                                                  fontSize: 16.0),
-                                              filled: true,
-                                              fillColor:
-                                                  AppTheme.iihsbackground,
-                                              hintText: 'Vehicle Make',
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5.0),
-                                              ),
-                                            ),
-
-                                            textChanged: (text) =>
-                                                _selectedMake = text,
-
-                                            textSubmitted: (text) => log(text),
-
-//  (String newValue) {
-//                                                 setState(() {
-//                                                   _currentSelectedValue =
-//                                                       newValue;
-//                                                   state.didChange(newValue);
-//                                                 });
-
-                                            // (text) => setState(() {
-
-                                            //     }),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 32.0, right: 62),
-                                          child: DirectSelectList<String>(
-                                              values: allvehiclemakesDataNames,
-                                              defaultItemIndex: selectedIndex1,
-                                              itemBuilder: (String value) =>
-                                                  getDropDownMenuItem(value),
-                                              focusedItemDecoration:
-                                                  _getDslDecoration(),
-                                              onItemSelectedListener:
-                                                  (item, index, context) {
-                                                setState(() {
-                                                  selectedIndex1 = index;
-                                                });
-                                              }),
-
-                                          // DirectSelect(
-                                          //   itemExtent: 35.0,
-                                          //   selectedIndex: selectedIndex1,
-                                          //   backgroundColor:
-                                          //       AppTheme.iihsbackground,
-                                          //   child: MySelectionItem(
-                                          //     isForList: false,
-                                          //     title: allvehiclemakesDataNames[
-                                          //         selectedIndex1],
-                                          //   ),
-                                          //   onSelectedItemChanged: (index) {
-                                          //     setState(() {
-                                          //       selectedIndex1 = index;
-                                          //     });
-                                          //   },
-                                          //   items: _buildItems1(),
-                                          // ),
-
-                                          // SimpleAutoCompleteTextField(
-                                          //   key: key2,
-                                          //   suggestions: allvehiclemakesDataNames,
-                                          //   decoration: InputDecoration(
-                                          //     icon: Icon(Icons.content_copy, size: 30),
-                                          //     errorStyle: TextStyle(
-                                          //         color: Colors.redAccent,
-                                          //         fontSize: 16.0),
-                                          //     filled: true,
-                                          //     fillColor: AppTheme.iihsbackground,
-                                          //     hintText: 'Vehicle Model',
-                                          //     border: OutlineInputBorder(
-                                          //       borderRadius:
-                                          //           BorderRadius.circular(5.0),
-                                          //     ),
-                                          //   ),
-                                          //   textChanged: (text) => _selectedMake = text,
-                                          //   textSubmitted: (text) => log(text),
-                                          // ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
+            return Stack(
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    AspectRatio(
+                      aspectRatio: 1.2,
+                      child: Image.network(
+                        crashratingpage,
+                        alignment: Alignment.center,
+                        fit: BoxFit.cover,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes
+                                  : null,
                             ),
-                            AnimatedOpacity(
-                              duration: const Duration(milliseconds: 500),
-                              opacity: opacity3,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 16, bottom: 16, right: 16),
-                                child: TextButton(
-                                  child: Text('Okay'),
-                                  onPressed: () {
-                                    // if (this._formKey.currentState.validate()) {
-                                    //   // log(this._formKey.currentState.toString());
-                                    //   this._formKey.currentState.save();
-                                    // }
-                                  },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                Positioned(
+                  top: (MediaQuery.of(context).size.height * 0.4),
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppTheme.nearlyWhite,
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(12.0),
+                          topRight: Radius.circular(12.0)),
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(
+                            color: AppTheme.grey.withOpacity(0.2),
+                            offset: const Offset(1.1, 1.1),
+                            blurRadius: 10.0),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8, right: 8),
+                      child: Column(
+                        // mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: 82.0, right: 82, top: 52, bottom: 22),
+                            child: DropdownSearch<String>(
+                              validator: (v) =>
+                                  v == null ? "required field" : null,
+                              hint: "Select a Make",
+                              mode: Mode.MENU,
+                              dropdownSearchDecoration: InputDecoration(
+                                filled: true,
+                                fillColor: AppTheme.iihsbackground,
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: AppTheme.iihsbackground),
+                                ),
+                              ),
+                              showAsSuffixIcons: true,
+                              clearButtonBuilder: (_) => Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: const Icon(
+                                  Icons.clear,
+                                  size: 18,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              dropdownButtonBuilder: (_) => Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: const Icon(
+                                  Icons.arrow_drop_down,
+                                  size: 24,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              showSelectedItem: false,
+                              items: allvehicleMakeNamesListed,
+                              label: "Vehicle Make *",
+                              showClearButton: true,
+                              onChanged: (String newValue) {
+                                int index =
+                                    allvehicleMakeNamesListed.indexOf(newValue);
 
-                                  // height: 48,
-                                  // decoration: BoxDecoration(
-                                  //   color: AppTheme.iihsyellow,
-                                  //   borderRadius: const BorderRadius.all(
-                                  //     Radius.circular(16.0),
-                                  //   ),
-                                  //   boxShadow: <BoxShadow>[
-                                  //     BoxShadow(
-                                  //         color: AppTheme.iihsyellow.withOpacity(0.5),
-                                  //         offset: const Offset(1.1, 1.1),
-                                  //         blurRadius: 10.0),
-                                  //   ],
-                                  // ),
-                                  // child: Center(
-                                  //   child: Text(
-                                  //     'Join Course',
-                                  //     textAlign: TextAlign.left,
-                                  //     style: TextStyle(
-                                  //       fontWeight: FontWeight.w600,
-                                  //       fontSize: 18,
-                                  //       letterSpacing: 0.0,
-                                  //       color: AppTheme.nearlyWhite,
-                                  //     ),
-                                  //   ),
-                                  // ),
+                                getModelsforMake(
+                                    allvehicleMakeSlugsListed[index]);
+                              },
+                              selectedItem: "select a make",
+                            ),
+
+                            // (String newValue) {
+                            //     setState(() {
+                            //       _currentSelectedValue =
+                            //           newValue;
+                            //       state.didChange(newValue);
+                            //     });
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: 82.0, right: 82, bottom: 52),
+                            child: DropdownSearch<String>(
+                              validator: (v) =>
+                                  v == null ? "required field" : null,
+                              hint: "Select a Model",
+                              mode: Mode.MENU,
+                              dropdownSearchDecoration: InputDecoration(
+                                filled: true,
+                                fillColor: AppTheme.iihsbackground,
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: AppTheme.iihsbackground),
+                                ),
+                              ),
+                              showAsSuffixIcons: true,
+                              clearButtonBuilder: (_) => Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: const Icon(
+                                  Icons.clear,
+                                  size: 18,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              dropdownButtonBuilder: (_) => Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: const Icon(
+                                  Icons.arrow_drop_down,
+                                  size: 24,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              showSelectedItem: false,
+                              items: vehiclemodelNamesListed,
+                              label: "Vehicle Model *",
+                              showClearButton: true,
+                              onChanged: print,
+                              selectedItem: "select a model",
+                            ),
+                          ),
+                          AnimatedOpacity(
+                            duration: const Duration(milliseconds: 500),
+                            opacity: opacity3,
+                            child: Card(
+                              color: AppTheme.iihsyellow,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12.0)),
+                              elevation: 5.0,
+                              child: TextButton.icon(
+                                onPressed: () {
+                                  // if (this._formKey.currentState.validate()) {
+                                  //   // log(this._formKey.currentState.toString());
+                                  //   this._formKey.currentState.save();
+                                  // }
+                                },
+                                icon: Icon(
+                                  Icons.directions_car,
+                                ),
+                                label: Text(
+                                  'Search',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 22,
+                                    letterSpacing: 0.27,
+                                  ),
+                                ),
+                                style: TextButton.styleFrom(
+                                  minimumSize: Size(150, 50),
+                                  primary: AppTheme.darkText,
+                                  //  backgroundColor: AppTheme.iihsyellow,
                                 ),
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  Positioned(
-                    top: keyboardison
-                        ? (MediaQuery.of(context).size.height * 0.10)
-                        : (MediaQuery.of(context).size.height * 0.35),
-                    right: MediaQuery.of(context).size.width * 0.2,
-                    child: ScaleTransition(
-                      alignment: Alignment.center,
-                      scale: CurvedAnimation(
-                          parent: animationController,
-                          curve: Curves.fastOutSlowIn),
-                      child: Card(
-                        color: AppTheme.iihsbackground,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16.0)),
-                        //elevation: 5.0,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.6,
-                          // height: MediaQuery.of(context).size.height * 0.08,
-                          height: 50,
-                          child: Center(
-                            child: Text(
-                              'Vehicle Ratings',
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 22,
-                                letterSpacing: 0.27,
-                                color: AppTheme.darkerText,
-                              ),
+                ),
+                Positioned(
+                  top: (MediaQuery.of(context).size.height * 0.35),
+                  left: MediaQuery.of(context).size.width * 0.2,
+                  right: MediaQuery.of(context).size.width * 0.2,
+                  child: ScaleTransition(
+                    alignment: Alignment.center,
+                    scale: CurvedAnimation(
+                        parent: animationController,
+                        curve: Curves.fastOutSlowIn),
+                    child: Card(
+                      color: AppTheme.iihsyellow,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0)),
+                      //elevation: 5.0,
+                      child: Container(
+                        //   width: MediaQuery.of(context).size.width * 0.6,
+                        // height: MediaQuery.of(context).size.height * 0.08,
+                        height: 50,
+                        child: Center(
+                          child: Text(
+                            'Vehicle Ratings',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 22,
+                              letterSpacing: 0.27,
+                              color: AppTheme.darkerText,
                             ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).padding.top),
-                    child: SizedBox(
-                      width: AppBar().preferredSize.height,
-                      height: AppBar().preferredSize.height,
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(
-                              AppBar().preferredSize.height),
-                          child: Icon(
-                            Icons.arrow_back,
-                            color: AppTheme.white,
-                          ),
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                  child: SizedBox(
+                    width: AppBar().preferredSize.height,
+                    height: AppBar().preferredSize.height,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(
+                            AppBar().preferredSize.height),
+                        child: Icon(
+                          Icons.arrow_back,
+                          color: AppTheme.white,
                         ),
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
                       ),
                     ),
-                  )
-                ],
-              ),
+                  ),
+                )
+              ],
             );
           }
         },
@@ -447,59 +390,3 @@ class _VehicleRatingsState extends State<VehicleRatings>
 //       ),
 //     );
 //   }
-
-// FormField<String>(
-//                                       builder: (FormFieldState<String> state) {
-//                                         return InputDecorator(
-//                                           decoration: InputDecoration(
-//                                               //  labelStyle: ,
-//                                               icon:
-//                                                   Icon(Icons.search, size: 50),
-//                                               errorStyle: TextStyle(
-//                                                   color: Colors.redAccent,
-//                                                   fontSize: 16.0),
-//                                               hintText: 'Please select expense',
-//                                               border: OutlineInputBorder(
-//                                                   borderRadius:
-//                                                       BorderRadius.circular(
-//                                                           5.0))),
-//                                           isEmpty: _currentSelectedValue == '',
-//                                           child: DropdownButtonHideUnderline(
-//                                             child: DropdownButton<String>(
-//                                               value: _currentSelectedValue,
-//                                               isDense: true,
-//                                               onChanged: (String newValue) {
-//                                                 setState(() {
-//                                                   _currentSelectedValue =
-//                                                       newValue;
-//                                                   state.didChange(newValue);
-//                                                 });
-//                                               },
-//                                               items:
-
-//                                                   // allvehiclemakesData?.map(
-//                                                   //         (VehicleMakesData value) {
-//                                                   //       return DropdownMenuItem<
-//                                                   //           VehicleMakesData>(
-//                                                   //         value: value,
-//                                                   //         child: Text(
-//                                                   //           value.name,
-//                                                   //           style: TextStyle(
-//                                                   //               fontSize: 16.0),
-//                                                   //         ),
-//                                                   //       );
-//                                                   //     })?.toList() ??
-//                                                   //     [],
-
-//                                                   ['a', 'b', 'c']
-//                                                       .map((String value) {
-//                                                 return DropdownMenuItem<String>(
-//                                                   value: value,
-//                                                   child: Text(value),
-//                                                 );
-//                                               }).toList(),
-//                                             ),
-//                                           ),
-//                                         );
-//                                       },
-//                                     ),

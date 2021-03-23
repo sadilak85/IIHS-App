@@ -7,6 +7,7 @@ import 'package:iihs/utils/operations/ratings.dart';
 import 'package:iihs/models/constants/networkimages.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'dart:developer';
 
@@ -30,9 +31,9 @@ class _VehicleRatingsState extends State<VehicleRatings>
   List<String> allvehicleMakeNamesListed;
   List<String> allvehicleMakeSlugsListed;
   List<String> vehiclemodelNamesListed;
-  List<String> _selectedMake;
 
-  bool loading = true;
+  bool loading = false;
+  bool enablemenu = false;
 
   @override
   void initState() {
@@ -83,11 +84,17 @@ class _VehicleRatingsState extends State<VehicleRatings>
   }
 
   void getModelsforMake(String make) async {
+    EasyLoading.show(
+      status: 'loading...',
+    );
+
     List<Map<dynamic, dynamic>> _vehiclemodelsformake =
         await VehicleModels().getModels(make);
 
     setState(() {
       vehiclemodelNamesListed = mapData2List(_vehiclemodelsformake, 'name');
+      EasyLoading.dismiss();
+      enablemenu = true;
     });
   }
 
@@ -97,8 +104,6 @@ class _VehicleRatingsState extends State<VehicleRatings>
 
     var data = await CrashRatings()
         .crashRatings('2021', 'bmw', '2-series-2-door-coupe');
-
-    log(data.toString());
   }
 
   @override
@@ -110,17 +115,23 @@ class _VehicleRatingsState extends State<VehicleRatings>
         future: getALLMakesData(), // a Future<String> or null
         builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
           if (!snapshot.hasData) {
-            return Center(
-              child: SpinKitCubeGrid(
-                color: AppTheme.iihsbackground,
-                size: 100.0,
+            return Container(
+              color: AppTheme.iihsbackground_dark,
+              child: Center(
+                child: SpinKitCubeGrid(
+                  color: AppTheme.iihsbackground,
+                  size: 100.0,
+                ),
               ),
             );
           } else if (snapshot.hasError) {
-            return Center(
-              child: SpinKitCubeGrid(
-                color: AppTheme.iihsbackground,
-                size: 100.0,
+            return Container(
+              color: AppTheme.iihsbackground_dark,
+              child: Center(
+                child: SpinKitCubeGrid(
+                  color: AppTheme.iihsbackground,
+                  size: 100.0,
+                ),
               ),
             );
           } else {
@@ -168,143 +179,52 @@ class _VehicleRatingsState extends State<VehicleRatings>
                             blurRadius: 10.0),
                       ],
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 8, right: 8),
-                      child: Column(
-                        // mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: 82.0, right: 82, top: 52, bottom: 22),
-                            child: DropdownSearch<String>(
-                              validator: (v) =>
-                                  v == null ? "required field" : null,
-                              hint: "Select a Make",
-                              mode: Mode.MENU,
-                              dropdownSearchDecoration: InputDecoration(
-                                filled: true,
-                                fillColor: AppTheme.iihsbackground,
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: AppTheme.iihsbackground),
-                                ),
-                              ),
-                              showAsSuffixIcons: true,
-                              clearButtonBuilder: (_) => Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: const Icon(
-                                  Icons.clear,
-                                  size: 18,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              dropdownButtonBuilder: (_) => Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: const Icon(
-                                  Icons.arrow_drop_down,
-                                  size: 24,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              showSelectedItem: false,
-                              items: allvehicleMakeNamesListed,
-                              label: "Vehicle Make *",
-                              showClearButton: true,
-                              onChanged: (String newValue) {
-                                int index =
-                                    allvehicleMakeNamesListed.indexOf(newValue);
-
-                                getModelsforMake(
-                                    allvehicleMakeSlugsListed[index]);
+                    child: Column(
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: 82.0, right: 82, top: 52, bottom: 22),
+                          child: dropDownMenu('make'),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: 82.0, right: 82, bottom: 52),
+                          child: dropDownMenu('model'),
+                        ),
+                        AnimatedOpacity(
+                          duration: const Duration(milliseconds: 500),
+                          opacity: opacity3,
+                          child: Card(
+                            color: AppTheme.iihsyellow,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0)),
+                            elevation: 5.0,
+                            child: TextButton.icon(
+                              onPressed: () {
+                                // DO SOMETHING
                               },
-                              selectedItem: "select a make",
-                            ),
-
-                            // (String newValue) {
-                            //     setState(() {
-                            //       _currentSelectedValue =
-                            //           newValue;
-                            //       state.didChange(newValue);
-                            //     });
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: 82.0, right: 82, bottom: 52),
-                            child: DropdownSearch<String>(
-                              validator: (v) =>
-                                  v == null ? "required field" : null,
-                              hint: "Select a Model",
-                              mode: Mode.MENU,
-                              dropdownSearchDecoration: InputDecoration(
-                                filled: true,
-                                fillColor: AppTheme.iihsbackground,
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: AppTheme.iihsbackground),
+                              icon: Icon(
+                                Icons.directions_car,
+                              ),
+                              label: Text(
+                                'Search',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 20,
+                                  // letterSpacing: 0.27,
                                 ),
                               ),
-                              showAsSuffixIcons: true,
-                              clearButtonBuilder: (_) => Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: const Icon(
-                                  Icons.clear,
-                                  size: 18,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              dropdownButtonBuilder: (_) => Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: const Icon(
-                                  Icons.arrow_drop_down,
-                                  size: 24,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              showSelectedItem: false,
-                              items: vehiclemodelNamesListed,
-                              label: "Vehicle Model *",
-                              showClearButton: true,
-                              onChanged: print,
-                              selectedItem: "select a model",
-                            ),
-                          ),
-                          AnimatedOpacity(
-                            duration: const Duration(milliseconds: 500),
-                            opacity: opacity3,
-                            child: Card(
-                              color: AppTheme.iihsyellow,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12.0)),
-                              elevation: 5.0,
-                              child: TextButton.icon(
-                                onPressed: () {
-                                  // if (this._formKey.currentState.validate()) {
-                                  //   // log(this._formKey.currentState.toString());
-                                  //   this._formKey.currentState.save();
-                                  // }
-                                },
-                                icon: Icon(
-                                  Icons.directions_car,
-                                ),
-                                label: Text(
-                                  'Search',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 22,
-                                    letterSpacing: 0.27,
-                                  ),
-                                ),
-                                style: TextButton.styleFrom(
-                                  minimumSize: Size(150, 50),
-                                  primary: AppTheme.darkText,
-                                  //  backgroundColor: AppTheme.iihsyellow,
-                                ),
+                              style: TextButton.styleFrom(
+                                minimumSize: Size(150, 50),
+                                primary: AppTheme.darkText,
+                                //  backgroundColor: AppTheme.iihsyellow,
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -331,9 +251,10 @@ class _VehicleRatingsState extends State<VehicleRatings>
                             'Vehicle Ratings',
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.bold,
+                              // fontWeight: FontWeight.w600,
                               fontSize: 22,
-                              letterSpacing: 0.27,
+                              // letterSpacing: 0.27,
                               color: AppTheme.darkerText,
                             ),
                           ),
@@ -370,6 +291,101 @@ class _VehicleRatingsState extends State<VehicleRatings>
         },
       ),
     );
+  }
+
+  Widget dropDownMenu(String type) {
+    var listname;
+    String _type;
+    bool _enablemenu;
+    if (type == 'make') {
+      listname = allvehicleMakeNamesListed;
+      _type = 'Make';
+      _enablemenu = true;
+    }
+
+    if (type == 'model') {
+      listname = vehiclemodelNamesListed;
+      _type = 'Model';
+      _enablemenu = enablemenu;
+    }
+
+    return DropdownSearch<String>(
+      validator: (v) => v == null ? "required field" : null,
+      hint: 'Select a $_type',
+      mode: Mode.DIALOG,
+      maxHeight: 300,
+      popupTitle: Container(
+        height: 50,
+        decoration: BoxDecoration(
+          color: AppTheme.iihsyellow,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(12),
+            topRight: Radius.circular(12),
+          ),
+        ),
+        child: Center(
+          child: Text(
+            'Vehicle $_type',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: AppTheme.darkText,
+            ),
+          ),
+        ),
+      ),
+      popupShape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(12),
+          topRight: Radius.circular(12),
+          bottomRight: Radius.circular(12),
+          bottomLeft: Radius.circular(12),
+        ),
+      ),
+      dropdownSearchDecoration: InputDecoration(
+        filled: true,
+        fillColor: AppTheme.nearlyWhite,
+        border: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: AppTheme.nearlyBlack,
+          ),
+        ),
+      ),
+      showAsSuffixIcons: true,
+      dropdownButtonBuilder: (_) => Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: const Icon(
+          Icons.arrow_drop_down,
+          size: 24,
+          color: Colors.black,
+        ),
+      ),
+      showSelectedItem: false,
+      items: listname,
+      label: 'Vehicle $_type *',
+      enabled: _enablemenu,
+      onChanged: (String newValue) {
+        if (type == 'make') {
+          funcMakeonChanged(newValue);
+        }
+        if (type == 'model') {
+          funcModelonChanged(newValue);
+        }
+      },
+      //selectedItem: "select a make", // model
+    );
+  }
+
+  void funcMakeonChanged(value) {
+    int index = allvehicleMakeNamesListed.indexOf(value);
+    setState(() {
+      enablemenu = false;
+    });
+    getModelsforMake(allvehicleMakeSlugsListed[index]);
+  }
+
+  void funcModelonChanged(value) {
+    log(value);
   }
 }
 

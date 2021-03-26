@@ -26,6 +26,7 @@ class _VehicleRatingsOverviewState extends State<VehicleRatingsOverview>
   List<VehicleData> templateList = VehicleData.templateList;
   final double infoHeight = 364.0;
   AnimationController animationController;
+  Animation<double> animation;
 
   List<String> allMakeNamesListed;
   List<String> allMakeSlugsListed;
@@ -40,7 +41,13 @@ class _VehicleRatingsOverviewState extends State<VehicleRatingsOverview>
   @override
   void initState() {
     animationController = AnimationController(
-        duration: const Duration(milliseconds: 1000), vsync: this);
+        duration: const Duration(milliseconds: 2000), vsync: this);
+    animation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: animationController,
+        curve: Interval(0, 1.0, curve: Curves.fastOutSlowIn),
+      ),
+    );
     super.initState();
   }
 
@@ -145,26 +152,32 @@ class _VehicleRatingsOverviewState extends State<VehicleRatingsOverview>
         future: getALLMakesData(), // a Future<String> or null
         builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
           if (!snapshot.hasData) {
-            return Container(
-              color: AppTheme.iihsbackground_dark,
-              child: Center(
-                child: SpinKitCubeGrid(
-                  color: AppTheme.iihsbackground,
-                  size: 100.0,
-                ),
-              ),
+            EasyLoading.show(
+              status: 'loading...',
             );
+            return initialview();
           } else if (snapshot.hasError) {
-            return Container(
-              color: AppTheme.iihsbackground_dark,
-              child: Center(
-                child: SpinKitCubeGrid(
-                  color: AppTheme.iihsbackground,
-                  size: 100.0,
-                ),
-              ),
+            EasyLoading.show(
+              status: 'loading...',
             );
+
+            return Container(
+              child: null,
+
+              // DO SOMETHING !!!!!!!!!!!!!!!!!!!  RETURN BACK ODER SO
+            );
+
+            // return Container(
+            //   color: AppTheme.iihsbackground_dark,
+            //   child: Center(
+            //     child: SpinKitCubeGrid(
+            //       color: AppTheme.iihsbackground,
+            //       size: 100.0,
+            //     ),
+            //   ),
+            // );
           } else {
+            EasyLoading.dismiss();
             return Stack(
               children: <Widget>[
                 Column(
@@ -223,7 +236,7 @@ class _VehicleRatingsOverviewState extends State<VehicleRatingsOverview>
                               templateList.length,
                               (int index) {
                                 final int count = templateList.length;
-                                final Animation<double> animation =
+                                final Animation<double> animation2 =
                                     Tween<double>(begin: 0.0, end: 1.0).animate(
                                   CurvedAnimation(
                                     parent: animationController,
@@ -233,7 +246,7 @@ class _VehicleRatingsOverviewState extends State<VehicleRatingsOverview>
                                 );
                                 animationController.forward();
                                 return TemplateListView(
-                                  animation: animation,
+                                  animation: animation2,
                                   animationController: animationController,
                                   animationvaluechanger:
                                       index % 2 == 0 ? 100 : -100,
@@ -288,8 +301,9 @@ class _VehicleRatingsOverviewState extends State<VehicleRatingsOverview>
                   child: ScaleTransition(
                     alignment: Alignment.center,
                     scale: CurvedAnimation(
-                        parent: animationController,
-                        curve: Curves.fastOutSlowIn),
+                      parent: animationController,
+                      curve: Curves.fastOutSlowIn,
+                    ),
                     child: Card(
                       color: AppTheme.iihsyellow,
                       shape: RoundedRectangleBorder(
@@ -343,6 +357,135 @@ class _VehicleRatingsOverviewState extends State<VehicleRatingsOverview>
           }
         },
       ),
+    );
+  }
+
+  Widget initialview() {
+    return Stack(
+      children: <Widget>[
+        Column(
+          children: <Widget>[
+            AspectRatio(
+              aspectRatio: 1.2,
+              child: Image.network(
+                crashratingpage,
+                alignment: Alignment.center,
+                fit: BoxFit.cover,
+                loadingBuilder: (BuildContext context, Widget child,
+                    ImageChunkEvent loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Center(
+                    child: CircularProgressIndicator(
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                              loadingProgress.expectedTotalBytes
+                          : null,
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+        Positioned(
+          top: (MediaQuery.of(context).size.height * 0.4),
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppTheme.nearlyWhite,
+              borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(12.0),
+                  topRight: Radius.circular(12.0)),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                    color: AppTheme.grey.withOpacity(0.2),
+                    offset: const Offset(1.1, 1.1),
+                    blurRadius: 10.0),
+              ],
+            ),
+            child: Column(
+              // mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.2,
+                    right: MediaQuery.of(context).size.width * 0.2,
+                    top: MediaQuery.of(context).size.width * 0.2,
+                  ),
+                  child: dropDownMenu('make'),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.2,
+                    right: MediaQuery.of(context).size.width * 0.2,
+                    top: MediaQuery.of(context).size.width * 0.05,
+                    bottom: MediaQuery.of(context).size.width * 0.1,
+                  ),
+                  child: dropDownMenu('model'),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Positioned(
+          top: (MediaQuery.of(context).size.height * 0.35),
+          left: MediaQuery.of(context).size.width * 0.2,
+          right: MediaQuery.of(context).size.width * 0.2,
+          child: ScaleTransition(
+            alignment: Alignment.center,
+            scale: CurvedAnimation(
+                parent: animationController, curve: Curves.fastOutSlowIn),
+            child: Card(
+              color: AppTheme.iihsyellow,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0)),
+              //elevation: 5.0,
+              child: Container(
+                //   width: MediaQuery.of(context).size.width * 0.6,
+                // height: MediaQuery.of(context).size.height * 0.08,
+                height: 50,
+                child: Center(
+                  child: Text(
+                    'Vehicle Ratings',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      // fontWeight: FontWeight.w600,
+                      fontSize: 22,
+                      // letterSpacing: 0.27,
+                      color: AppTheme.darkerText,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+          child: SizedBox(
+            width: AppBar().preferredSize.height,
+            height: AppBar().preferredSize.height,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius:
+                    BorderRadius.circular(AppBar().preferredSize.height),
+                child: Icon(
+                  Icons.arrow_back,
+                  color: AppTheme.white,
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ),
+        )
+      ],
     );
   }
 

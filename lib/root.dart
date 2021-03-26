@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:iihs/models/constants/app_theme.dart';
 import 'package:iihs/utils/helpers/custom_route.dart';
-import 'package:iihs/screens/vehicle_ratings.dart';
+import 'package:iihs/screens/vehicleratings_selection.dart';
+import 'package:iihs/screens/vehicleratings_overview.dart';
 import 'package:iihs/screens/drawer_contact_screen.dart';
 import 'package:iihs/screens/main_page.dart';
 
@@ -45,7 +46,8 @@ class _MyAppRootState extends State<MyAppRoot> {
       home: MainPageScreen(),
       routes: {
         ContactScreen.routeName: (ctx) => ContactScreen(),
-        VehicleRatings.routeName: (ctx) => VehicleRatings(),
+        VehicleRatingsSelection.routeName: (ctx) => VehicleRatingsSelection(),
+        VehicleRatingsOverview.routeName: (ctx) => VehicleRatingsOverview(),
       },
       onUnknownRoute: (settings) {
         return MaterialPageRoute(

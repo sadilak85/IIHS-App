@@ -88,4 +88,47 @@ class VehicleSeries {
     }
     return seriesListALL;
   }
+
+  Future<dynamic> getSeriesforMakeModel(String make, String model) async {
+    const seriesformakemodel = '$versionratings/series-for-makemodel/';
+    NetworkHelper networkHelper =
+        NetworkHelper('$iihsURL$seriesformakemodel$make/$model?apikey=$apiKey');
+    var xmlData = await networkHelper.getData();
+    var rawdata = xml.XmlDocument.parse(xmlData);
+
+    List<String> seriesNames =
+        rawdata.findAllElements("series").map((e) => e.text).toList();
+
+    List<String> seriesIds = rawdata
+        .findAllElements('series')
+        .map((e) => e.getAttribute('id'))
+        .toList();
+
+    List<String> seriesVariantTypeIds = rawdata
+        .findAllElements('series')
+        .map((e) => e.getAttribute('variantTypeId'))
+        .toList();
+
+    List<String> seriesSlugs = rawdata
+        .findAllElements('series')
+        .map((e) => e.getAttribute('slug'))
+        .toList();
+
+    List<String> seriesUrl = rawdata
+        .findAllElements('series')
+        .map((e) => e.getAttribute('iihsUrl'))
+        .toList();
+
+    var seriesListformakemodel = <Map>[];
+    for (int i = 0; i <= seriesNames.length - 1; i++) {
+      var map = {};
+      map['id'] = seriesIds[i];
+      map['variantTypeId'] = seriesVariantTypeIds[i];
+      map['slug'] = seriesSlugs[i];
+      map['iihsUrl'] = seriesUrl[i];
+      map['name'] = seriesNames[i];
+      seriesListformakemodel.add(map);
+    }
+    return seriesListformakemodel;
+  }
 }

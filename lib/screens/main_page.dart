@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:iihs/models/categories.dart';
 import 'package:iihs/utils/widgets/app_drawer.dart';
-import 'package:iihs/screens/vehicle_ratings.dart';
+import 'package:iihs/screens/vehicleratings_selection.dart';
 import 'package:iihs/models/constants/app_theme.dart';
 
 class MainPageScreen extends StatefulWidget {
@@ -16,7 +16,7 @@ class MainPageScreen extends StatefulWidget {
 class _MainPageScreenState extends State<MainPageScreen>
     with TickerProviderStateMixin {
   int _selectedPageIndex = 0;
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  //final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Map<String, Object>> _pages;
   List<Categories> templateList = Categories.maincategories;
 
@@ -33,11 +33,11 @@ class _MainPageScreenState extends State<MainPageScreen>
         'title': 'Home',
       },
       {
-        'page': VehicleRatings(),
+        'page': VehicleRatingsSelection(),
         'title': 'Vehicle Ratings',
       },
       {
-        'page': VehicleRatings(),
+        'page': VehicleRatingsSelection(),
         'title': 'Find your Vehicle Model',
       },
     ];
@@ -122,11 +122,11 @@ class _MainPageScreenState extends State<MainPageScreen>
                               callBack: () {
                                 if (templateList[index].id == 'c1') {
                                   Navigator.of(context).pushNamed(
-                                    VehicleRatings.routeName,
+                                    VehicleRatingsSelection.routeName,
                                   );
                                 } else if (templateList[index].id == 'c2') {
                                   Navigator.of(context).pushNamed(
-                                    VehicleRatings.routeName,
+                                    VehicleRatingsSelection.routeName,
                                   );
                                 }
                               },

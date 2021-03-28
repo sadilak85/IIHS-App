@@ -28,6 +28,7 @@ class _VehicleRatingsOverviewState extends State<VehicleRatingsOverview>
   AnimationController animationController;
   Animation<double> animation;
 
+  Widget screenView;
   List<String> allMakeNamesListed;
   List<String> allMakeSlugsListed;
   List<String> modelNamesListed;
@@ -40,6 +41,7 @@ class _VehicleRatingsOverviewState extends State<VehicleRatingsOverview>
 
   @override
   void initState() {
+    //screenView = initialview();
     animationController = AnimationController(
         duration: const Duration(milliseconds: 2000), vsync: this);
     animation = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -151,19 +153,12 @@ class _VehicleRatingsOverviewState extends State<VehicleRatingsOverview>
       body: FutureBuilder<List<String>>(
         future: getALLMakesData(), // a Future<String> or null
         builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
-          if (!snapshot.hasData) {
+          if (snapshot.hasError) {
             EasyLoading.show(
               status: 'loading...',
             );
-            return initialview();
-          } else if (snapshot.hasError) {
-            EasyLoading.show(
-              status: 'loading...',
-            );
-
             return Container(
               child: null,
-
               // DO SOMETHING !!!!!!!!!!!!!!!!!!!  RETURN BACK ODER SO
             );
 
@@ -177,182 +172,12 @@ class _VehicleRatingsOverviewState extends State<VehicleRatingsOverview>
             //   ),
             // );
           } else {
-            EasyLoading.dismiss();
-            return Stack(
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    AspectRatio(
-                      aspectRatio: 1.2,
-                      child: Image.network(
-                        crashratingpage,
-                        alignment: Alignment.center,
-                        fit: BoxFit.cover,
-                        loadingBuilder: (BuildContext context, Widget child,
-                            ImageChunkEvent loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes
-                                  : null,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                Positioned(
-                  top: (MediaQuery.of(context).size.height * 0.2),
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: AppTheme.nearlyWhite,
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(12.0),
-                          topRight: Radius.circular(12.0)),
-                      boxShadow: <BoxShadow>[
-                        BoxShadow(
-                            color: AppTheme.grey.withOpacity(0.2),
-                            offset: const Offset(1.1, 1.1),
-                            blurRadius: 10.0),
-                      ],
-                    ),
-                    child: Column(
-                      // mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: GridView(
-                            padding: const EdgeInsets.only(
-                                top: 10, left: 12, right: 12),
-                            physics: const BouncingScrollPhysics(),
-                            scrollDirection: Axis.vertical,
-                            children: List<Widget>.generate(
-                              templateList.length,
-                              (int index) {
-                                final int count = templateList.length;
-                                final Animation<double> animation2 =
-                                    Tween<double>(begin: 0.0, end: 1.0).animate(
-                                  CurvedAnimation(
-                                    parent: animationController,
-                                    curve: Interval((1 / count) * index, 1.0,
-                                        curve: Curves.fastOutSlowIn),
-                                  ),
-                                );
-                                animationController.forward();
-                                return TemplateListView(
-                                  animation: animation2,
-                                  animationController: animationController,
-                                  animationvaluechanger:
-                                      index % 2 == 0 ? 100 : -100,
-                                  listData: templateList[index],
-                                  callBack: () {
-                                    // Navigator.push<dynamic>(
-                                    //   context,
-                                    //   MaterialPageRoute<dynamic>(
-                                    //     builder: (BuildContext context) =>
-                                    //         templateList[index].navigateScreen,
-                                    //   ),
-                                    // );
-                                  },
-                                );
-                              },
-                            ),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 1,
-                              mainAxisSpacing: 15.0,
-                              crossAxisSpacing: 15.0,
-                              childAspectRatio: 1.5,
-                            ),
-                          ),
-                        ),
-
-                        // Padding(
-                        //   padding: EdgeInsets.only(
-                        //     left: MediaQuery.of(context).size.width * 0.2,
-                        //     right: MediaQuery.of(context).size.width * 0.2,
-                        //     top: MediaQuery.of(context).size.width * 0.02,
-                        //   ),
-                        //   child: dropDownMenu('series'),
-                        // ),
-                        // Padding(
-                        //   padding: EdgeInsets.only(
-                        //     left: MediaQuery.of(context).size.width * 0.2,
-                        //     right: MediaQuery.of(context).size.width * 0.2,
-                        //     top: MediaQuery.of(context).size.width * 0.02,
-                        //     bottom: MediaQuery.of(context).size.width * 0.05,
-                        //   ),
-                        //   child: dropDownMenu('year'),
-                        // ),
-                      ],
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: (MediaQuery.of(context).size.height * 0.15),
-                  left: MediaQuery.of(context).size.width * 0.2,
-                  right: MediaQuery.of(context).size.width * 0.2,
-                  child: ScaleTransition(
-                    alignment: Alignment.center,
-                    scale: CurvedAnimation(
-                      parent: animationController,
-                      curve: Curves.fastOutSlowIn,
-                    ),
-                    child: Card(
-                      color: AppTheme.iihsyellow,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0)),
-                      //elevation: 5.0,
-                      child: Container(
-                        //   width: MediaQuery.of(context).size.width * 0.6,
-                        // height: MediaQuery.of(context).size.height * 0.08,
-                        height: 50,
-                        child: Center(
-                          child: Text(
-                            'Vehicle Ratings',
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              // fontWeight: FontWeight.w600,
-                              fontSize: 22,
-                              // letterSpacing: 0.27,
-                              color: AppTheme.darkerText,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding:
-                      EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-                  child: SizedBox(
-                    width: AppBar().preferredSize.height,
-                    height: AppBar().preferredSize.height,
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(
-                            AppBar().preferredSize.height),
-                        child: Icon(
-                          Icons.arrow_back,
-                          color: AppTheme.white,
-                        ),
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ),
-                  ),
-                )
-              ],
+            return AnimatedSwitcher(
+              duration: const Duration(milliseconds: 1500),
+              // transitionBuilder: (Widget child, Animation<double> animation) {
+              //   return ScaleTransition(child: child, scale: animation);
+              // },
+              child: (!snapshot.hasData) ? initialview() : mainview(),
             );
           }
         },
@@ -361,7 +186,11 @@ class _VehicleRatingsOverviewState extends State<VehicleRatingsOverview>
   }
 
   Widget initialview() {
+    EasyLoading.show(
+      status: 'loading...',
+    );
     return Stack(
+      key: UniqueKey(),
       children: <Widget>[
         Column(
           children: <Widget>[
@@ -434,30 +263,196 @@ class _VehicleRatingsOverviewState extends State<VehicleRatingsOverview>
           top: (MediaQuery.of(context).size.height * 0.35),
           left: MediaQuery.of(context).size.width * 0.2,
           right: MediaQuery.of(context).size.width * 0.2,
-          child: ScaleTransition(
-            alignment: Alignment.center,
-            scale: CurvedAnimation(
-                parent: animationController, curve: Curves.fastOutSlowIn),
-            child: Card(
-              color: AppTheme.iihsyellow,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.0)),
-              //elevation: 5.0,
-              child: Container(
-                //   width: MediaQuery.of(context).size.width * 0.6,
-                // height: MediaQuery.of(context).size.height * 0.08,
-                height: 50,
-                child: Center(
-                  child: Text(
-                    'Vehicle Ratings',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      // fontWeight: FontWeight.w600,
-                      fontSize: 22,
-                      // letterSpacing: 0.27,
-                      color: AppTheme.darkerText,
+          child: Card(
+            color: AppTheme.iihsyellow,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0)),
+            //elevation: 5.0,
+            child: Container(
+              //   width: MediaQuery.of(context).size.width * 0.6,
+              // height: MediaQuery.of(context).size.height * 0.08,
+              height: 50,
+              child: Center(
+                child: Text(
+                  'Vehicle Ratings',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    // fontWeight: FontWeight.w600,
+                    fontSize: 22,
+                    // letterSpacing: 0.27,
+                    color: AppTheme.darkerText,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+          child: SizedBox(
+            width: AppBar().preferredSize.height,
+            height: AppBar().preferredSize.height,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius:
+                    BorderRadius.circular(AppBar().preferredSize.height),
+                child: Icon(
+                  Icons.arrow_back,
+                  color: AppTheme.white,
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget mainview() {
+    EasyLoading.dismiss();
+    return Stack(
+      key: UniqueKey(),
+      children: <Widget>[
+        Column(
+          children: <Widget>[
+            AspectRatio(
+              aspectRatio: 1.2,
+              child: Image.network(
+                crashratingpage,
+                alignment: Alignment.center,
+                fit: BoxFit.cover,
+                loadingBuilder: (BuildContext context, Widget child,
+                    ImageChunkEvent loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Center(
+                    child: CircularProgressIndicator(
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                              loadingProgress.expectedTotalBytes
+                          : null,
                     ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+        Positioned(
+          top: (MediaQuery.of(context).size.height * 0.2),
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppTheme.nearlyWhite,
+              borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(12.0),
+                  topRight: Radius.circular(12.0)),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                    color: AppTheme.grey.withOpacity(0.2),
+                    offset: const Offset(1.1, 1.1),
+                    blurRadius: 10.0),
+              ],
+            ),
+            child: Column(
+              // mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: GridView(
+                    padding:
+                        const EdgeInsets.only(top: 10, left: 12, right: 12),
+                    physics: const BouncingScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    children: List<Widget>.generate(
+                      templateList.length,
+                      (int index) {
+                        final int count = templateList.length;
+                        final Animation<double> animation2 =
+                            Tween<double>(begin: 0.0, end: 1.0).animate(
+                          CurvedAnimation(
+                            parent: animationController,
+                            curve: Interval((1 / count) * index, 1.0,
+                                curve: Curves.fastOutSlowIn),
+                          ),
+                        );
+                        animationController.forward();
+                        return TemplateListView(
+                          animation: animation2,
+                          animationController: animationController,
+                          animationvaluechanger: index % 2 == 0 ? 100 : -100,
+                          listData: templateList[index],
+                          callBack: () {
+                            // Navigator.push<dynamic>(
+                            //   context,
+                            //   MaterialPageRoute<dynamic>(
+                            //     builder: (BuildContext context) =>
+                            //         templateList[index].navigateScreen,
+                            //   ),
+                            // );
+                          },
+                        );
+                      },
+                    ),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 1,
+                      mainAxisSpacing: 15.0,
+                      crossAxisSpacing: 15.0,
+                      childAspectRatio: 1.5,
+                    ),
+                  ),
+                ),
+
+                // Padding(
+                //   padding: EdgeInsets.only(
+                //     left: MediaQuery.of(context).size.width * 0.2,
+                //     right: MediaQuery.of(context).size.width * 0.2,
+                //     top: MediaQuery.of(context).size.width * 0.02,
+                //   ),
+                //   child: dropDownMenu('series'),
+                // ),
+                // Padding(
+                //   padding: EdgeInsets.only(
+                //     left: MediaQuery.of(context).size.width * 0.2,
+                //     right: MediaQuery.of(context).size.width * 0.2,
+                //     top: MediaQuery.of(context).size.width * 0.02,
+                //     bottom: MediaQuery.of(context).size.width * 0.05,
+                //   ),
+                //   child: dropDownMenu('year'),
+                // ),
+              ],
+            ),
+          ),
+        ),
+        Positioned(
+          top: (MediaQuery.of(context).size.height * 0.15),
+          left: MediaQuery.of(context).size.width * 0.2,
+          right: MediaQuery.of(context).size.width * 0.2,
+          child: Card(
+            color: AppTheme.iihsyellow,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0)),
+            //elevation: 5.0,
+            child: Container(
+              //   width: MediaQuery.of(context).size.width * 0.6,
+              // height: MediaQuery.of(context).size.height * 0.08,
+              height: 50,
+              child: Center(
+                child: Text(
+                  'Vehicle Ratings',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    // fontWeight: FontWeight.w600,
+                    fontSize: 22,
+                    // letterSpacing: 0.27,
+                    color: AppTheme.darkerText,
                   ),
                 ),
               ),

@@ -6,7 +6,7 @@ class VehicleModels {
   Future<dynamic> getModels(String make) async {
     const modelformake = '$versionratings/models-for-make/';
     NetworkHelper networkHelper =
-        NetworkHelper('$iihsURL$modelformake$make?apikey=$apiKey');
+        NetworkHelper('$iihsApiURL$modelformake$make?apikey=$apiKey');
     var xmlData = await networkHelper.getData();
     var rawdata = xml.XmlDocument.parse(xmlData);
 

@@ -8,7 +8,7 @@ class VehicleMakes {
   Future<dynamic> getMakes(String year) async {
     const makes = '$versionratings/makes/';
     NetworkHelper networkHelper =
-        NetworkHelper('$iihsURL$makes$year?apikey=$apiKey');
+        NetworkHelper('$iihsApiURL$makes$year?apikey=$apiKey');
     var xmlData = await networkHelper.getData();
     var rawdata = xml.XmlDocument.parse(xmlData);
 
@@ -40,7 +40,7 @@ class VehicleMakes {
   Future<dynamic> getALLMakes() async {
     const makes = '$versionratings/all-makes/';
     NetworkHelper networkHelper =
-        NetworkHelper('$iihsURL$makes?apikey=$apiKey');
+        NetworkHelper('$iihsApiURL$makes?apikey=$apiKey');
     var xmlData = await networkHelper.getData();
     var rawdata = xml.XmlDocument.parse(xmlData);
 

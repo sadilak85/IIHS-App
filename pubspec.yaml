@@ -23,7 +23,7 @@ dependencies:
   intl: ^0.16.1
 #  provider: ^3.0.0
 #  intl: ^0.15.8
-  http: ^0.12.2
+  http: ^0.13.1
   shared_preferences: ^0.5.12+4
 
   # The following adds the Cupertino Icons font to your application.
@@ -36,6 +36,7 @@ dependencies:
   dart_jsonwebtoken: ^1.6.2
   dropdown_search: ^0.4.9
   flutter_easyloading: ^3.0.0
+  cached_network_image: ^2.5.0
 
 dev_dependencies:
   flutter_test:

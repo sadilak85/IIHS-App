@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:iihs/models/constants/app_theme.dart';
 import 'package:iihs/utils/helpers/custom_route.dart';
-import 'package:iihs/screens/vehicleratings_selection.dart';
-import 'package:iihs/screens/vehicleratings_overview.dart';
+import 'package:iihs/screens/vehicleSelectMakeModel.dart';
+import 'package:iihs/screens/vehicleSelectMake.dart';
+import 'package:iihs/screens/vehiclesOverview.dart';
+import 'package:iihs/screens/vehicleRatingsResults.dart';
 import 'package:iihs/screens/drawer_contact_screen.dart';
 import 'package:iihs/screens/main_page.dart';
 
@@ -46,8 +48,10 @@ class _MyAppRootState extends State<MyAppRoot> {
       home: MainPageScreen(),
       routes: {
         ContactScreen.routeName: (ctx) => ContactScreen(),
-        VehicleRatingsSelection.routeName: (ctx) => VehicleRatingsSelection(),
+        VehicleSelectMakeModel.routeName: (ctx) => VehicleSelectMakeModel(),
+        VehicleSelectMake.routeName: (ctx) => VehicleSelectMake(),
         VehicleRatingsOverview.routeName: (ctx) => VehicleRatingsOverview(),
+        VehicleRatingsResults.routeName: (ctx) => VehicleRatingsResults(),
       },
       onUnknownRoute: (settings) {
         return MaterialPageRoute(

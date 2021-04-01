@@ -6,7 +6,8 @@ class NetworkHelper {
   final String url;
 
   Future getData() async {
-    http.Response response = await http.get(url);
+    var _url = Uri.parse(url);
+    http.Response response = await http.get(_url);
 
     try {
       if (response.statusCode == 200) {

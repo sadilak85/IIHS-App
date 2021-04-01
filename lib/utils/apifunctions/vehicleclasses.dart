@@ -6,7 +6,7 @@ class VehicleClasses {
   Future<dynamic> getClasses(String year) async {
     const classes = '$versionratings/classes/';
     NetworkHelper networkHelper =
-        NetworkHelper('$iihsURL$classes$year?apikey=$apiKey');
+        NetworkHelper('$iihsApiURL$classes$year?apikey=$apiKey');
     var xmlData = await networkHelper.getData();
     var rawdata = xml.XmlDocument.parse(xmlData);
 
@@ -43,7 +43,7 @@ class VehicleClasses {
   Future<dynamic> getALLClasses() async {
     const classes = '$versionratings/all-classes/';
     NetworkHelper networkHelper =
-        NetworkHelper('$iihsURL$classes?apikey=$apiKey');
+        NetworkHelper('$iihsApiURL$classes?apikey=$apiKey');
     var xmlData = await networkHelper.getData();
     var rawdata = xml.XmlDocument.parse(xmlData);
 

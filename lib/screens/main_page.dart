@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:iihs/models/categories.dart';
 import 'package:iihs/utils/widgets/app_drawer.dart';
-import 'package:iihs/screens/vehicleratings_selection.dart';
+import 'package:iihs/screens/vehicleSelectMakeModel.dart';
+import 'package:iihs/screens/vehicleSelectMake.dart';
 import 'package:iihs/models/constants/app_theme.dart';
 
 class MainPageScreen extends StatefulWidget {
@@ -33,12 +34,12 @@ class _MainPageScreenState extends State<MainPageScreen>
         'title': 'Home',
       },
       {
-        'page': VehicleRatingsSelection(),
-        'title': 'Vehicle Ratings',
+        'page': VehicleSelectMakeModel(),
+        'title': 'Vehicle Make & Model',
       },
       {
-        'page': VehicleRatingsSelection(),
-        'title': 'Find your Vehicle Model',
+        'page': VehicleSelectMake(),
+        'title': 'Find your Vehicle with Make',
       },
     ];
 
@@ -91,13 +92,18 @@ class _MainPageScreenState extends State<MainPageScreen>
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  apptopBar(context),
+                  SizedBox(
+                    height: 80,
+                    child: apptopBar(context),
+                  ),
+
                   Expanded(
+                    // flex: 10,
                     child: Container(
                       color: AppTheme.iihsbackground,
                       child: GridView(
                         padding:
-                            const EdgeInsets.only(top: 10, left: 10, right: 10),
+                            const EdgeInsets.only(top: 10, left: 20, right: 20),
                         physics: const BouncingScrollPhysics(),
                         scrollDirection: Axis.vertical,
                         children: List<Widget>.generate(
@@ -122,11 +128,11 @@ class _MainPageScreenState extends State<MainPageScreen>
                               callBack: () {
                                 if (templateList[index].id == 'c1') {
                                   Navigator.of(context).pushNamed(
-                                    VehicleRatingsSelection.routeName,
+                                    VehicleSelectMakeModel.routeName,
                                   );
                                 } else if (templateList[index].id == 'c2') {
                                   Navigator.of(context).pushNamed(
-                                    VehicleRatingsSelection.routeName,
+                                    VehicleSelectMake.routeName,
                                   );
                                 }
                               },
@@ -137,17 +143,23 @@ class _MainPageScreenState extends State<MainPageScreen>
                           crossAxisCount: 1,
                           mainAxisSpacing: 15.0,
                           crossAxisSpacing: 15.0,
-                          childAspectRatio: 1.5,
+                          childAspectRatio: 1.8,
                         ),
                       ),
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    // left: 0,
-                    // right: 20,
-                    // bottom: 0,
-                    child: bottomNavigationBar,
+                  // Align(
+                  //   alignment: Alignment.bottomCenter,
+                  //   // left: 0,
+                  //   // right: 20,
+                  //   // bottom: 0,
+                  //   child: bottomNavigationBar,
+
+                  // ),
+
+                  SizedBox(
+                    height: 70,
+                    child: bottomNavigationBar(context),
                   ),
                 ],
               ),
@@ -162,9 +174,22 @@ class _MainPageScreenState extends State<MainPageScreen>
     return Stack(
       children: <Widget>[
         Container(
-          color: Colors.black,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  stops: [
+                0.2,
+                0.5,
+              ],
+                  colors: [
+                AppTheme.iihsbackground,
+                Colors.black,
+              ])),
+
+          // color: Colors.black,
           padding:
-              EdgeInsets.only(top: 20.0, left: 0.0, right: 0.0, bottom: 0.0),
+              EdgeInsets.only(top: 21.0, left: 0.0, right: 0.0, bottom: 0.0),
           alignment: Alignment.bottomLeft,
           child: IconButton(
             icon: Container(
@@ -220,47 +245,72 @@ class _MainPageScreenState extends State<MainPageScreen>
     );
   }
 
-  Widget get bottomNavigationBar {
-    return ClipRRect(
-      borderRadius: BorderRadius.only(
-        topRight: Radius.circular(160),
-        //topLeft: Radius.circular(40),
-      ),
-      child: BottomNavigationBar(
-        onTap: _selectPage,
-        backgroundColor: Colors.white,
-        unselectedItemColor: Theme.of(context).bottomAppBarColor,
-        selectedItemColor: Colors.black,
-        currentIndex: _selectedPageIndex,
-        type: BottomNavigationBarType.shifting,
-        items: [
-          BottomNavigationBarItem(
-            backgroundColor: Theme.of(context).primaryColor,
-            icon: Icon(Icons.home),
-            label: 'Home',
+  Widget bottomNavigationBar(context) {
+    return Stack(
+      children: <Widget>[
+        Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  stops: [
+                0.2,
+                0.5,
+              ],
+                  colors: [
+                AppTheme.iihsbackground,
+                Colors.black,
+              ])),
+
+//          color: Colors.black,
+          // padding:
+          //     EdgeInsets.only(top: 0.0, left: 0.0, right: 0.0, bottom: 10.0),
+          alignment: Alignment.bottomRight,
+          child: SizedBox(),
+        ),
+        Positioned(
+          right: 25,
+          left: 0,
+          bottom: 0,
+          child: ClipRRect(
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(160),
+              // topLeft: Radius.circular(40),
+            ),
+            child: BottomNavigationBar(
+              iconSize: 28,
+              onTap: _selectPage,
+              backgroundColor: Colors.white,
+              unselectedItemColor: Theme.of(context).bottomAppBarColor,
+              selectedItemColor: Colors.black,
+              currentIndex: _selectedPageIndex,
+              type: BottomNavigationBarType.shifting,
+              items: [
+                BottomNavigationBarItem(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  icon: Icon(Icons.home),
+                  label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  icon: Icon(Icons.poll),
+                  label: 'Ratings',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  icon: Icon(Icons.directions_car),
+                  label: 'my Car',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  icon: Icon(Icons.person),
+                  label: 'my Profile',
+                ),
+              ],
+            ),
           ),
-          BottomNavigationBarItem(
-            backgroundColor: Theme.of(context).primaryColor,
-            icon: Icon(Icons.poll),
-            label: 'Ratings',
-          ),
-          BottomNavigationBarItem(
-            backgroundColor: Theme.of(context).primaryColor,
-            icon: Icon(Icons.directions_car),
-            label: 'my Car',
-          ),
-          BottomNavigationBarItem(
-            backgroundColor: Theme.of(context).primaryColor,
-            icon: Icon(Icons.menu_book),
-            label: 'read',
-          ),
-          BottomNavigationBarItem(
-            backgroundColor: Theme.of(context).primaryColor,
-            icon: Icon(Icons.person),
-            label: 'my Profile',
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

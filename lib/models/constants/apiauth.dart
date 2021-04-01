@@ -12,6 +12,7 @@
 // Sign it (default with HS256 algorithm)
 // var token = jwt.sign(SecretKey(apiKey));
 
-const iihsURL = 'https://api.iihs.org';
+const iihsURL = 'https://www.iihs.org';
+const iihsApiURL = 'https://api.iihs.org';
 const apiKey = 'wWyy9pboIUa2zHyPhYPVKhjSHQoCDslFiNYlTF9VLSw';
 const versionratings = '/V4/ratings';

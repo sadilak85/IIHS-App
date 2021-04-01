@@ -6,7 +6,7 @@ class VehicleSeries {
   Future<dynamic> getSeries(String year, String make) async {
     const series = '$versionratings/series/';
     NetworkHelper networkHelper =
-        NetworkHelper('$iihsURL$series$year/$make?apikey=$apiKey');
+        NetworkHelper('$iihsApiURL$series$year/$make?apikey=$apiKey');
     var xmlData = await networkHelper.getData();
     var rawdata = xml.XmlDocument.parse(xmlData);
 
@@ -49,7 +49,7 @@ class VehicleSeries {
   Future<dynamic> getALLSeries(String make) async {
     const series = '$versionratings/all-series/';
     NetworkHelper networkHelper =
-        NetworkHelper('$iihsURL$series$make?apikey=$apiKey');
+        NetworkHelper('$iihsApiURL$series$make?apikey=$apiKey');
     var xmlData = await networkHelper.getData();
     var rawdata = xml.XmlDocument.parse(xmlData);
 
@@ -91,8 +91,8 @@ class VehicleSeries {
 
   Future<dynamic> getSeriesforMakeModel(String make, String model) async {
     const seriesformakemodel = '$versionratings/series-for-makemodel/';
-    NetworkHelper networkHelper =
-        NetworkHelper('$iihsURL$seriesformakemodel$make/$model?apikey=$apiKey');
+    NetworkHelper networkHelper = NetworkHelper(
+        '$iihsApiURL$seriesformakemodel$make/$model?apikey=$apiKey');
     var xmlData = await networkHelper.getData();
     var rawdata = xml.XmlDocument.parse(xmlData);
 

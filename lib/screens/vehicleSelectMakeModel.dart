@@ -89,6 +89,15 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
 
 // After make selected, get the corresponding models as a list:
   Future<void> getModelsforMake(String make) async {
+    EasyLoading.instance
+      ..indicatorType = EasyLoadingIndicatorType.cubeGrid
+      ..loadingStyle = EasyLoadingStyle.custom
+      ..indicatorSize = 60.0
+      ..progressColor = AppTheme.iihsbackground
+      ..backgroundColor = AppTheme.iihsbackground_dark
+      ..indicatorColor = AppTheme.iihsbackground
+      ..textColor = AppTheme.iihsbackground;
+
     EasyLoading.show(
       status: 'loading...',
     );

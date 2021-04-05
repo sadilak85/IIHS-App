@@ -32,6 +32,8 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
       _selectedSeriesSlug,
       _selectedSeriesiihsUrl,
       _selectedSeriesName;
+  String _selectedmodeldropdown = '';
+  String _selectedseriesdropdown = '';
   List<String> allMakeIdsListed, allMakeSlugsListed, allMakeNamesListed;
   List<String> modelIdsListed, modelSlugsListed, modelNamesListed;
   List<String> seriesIdsListed,
@@ -99,6 +101,7 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
       setState(() {
         EasyLoading.dismiss();
         enableModelmenu = true;
+        //_selectedmodeldropdown = modelNamesListed[0];
       });
     } catch (e) {
       print(e);
@@ -127,6 +130,7 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
       setState(() {
         EasyLoading.dismiss();
         enableSeriesmenu = true;
+        // _selectedseriesdropdown = seriesNamesListed[0];
       });
     } catch (e) {
       print(e);
@@ -248,7 +252,7 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                             child: dropDownMenu('make'),
                           ),
                           AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 500),
+                            duration: const Duration(milliseconds: 100),
                             transitionBuilder: (Widget child,
                                     Animation<double> animation) =>
                                 ScaleTransition(child: child, scale: animation),
@@ -267,7 +271,7 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                                 : SizedBox(),
                           ),
                           AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 500),
+                            duration: const Duration(milliseconds: 100),
                             transitionBuilder: (Widget child,
                                     Animation<double> animation) =>
                                 ScaleTransition(child: child, scale: animation),
@@ -330,7 +334,7 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                   right: MediaQuery.of(context).size.width * 0.35,
                   bottom: (MediaQuery.of(context).size.height * 0.05),
                   child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 1500),
+                    duration: const Duration(milliseconds: 500),
                     child: displaySearchBox
                         ? ScaleTransition(
                             alignment: Alignment.center,
@@ -357,7 +361,10 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                                       modelslug: _selectedModelSlug,
                                       modelname: _selectedModelName,
                                       seriesid: _selectedSeriesId,
+                                      seriesvariantTypeId:
+                                          _selectedVariantTypeId,
                                       seriesslug: _selectedSeriesSlug,
+                                      seriesiihsUrl: _selectedSeriesiihsUrl,
                                       seriesname: _selectedSeriesName,
                                     );
                                     Navigator.of(context).pushNamed(
@@ -426,23 +433,23 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
   }
 
   Widget dropDownMenu(String type) {
-    var listname;
+    var itemlist;
     String _type;
     bool _enablemenu;
     bool _ismake;
     if (type == 'make') {
       _ismake = true;
-      listname = allMakeNamesListed;
+      itemlist = allMakeNamesListed;
       _type = 'Makes';
       _enablemenu = true;
     } else if (type == 'model') {
       _ismake = false;
-      listname = modelNamesListed;
+      itemlist = modelNamesListed;
       _type = 'Models';
       _enablemenu = enableModelmenu;
     } else if (type == 'series') {
       _ismake = false;
-      listname = seriesNamesListed;
+      itemlist = seriesNamesListed;
       _type = 'Series';
       _enablemenu = enableSeriesmenu;
     }
@@ -504,7 +511,13 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
         ),
       ),
       showSelectedItem: true,
-      items: listname,
+      selectedItem: (type == 'model')
+          ? _selectedmodeldropdown
+          : (type == 'series')
+              ? _selectedseriesdropdown
+              : null,
+      popupItemBuilder: _customPopupItemBuilder,
+      items: itemlist,
       label: 'Vehicle $_type',
       enabled: _enablemenu,
       onChanged: (String newValue) {
@@ -516,7 +529,6 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
           funcSeriesonChanged(newValue);
         }
       },
-      selectedItem: '', // model
     );
   }
 
@@ -526,8 +538,11 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
     _selectedMakeSlug = allMakeSlugsListed[index];
     _selectedMakeName = allMakeNamesListed[index];
     setState(() {
+      _selectedmodeldropdown = null;
       enableModelmenu = false;
       displayModelBox = true;
+      displaySeriesBox = false;
+      displaySearchBox = false;
     });
     getModelsforMake(_selectedMakeSlug);
   }
@@ -538,16 +553,20 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
       _selectedModelId = modelIdsListed[index];
       _selectedModelSlug = modelSlugsListed[index];
       _selectedModelName = modelNamesListed[index];
-      modelreadycheck = true;
+      seriesreadycheck = false;
+      _selectedmodeldropdown = _selectedModelName;
       setState(() {
+        _selectedseriesdropdown = null;
         enableSeriesmenu = false;
         displaySeriesBox = true;
       });
       getSeriesDataforMakeModel(_selectedMakeSlug, _selectedModelSlug);
+      modelreadycheck = true;
     } else {
       setState(() {
         enableSeriesmenu = false;
         displaySeriesBox = false;
+        displaySearchBox = false;
       });
       modelreadycheck = false;
     }
@@ -561,15 +580,31 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
       _selectedSeriesSlug = seriesSlugsListed[index];
       _selectedSeriesiihsUrl = seriesiihsUrlsListed[index];
       _selectedSeriesName = seriesNamesListed[index];
-      seriesreadycheck = true;
+      _selectedseriesdropdown = _selectedSeriesName;
       setState(() {
         displaySearchBox = true;
       });
+      seriesreadycheck = true;
     } else {
-      setState(() {
-        displaySearchBox = false;
-      });
       seriesreadycheck = false;
     }
+  }
+
+  Widget _customPopupItemBuilder(
+      BuildContext context, String item, bool isSelected) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 8),
+      decoration: !isSelected
+          ? null
+          : BoxDecoration(
+              border: Border.all(color: Theme.of(context).primaryColor),
+              borderRadius: BorderRadius.circular(5),
+              color: Colors.white,
+            ),
+      child: ListTile(
+        selected: isSelected,
+        title: Text(item),
+      ),
+    );
   }
 }

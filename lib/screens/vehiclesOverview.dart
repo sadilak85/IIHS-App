@@ -110,6 +110,8 @@ class _VehicleRatingsOverviewState extends State<VehicleRatingsOverview>
     VehicleData selectedvehicle = ModalRoute.of(context).settings.arguments;
 
     log(selectedvehicle.makename);
+    log(selectedvehicle.modelname);
+    log(selectedvehicle.seriesname);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,

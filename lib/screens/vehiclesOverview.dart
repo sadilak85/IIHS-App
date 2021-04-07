@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:iihs/models/constants/app_theme.dart';
 import 'package:iihs/utils/apifunctions/modelyears.dart';
 import 'package:iihs/utils/apifunctions/vehicleimages.dart';
-import 'package:iihs/utils/apifunctions/ratings.dart';
 import 'package:iihs/models/constants/networkimages.dart';
 import 'package:iihs/models/vehicleData.dart';
 import 'package:iihs/screens/vehicleRatingsResults.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 import 'dart:developer';
 
@@ -47,7 +44,6 @@ class _VehicleRatingsOverviewState extends State<VehicleRatingsOverview>
         curve: Interval(0, 1.0, curve: Curves.fastOutSlowIn),
       ),
     );
-
     super.initState();
   }
 
@@ -65,13 +61,10 @@ class _VehicleRatingsOverviewState extends State<VehicleRatingsOverview>
         selectedvehicle.seriesslug,
       );
       for (int j = 0; j <= yearsData.length - 1; j++) {
-        var vehicleInfoData = await CrashRatings().crashRatingsCardInfo(
-            yearsData[j], selectedvehicle.makeslug, selectedvehicle.seriesslug);
-
-        String _imageURL = vehicleInfoData[1];
-
-        // String _imageURL = await VehicleImages().getMainImage(
-        //     selectedvehicle.makename, selectedvehicle.seriesslug, yearsData[j]);
+        // var vehicleInfoData = await CrashRatings().crashRatingsCardInfo(
+        //     yearsData[j], selectedvehicle.makeslug, selectedvehicle.seriesslug);
+        String _imageURL = await VehicleImages().getMainImage(
+            selectedvehicle.makename, selectedvehicle.seriesslug, yearsData[j]);
 
         templateList.add(
           VehicleData(
@@ -87,10 +80,7 @@ class _VehicleRatingsOverviewState extends State<VehicleRatingsOverview>
             seriesslug: selectedvehicle.seriesslug,
             seriesiihsUrl: selectedvehicle.seriesiihsUrl,
             seriesname: selectedvehicle.seriesname,
-            vehicleclass: vehicleInfoData[0],
-            vehiclemainimage: _imageURL != null
-                ? _imageURL.toString()
-                : 'https://www.iihs.org/frontend/images/IIHS-HLDI-avatar-1200x1200.jpg',
+            vehiclemainimage: _imageURL,
           ),
         );
       }
@@ -98,11 +88,6 @@ class _VehicleRatingsOverviewState extends State<VehicleRatingsOverview>
       print(e);
     }
     return templateList;
-  }
-
-  void getRatingsData() async {
-    var data = await CrashRatings()
-        .crashRatings('2021', 'bmw', '2-series-2-door-coupe');
   }
 
   @override
@@ -155,14 +140,13 @@ class _VehicleRatingsOverviewState extends State<VehicleRatingsOverview>
     } else {
       EasyLoading.dismiss();
     }
-
     return Stack(
       key: UniqueKey(),
       children: <Widget>[
         Column(
           children: <Widget>[
             AspectRatio(
-              aspectRatio: 1.2,
+              aspectRatio: 1,
               child: Image.network(
                 crashratingpage,
                 alignment: Alignment.center,
@@ -284,12 +268,6 @@ class _VehicleRatingsOverviewState extends State<VehicleRatingsOverview>
       ],
     );
   }
-
-  void funcMakeonChanged(value) {
-    // setState(() {
-    //   enablemenu = false;
-    // });
-  }
 }
 
 class TemplateListView extends StatelessWidget {
@@ -332,68 +310,53 @@ class TemplateListView extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(8.0),
-                            child: CachedNetworkImage(
-                              imageUrl: listData.vehiclemainimage,
-                              progressIndicatorBuilder:
-                                  (context, url, downloadProgress) =>
-                                      CircularProgressIndicator(
-                                          value: downloadProgress.progress),
-                              errorWidget: (context, url, error) =>
-                                  Icon(Icons.error),
-                            ),
-
-                            // Image.network(
-                            //   listData.vehiclemainimage,
-                            //   alignment: Alignment.center,
-                            //   fit: BoxFit.cover,
-                            //   loadingBuilder: (BuildContext context,
-                            //       Widget child,
-                            //       ImageChunkEvent loadingProgress) {
-                            //     if (loadingProgress == null) return child;
-                            //     return Center(
-                            //       child: CircularProgressIndicator(
-                            //         value: loadingProgress.expectedTotalBytes !=
-                            //                 null
-                            //             ? loadingProgress
-                            //                     .cumulativeBytesLoaded /
-                            //                 loadingProgress.expectedTotalBytes
-                            //             : null,
-                            //       ),
-                            //     );
-                            //   },
-                            // ),
+                            child: listData.vehiclemainimage != null
+                                ? Image.network(
+                                    listData.vehiclemainimage.toString(),
+                                    filterQuality: FilterQuality.low,
+                                    alignment: Alignment.center,
+                                    fit: BoxFit.cover,
+                                    loadingBuilder: (BuildContext context,
+                                        Widget child,
+                                        ImageChunkEvent loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Center(
+                                        child: CircularProgressIndicator(
+                                          value: loadingProgress
+                                                      .expectedTotalBytes !=
+                                                  null
+                                              ? loadingProgress
+                                                      .cumulativeBytesLoaded /
+                                                  loadingProgress
+                                                      .expectedTotalBytes
+                                              : null,
+                                        ),
+                                      );
+                                    },
+                                  )
+                                : Image.asset(
+                                    'assets/images/logo-iihs.png',
+                                    fit: BoxFit.scaleDown,
+                                  ),
                           ),
                         ),
                       ),
                       Expanded(
-                        flex: 66,
+                        flex: (MediaQuery.of(context).size.width * 0.2).toInt(),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
                             children: [
                               Expanded(
-                                flex: 20,
+                                flex: 10,
                                 child: Center(
                                   child: Text(
-                                    listData.makename +
-                                        ' ' +
-                                        listData.modelname,
+                                    listData.makename + ' ',
                                     style: TextStyle(
                                       fontSize: 18,
                                       color: AppTheme.darkText,
                                       fontWeight: FontWeight.w700,
                                     ),
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 10,
-                                child: Text(
-                                  listData.seriesname,
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: AppTheme.darkText,
-                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ),
@@ -411,7 +374,7 @@ class TemplateListView extends StatelessWidget {
                               Expanded(
                                 flex: 10,
                                 child: Text(
-                                  listData.vehicleclass,
+                                  listData.seriesname,
                                   style: TextStyle(
                                     fontSize: 15,
                                     color: AppTheme.darkText,

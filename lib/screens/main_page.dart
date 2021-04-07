@@ -42,7 +42,6 @@ class _MainPageScreenState extends State<MainPageScreen>
         'title': 'Find your Vehicle with Make',
       },
     ];
-
     super.initState();
   }
 

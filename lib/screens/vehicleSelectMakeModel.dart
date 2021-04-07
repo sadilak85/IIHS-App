@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:iihs/models/constants/app_theme.dart';
 import 'package:iihs/utils/apifunctions/vehiclemakes.dart';
 import 'package:iihs/utils/apifunctions/vehiclemodels.dart';
 import 'package:iihs/utils/apifunctions/vehicleseries.dart';
+import 'package:iihs/utils/apifunctions/modelyears.dart';
 import 'package:iihs/utils/operations/dataoperations.dart';
 import 'package:iihs/models/constants/networkimages.dart';
 import 'package:iihs/screens/vehiclesOverview.dart';
 import 'package:iihs/models/vehicleData.dart';
-import 'dart:developer';
 
 class VehicleSelectMakeModel extends StatefulWidget {
   static const routeName = '/vehicle-selectionbymakemodel-screen';
+
   @override
   _VehicleSelectMakeModelState createState() => _VehicleSelectMakeModelState();
 }
@@ -32,8 +34,11 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
       _selectedSeriesSlug,
       _selectedSeriesiihsUrl,
       _selectedSeriesName;
+
+  String _selectedYearsName;
   String _selectedmodeldropdown = '';
   String _selectedseriesdropdown = '';
+  String _selectedyearsdropdown = '';
   List<String> allMakeIdsListed, allMakeSlugsListed, allMakeNamesListed;
   List<String> modelIdsListed, modelSlugsListed, modelNamesListed;
   List<String> seriesIdsListed,
@@ -41,14 +46,19 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
       seriesSlugsListed,
       seriesiihsUrlsListed,
       seriesNamesListed;
+  List<String> modelYearsListed;
 
   bool enableModelmenu = false;
   bool enableSeriesmenu = false;
+  bool enableYearsmenu = false;
+  bool makereadycheck = false;
   bool modelreadycheck = false;
   bool seriesreadycheck = false;
+  bool yearsreadycheck = false;
   bool displayModelBox = false;
   bool displaySeriesBox = false;
-  bool displaySearchBox = false;
+  bool displayYearsBox = false;
+  bool displaySearchButton = false;
 
   @override
   void initState() {
@@ -63,19 +73,30 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
       ),
     );
     setData();
-    _selectedMakeName = 'Vehicle';
+    //BackButtonInterceptor.add(myInterceptor);
+
     super.initState();
   }
 
   @override
   void dispose() {
     animationController.dispose();
+    //BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
   }
 
   Future<void> setData() async {
     animationController.forward();
   }
+
+  // bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+  //   //if (info.ifRouteChanged(context)) return false;
+
+  //   //Navigator.of(context, rootNavigator: true).pop();
+
+  //   Navigator.pop(context);
+  //   return true;
+  // }
 
 // First get all available makes as a list to create a list for user choice:
   Future<List<String>> getALLMakesData() async {
@@ -146,11 +167,31 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
     }
   }
 
+  // After series selected, years list is shown:
+  Future<void> getYearsDataforMakeModelSeries(
+      String make, String series) async {
+    EasyLoading.show(
+      status: 'loading...',
+    );
+    try {
+      modelYearsListed = await ModelYears().getModelYearsforMakeModelSeries(
+        make,
+        series,
+      );
+      setState(() {
+        EasyLoading.dismiss();
+        enableYearsmenu = true;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('To be precise:'),
+        title: Text('Missing field:'),
         content: Text(message),
         actions: <Widget>[
           TextButton(
@@ -206,7 +247,7 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                 Column(
                   children: <Widget>[
                     AspectRatio(
-                      aspectRatio: 1.2,
+                      aspectRatio: 1,
                       child: Image.network(
                         crashratingpage,
                         alignment: Alignment.center,
@@ -228,7 +269,7 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                   ],
                 ),
                 Positioned(
-                  top: (MediaQuery.of(context).size.height * 0.38),
+                  top: (MediaQuery.of(context).size.height * 0.30),
                   bottom: 0,
                   left: 0,
                   right: 0,
@@ -252,11 +293,31 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                         // mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          // Container(
+                          //   height: MediaQuery.of(context).size.height * 0.06,
+                          //   decoration: BoxDecoration(
+                          //     color: AppTheme.iihsyellow,
+                          //     borderRadius: BorderRadius.only(
+                          //       topLeft: Radius.circular(12),
+                          //       topRight: Radius.circular(12),
+                          //     ),
+                          //   ),
+                          //   child: Center(
+                          //     child: Text(
+                          //       'Vehicle Ratings',
+                          //       style: TextStyle(
+                          //         fontSize: 20,
+                          //         fontWeight: FontWeight.bold,
+                          //         color: AppTheme.darkText,
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
                           Padding(
                             padding: EdgeInsets.only(
                               left: MediaQuery.of(context).size.width * 0.2,
                               right: MediaQuery.of(context).size.width * 0.2,
-                              top: MediaQuery.of(context).size.height * 0.08,
+                              top: MediaQuery.of(context).size.height * 0.1,
                             ),
                             child: dropDownMenu('make'),
                           ),
@@ -298,13 +359,33 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                                   )
                                 : SizedBox(),
                           ),
+
+                          AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 100),
+                            transitionBuilder: (Widget child,
+                                    Animation<double> animation) =>
+                                ScaleTransition(child: child, scale: animation),
+                            child: displayYearsBox
+                                ? Padding(
+                                    padding: EdgeInsets.only(
+                                      left: MediaQuery.of(context).size.width *
+                                          0.2,
+                                      right: MediaQuery.of(context).size.width *
+                                          0.5,
+                                      top: MediaQuery.of(context).size.height *
+                                          0.03,
+                                    ),
+                                    child: dropDownMenu('years'),
+                                  )
+                                : SizedBox(),
+                          ),
                         ],
                       ),
                     ),
                   ),
                 ),
                 Positioned(
-                  top: (MediaQuery.of(context).size.height * 0.33),
+                  top: (MediaQuery.of(context).size.height * 0.26),
                   left: MediaQuery.of(context).size.width * 0.25,
                   right: MediaQuery.of(context).size.width * 0.25,
                   child: ScaleTransition(
@@ -339,12 +420,12 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                   ),
                 ),
                 Positioned(
-                  left: MediaQuery.of(context).size.width * 0.35,
-                  right: MediaQuery.of(context).size.width * 0.35,
+                  left: MediaQuery.of(context).size.width * 0.7,
+                  right: MediaQuery.of(context).size.width * 0.08,
                   bottom: (MediaQuery.of(context).size.height * 0.05),
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 500),
-                    child: displaySearchBox
+                    child: displaySearchButton
                         ? ScaleTransition(
                             alignment: Alignment.center,
                             scale: CurvedAnimation(
@@ -357,10 +438,15 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                               elevation: 5.0,
                               child: TextButton.icon(
                                 onPressed: () {
-                                  if (modelreadycheck == false) {
+                                  if (makereadycheck == false) {
+                                    _showErrorDialog('Select a vehicle make!');
+                                  } else if (modelreadycheck == false) {
                                     _showErrorDialog('Select a vehicle model!');
                                   } else if (seriesreadycheck == false) {
                                     _showErrorDialog('Select a model serie!');
+                                  } else if (yearsreadycheck == false) {
+                                    _showErrorDialog(
+                                        'Select a year for serie!');
                                   } else {
                                     selectedvehicle = VehicleData(
                                       makeid: _selectedMakeId,
@@ -369,6 +455,7 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                                       modelid: _selectedModelId,
                                       modelslug: _selectedModelSlug,
                                       modelname: _selectedModelName,
+                                      modelyears: _selectedYearsName,
                                       seriesid: _selectedSeriesId,
                                       seriesvariantTypeId:
                                           _selectedVariantTypeId,
@@ -396,7 +483,7 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                                       Icons.directions_car_outlined,
                                     ),
                                     Icon(
-                                      Icons.search,
+                                      Icons.keyboard_arrow_right,
                                     ),
                                   ],
                                 ),
@@ -445,25 +532,35 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
     var itemlist;
     String _type;
     bool _enablemenu;
-    bool _ismake;
+    bool _ismake, _isyear;
     if (type == 'make') {
       _ismake = true;
+      _isyear = false;
       itemlist = allMakeNamesListed;
       _type = 'Makes';
       _enablemenu = true;
     } else if (type == 'model') {
       _ismake = false;
+      _isyear = false;
       itemlist = modelNamesListed;
       _type = 'Models';
       _enablemenu = enableModelmenu;
     } else if (type == 'series') {
       _ismake = false;
+      _isyear = false;
       itemlist = seriesNamesListed;
       _type = 'Series';
       _enablemenu = enableSeriesmenu;
+    } else if (type == 'years') {
+      _ismake = false;
+      _isyear = true;
+      itemlist = modelYearsListed;
+      _type = 'Years';
+      _enablemenu = enableYearsmenu;
     }
 
     return DropdownSearch<String>(
+      showSearchBox: _ismake ? true : false,
       mode: Mode.DIALOG,
       maxHeight: MediaQuery.of(context).size.height * 0.7,
       popupTitle: Container(
@@ -477,7 +574,11 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
         ),
         child: Center(
           child: Text(
-            _ismake ? 'Vehicle $_type' : '$_selectedMakeName $_type',
+            _ismake
+                ? 'Vehicle $_type'
+                : _isyear
+                    ? 'Select a year'
+                    : '$_selectedMakeName $_type',
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
@@ -509,22 +610,22 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
         size: 18,
         color: Colors.black,
       ),
-      validator: (v) => v == null ? "required field" : null,
+      //validator: (v) => v == null ? "required field" : null,
       showAsSuffixIcons: true,
-      dropdownButtonBuilder: (_) => Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: const Icon(
-          Icons.arrow_drop_down,
-          size: 24,
-          color: Colors.black,
-        ),
+      dropdownButtonBuilder: (_) => const Icon(
+        Icons.arrow_drop_down,
+        size: 24,
+        color: Colors.black,
       ),
       showSelectedItem: true,
       selectedItem: (type == 'model')
           ? _selectedmodeldropdown
           : (type == 'series')
               ? _selectedseriesdropdown
-              : null,
+              : (type == 'years')
+                  ? _selectedyearsdropdown
+                  : null,
+
       popupItemBuilder: _customPopupItemBuilder,
       items: itemlist,
       label: 'Vehicle $_type',
@@ -536,24 +637,41 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
           funcModelonChanged(newValue);
         } else if (type == 'series') {
           funcSeriesonChanged(newValue);
+        } else if (type == 'years') {
+          funcYearsonChanged(newValue);
         }
       },
     );
   }
 
   void funcMakeonChanged(value) {
-    int index = allMakeNamesListed.indexOf(value);
-    _selectedMakeId = allMakeIdsListed[index];
-    _selectedMakeSlug = allMakeSlugsListed[index];
-    _selectedMakeName = allMakeNamesListed[index];
-    setState(() {
-      _selectedmodeldropdown = null;
-      enableModelmenu = false;
-      displayModelBox = true;
-      displaySeriesBox = false;
-      displaySearchBox = false;
-    });
-    getModelsforMake(_selectedMakeSlug);
+    if (value != null) {
+      int index = allMakeNamesListed.indexOf(value);
+      _selectedMakeId = allMakeIdsListed[index];
+      _selectedMakeSlug = allMakeSlugsListed[index];
+      _selectedMakeName = allMakeNamesListed[index];
+      modelreadycheck = false;
+      seriesreadycheck = false;
+      yearsreadycheck = false;
+      setState(() {
+        _selectedmodeldropdown = null;
+        enableModelmenu = false;
+        displayModelBox = true;
+        displaySeriesBox = false;
+        displayYearsBox = false;
+        displaySearchButton = false;
+      });
+      getModelsforMake(_selectedMakeSlug);
+      makereadycheck = true;
+    } else {
+      setState(() {
+        displayModelBox = false;
+        displaySeriesBox = false;
+        displayYearsBox = false;
+        displaySearchButton = false;
+      });
+      makereadycheck = false;
+    }
   }
 
   void funcModelonChanged(value) {
@@ -563,19 +681,22 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
       _selectedModelSlug = modelSlugsListed[index];
       _selectedModelName = modelNamesListed[index];
       seriesreadycheck = false;
+      yearsreadycheck = false;
       _selectedmodeldropdown = _selectedModelName;
       setState(() {
         _selectedseriesdropdown = null;
+        _selectedyearsdropdown = null;
         enableSeriesmenu = false;
+        enableYearsmenu = false;
         displaySeriesBox = true;
       });
       getSeriesDataforMakeModel(_selectedMakeSlug, _selectedModelSlug);
       modelreadycheck = true;
     } else {
       setState(() {
-        enableSeriesmenu = false;
         displaySeriesBox = false;
-        displaySearchBox = false;
+        displayYearsBox = false;
+        displaySearchButton = false;
       });
       modelreadycheck = false;
     }
@@ -589,13 +710,38 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
       _selectedSeriesSlug = seriesSlugsListed[index];
       _selectedSeriesiihsUrl = seriesiihsUrlsListed[index];
       _selectedSeriesName = seriesNamesListed[index];
+      yearsreadycheck = false;
       _selectedseriesdropdown = _selectedSeriesName;
       setState(() {
-        displaySearchBox = true;
+        _selectedyearsdropdown = null;
+        enableYearsmenu = false;
+        displayYearsBox = true;
       });
+      getYearsDataforMakeModelSeries(_selectedMakeSlug, _selectedSeriesSlug);
       seriesreadycheck = true;
     } else {
+      setState(() {
+        displayYearsBox = false;
+        displaySearchButton = false;
+      });
       seriesreadycheck = false;
+    }
+  }
+
+  void funcYearsonChanged(value) {
+    if (value != null) {
+      int index = modelYearsListed.indexOf(value);
+      _selectedYearsName = modelYearsListed[index];
+      _selectedyearsdropdown = _selectedYearsName;
+      setState(() {
+        displaySearchButton = true;
+      });
+      yearsreadycheck = true;
+    } else {
+      setState(() {
+        displaySearchButton = false;
+      });
+      yearsreadycheck = false;
     }
   }
 

@@ -11,6 +11,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'dart:developer';
 
+import '../models/constants/app_theme.dart';
+
 class VehicleRatingsResults extends StatefulWidget {
   const VehicleRatingsResults({Key key}) : super(key: key);
   static const routeName = '/vehicleratings-results-screen';
@@ -109,14 +111,6 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
     return templateList;
   }
 
-  void getRatingsData() async {
-    var yearsData = await ModelYears().getModelYears();
-    String year = yearsData[yearsData.length - 1]; // a sample
-
-    var data = await CrashRatings()
-        .crashRatings('2021', 'bmw', '2-series-2-door-coupe');
-  }
-
   @override
   Widget build(BuildContext context) {
     VehicleData selectedvehicle = ModalRoute.of(context).settings.arguments;
@@ -137,82 +131,11 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
-      body: FutureBuilder<List<VehicleData>>(
-        future:
-            getSelectedVehicleData(selectedvehicle), // a Future<String> or null
-        builder:
-            (BuildContext context, AsyncSnapshot<List<VehicleData>> snapshot) {
-          if (snapshot.hasError) {
-            EasyLoading.show(
-              status: 'loading...',
-            );
-            return Container(
-              child: null,
-              // DO SOMETHING !!!!!!!!!!!!!!!!!!!  RETURN BACK ODER SO
-            );
-          } else if (!snapshot.hasData) {
-            EasyLoading.show(
-              status: 'loading...',
-            );
-            return Container(
-              child: null,
-              // DO SOMETHING !!!!!!!!!!!!!!!!!!!  Wait for a while then do something
-            );
-          } else {
-            return Stack(
-              key: UniqueKey(),
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    AspectRatio(
-                      aspectRatio: 1.2,
-                      child: Image.network(
-                        crashratingpage,
-                        alignment: Alignment.center,
-                        fit: BoxFit.cover,
-                        loadingBuilder: (BuildContext context, Widget child,
-                            ImageChunkEvent loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes
-                                  : null,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding:
-                      EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-                  child: SizedBox(
-                    width: AppBar().preferredSize.height,
-                    height: AppBar().preferredSize.height,
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(
-                            AppBar().preferredSize.height),
-                        child: Icon(
-                          Icons.arrow_back,
-                          color: AppTheme.white,
-                        ),
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ),
-                  ),
-                )
-              ],
-            );
-          }
-        },
+      appBar: AppBar(
+        backgroundColor: AppTheme.iihsyellow,
+        title: Text("sdfsdf"),
       ),
+      body: SizedBox(),
     );
   }
 

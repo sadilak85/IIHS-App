@@ -44,7 +44,6 @@ class CrashRatings {
 
       final crashratingvalues =
           rawdata.findAllElements('class').map((e) => e.text).toString();
-
       final photoid = rawdata
           .findAllElements('photo')
           .map((e) => e.getAttribute('id'))

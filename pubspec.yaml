@@ -36,7 +36,7 @@ dependencies:
   dart_jsonwebtoken: ^1.6.2
   dropdown_search: ^0.4.9
   flutter_easyloading: ^3.0.0
-  cached_network_image: ^2.5.0
+  back_button_interceptor: ^5.0.0
 
 dev_dependencies:
   flutter_test:

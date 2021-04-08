@@ -8,7 +8,7 @@ class VehicleData {
   final String modelid;
   final String modelslug;
   final String modelname;
-  final String modelyears;
+  final String modelyear;
   final String seriesid;
   final String seriesvariantTypeId;
   final String seriesslug;
@@ -24,7 +24,7 @@ class VehicleData {
     this.modelid,
     this.modelslug,
     this.modelname,
-    this.modelyears,
+    this.modelyear,
     this.seriesid,
     this.seriesvariantTypeId,
     this.seriesslug,

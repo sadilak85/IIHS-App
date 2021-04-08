@@ -1,13 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intro_slider/intro_slider.dart';
-import 'package:intro_slider/slide_object.dart';
-import 'package:iihs/root.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:iihs/models/constants/app_theme.dart';
+import 'package:iihs/utils/helpers/custom_route.dart';
+import 'package:iihs/screens/vehicleSelectMakeModel.dart';
+import 'package:iihs/screens/vehicleSelectMake.dart';
+import 'package:iihs/screens/vehiclesOverview.dart';
+import 'package:iihs/screens/vehicleRatingsResults.dart';
+import 'package:iihs/screens/drawer_contact_screen.dart';
+import 'package:iihs/screens/main_page.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
@@ -15,84 +26,72 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
     return MaterialApp(
-      home: IntroScreen(),
+      title: 'IIHS Main',
       debugShowCheckedModeBanner: false,
       builder: EasyLoading.init(),
-    );
-  }
-}
-
-class IntroScreen extends StatefulWidget {
-  IntroScreen({Key key}) : super(key: key);
-
-  @override
-  IntroScreenState createState() => new IntroScreenState();
-}
-
-//------------------ Default config ------------------
-class IntroScreenState extends State<IntroScreen> {
-  List<Slide> slides = [];
-
-  @override
-  void initState() {
-    super.initState();
-
-    slides.add(
-      new Slide(
-        title: "ERASER",
-        description:
-            "Allow miles wound place the leave had. To sitting subject no improve studied limited",
-        pathImage: "assets/images/product-placeholder.png",
-        backgroundColor: Color(0xfff5a623),
+      theme: ThemeData(
+        backgroundColor: Colors.grey[400],
+        primaryColor: Colors.white,
+        accentColor: Colors.grey,
+        bottomAppBarColor: Colors.grey,
+        canvasColor: Colors.white,
+        //canvasColor: Color.fromRGBO(255, 254, 229, 1),
+        fontFamily: 'Roboto',
+        textTheme: ThemeData.light().textTheme.copyWith(
+              headline1: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+              headline2: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.iihsyellow,
+              ),
+            ),
+        pageTransitionsTheme: PageTransitionsTheme(
+          builders: {
+            TargetPlatform.android: CustomPageTransitionBuilder(),
+            TargetPlatform.iOS: CustomPageTransitionBuilder(),
+          },
+        ),
       ),
-    );
-    slides.add(
-      new Slide(
-        title: "PENCIL",
-        description:
-            "Ye indulgence unreserved connection alteration appearance",
-        pathImage: "assets/images/product-placeholder.png",
-        backgroundColor: Color(0xff203152),
-      ),
-    );
-    slides.add(
-      new Slide(
-        title: "RULER",
-        description:
-            "Much evil soon high in hope do view. Out may few northward believing attempted. Yet timed being songs marry one defer men our. Although finished blessing do of",
-        pathImage: "assets/images/product-placeholder.png",
-        backgroundColor: Color(0xff9932CC),
-      ),
+      home: MainPageScreen(),
+      routes: {
+        ContactScreen.routeName: (ctx) => ContactScreen(),
+        VehicleSelectMakeModel.routeName: (ctx) => VehicleSelectMakeModel(),
+        VehicleSelectMake.routeName: (ctx) => VehicleSelectMake(),
+        VehicleRatingsOverview.routeName: (ctx) => VehicleRatingsOverview(),
+        VehicleRatingsResults.routeName: (ctx) => VehicleRatingsResults(),
+      },
+      onUnknownRoute: (settings) {
+        return MaterialPageRoute(
+          builder: (ctx) => MainPageScreen(),
+        );
+      },
+      onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case '/ratings':
+            return PageTransition(
+              child: VehicleRatingsResults(),
+              type: PageTransitionType.fade,
+              duration: const Duration(milliseconds: 1000),
+              settings: settings,
+            );
+            break;
+
+          case '/selectmakemodel':
+            return PageTransition(
+              child: VehicleSelectMakeModel(),
+              type: PageTransitionType.fade,
+              duration: const Duration(milliseconds: 1000),
+              settings: settings,
+            );
+            break;
+
+          default:
+            return null;
+        }
+      },
     );
   }
-
-  void onDonePress() {
-    Navigator.of(context).push(_createRoute());
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return IntroSlider(
-      slides: this.slides,
-      onDonePress: this.onDonePress,
-    );
-  }
-}
-
-Route _createRoute() {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => MyAppRoot(),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      var begin = Offset(1.0, 1.0);
-      var end = Offset.zero;
-      var curve = Curves.ease;
-
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-      return SlideTransition(
-        position: animation.drive(tween),
-        child: child,
-      );
-    },
-  );
 }

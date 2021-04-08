@@ -25,25 +25,11 @@ class CrashRatings {
           .expand((category) => category.findElements('overallRating'))
           .map((skill) => skill.text);
 
-      return crashratingvalues;
-    } catch (e) {
-      print(e);
-      return null;
-    }
-  }
+      log(rawdata.toString());
 
-  // get a picture
-  Future<dynamic> crashRatingsCardInfo(
-      String year, String make, String series) async {
-    const crashrating = '$versionratings/single/';
-    try {
-      NetworkHelper networkHelper = NetworkHelper(
-          '$iihsApiURL$crashrating$year/$make/$series?apikey=$apiKey');
-      var xmlData = await networkHelper.getData();
-      var rawdata = xml.XmlDocument.parse(xmlData);
-
-      final crashratingvalues =
+      final vehicleclass =
           rawdata.findAllElements('class').map((e) => e.text).toString();
+
       final photoid = rawdata
           .findAllElements('photo')
           .map((e) => e.getAttribute('id'))
@@ -52,11 +38,10 @@ class CrashRatings {
 
       String photoUrl = '$iihsURL/api/ratings/images/$photoid';
 
-      return [crashratingvalues, photoUrl];
+      return [crashratingvalues.toString(), vehicleclass, photoUrl];
     } catch (e) {
       print(e);
       return null;
     }
   }
-  //
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iihs/models/constants/app_theme.dart';
-import 'package:iihs/utils/apifunctions/modelyears.dart';
+import 'package:iihs/utils/apifunctions/vehiclemodelyears.dart';
 import 'package:iihs/utils/apifunctions/vehicleimages.dart';
 import 'package:iihs/models/constants/networkimages.dart';
 import 'package:iihs/models/vehicleData.dart';
@@ -61,8 +61,6 @@ class _VehicleRatingsOverviewState extends State<VehicleRatingsOverview>
         selectedvehicle.seriesslug,
       );
       for (int j = 0; j <= yearsData.length - 1; j++) {
-        // var vehicleInfoData = await CrashRatings().crashRatingsCardInfo(
-        //     yearsData[j], selectedvehicle.makeslug, selectedvehicle.seriesslug);
         String _imageURL = await VehicleImages().getMainImage(
             selectedvehicle.makename, selectedvehicle.seriesslug, yearsData[j]);
 
@@ -74,7 +72,7 @@ class _VehicleRatingsOverviewState extends State<VehicleRatingsOverview>
             modelid: selectedvehicle.modelid,
             modelslug: selectedvehicle.modelslug,
             modelname: selectedvehicle.modelname,
-            modelyears: yearsData[j],
+            modelyear: yearsData[j],
             seriesid: selectedvehicle.seriesid,
             seriesvariantTypeId: selectedvehicle.seriesvariantTypeId,
             seriesslug: selectedvehicle.seriesslug,
@@ -141,14 +139,13 @@ class _VehicleRatingsOverviewState extends State<VehicleRatingsOverview>
       EasyLoading.dismiss();
     }
     return Stack(
-      key: UniqueKey(),
       children: <Widget>[
         Column(
           children: <Widget>[
             AspectRatio(
               aspectRatio: 1,
               child: Image.network(
-                crashratingpage,
+                selectiontopimage,
                 alignment: Alignment.center,
                 fit: BoxFit.cover,
                 loadingBuilder: (BuildContext context, Widget child,
@@ -363,7 +360,7 @@ class TemplateListView extends StatelessWidget {
                               Expanded(
                                 flex: 10,
                                 child: Text(
-                                  listData.modelyears,
+                                  listData.modelyear,
                                   style: TextStyle(
                                     fontSize: 15,
                                     color: AppTheme.darkText,

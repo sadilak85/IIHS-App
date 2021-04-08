@@ -4,7 +4,7 @@ class AppTheme {
   AppTheme._();
 
   static const Color iihsbackground = Color.fromRGBO(245, 245, 247, 1);
-  static const Color iihsyellow = Color.fromRGBO(255, 205, 52, 1);
+  static const Color iihsyellow = Color.fromRGBO(255, 204, 51, 1);
   static const Color iihsbackground_dark = Color.fromRGBO(82, 82, 82, 1);
 
   static const Color notWhite = Color(0xFFEDF0F2);

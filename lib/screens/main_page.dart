@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:iihs/models/categories.dart';
 import 'package:iihs/utils/widgets/app_drawer.dart';
@@ -18,7 +19,6 @@ class _MainPageScreenState extends State<MainPageScreen>
     with TickerProviderStateMixin {
   int _selectedPageIndex = 0;
   //final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<Map<String, Object>> _pages;
   List<Categories> templateList = Categories.maincategories;
 
   AnimationController animationController;
@@ -27,21 +27,6 @@ class _MainPageScreenState extends State<MainPageScreen>
   void initState() {
     animationController = AnimationController(
         duration: const Duration(milliseconds: 2000), vsync: this);
-
-    _pages = [
-      {
-        'page': MainPageScreen(),
-        'title': 'Home',
-      },
-      {
-        'page': VehicleSelectMakeModel(),
-        'title': 'Vehicle Make & Model',
-      },
-      {
-        'page': VehicleSelectMake(),
-        'title': 'Find your Vehicle with Make',
-      },
-    ];
     super.initState();
   }
 
@@ -85,82 +70,93 @@ class _MainPageScreenState extends State<MainPageScreen>
               ),
             );
           } else {
-            return Padding(
-              padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                    height: 80,
-                    child: apptopBar(context),
-                  ),
+            return FadeTransition(
+              opacity: animationController,
+              child: Padding(
+                padding:
+                    EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 80,
+                      child: apptopBar(context),
+                    ),
 
-                  Expanded(
-                    // flex: 10,
-                    child: Container(
-                      color: AppTheme.iihsbackground,
-                      child: GridView(
-                        padding:
-                            const EdgeInsets.only(top: 10, left: 20, right: 20),
-                        physics: const BouncingScrollPhysics(),
-                        scrollDirection: Axis.vertical,
-                        children: List<Widget>.generate(
-                          templateList.length,
-                          (int index) {
-                            final int count = templateList.length;
-                            final Animation<double> animation =
-                                Tween<double>(begin: 0.0, end: 1.0).animate(
-                              CurvedAnimation(
-                                parent: animationController,
-                                curve: Interval((1 / count) * index, 1.0,
-                                    curve: Curves.fastOutSlowIn),
-                              ),
-                            );
-                            animationController.forward();
-                            return TemplateListView(
-                              animation: animation,
-                              animationController: animationController,
-                              animationvaluechanger:
-                                  index % 2 == 0 ? 100 : -100,
-                              listData: templateList[index],
-                              callBack: () {
-                                if (templateList[index].id == 'c1') {
-                                  Navigator.of(context).pushNamed(
-                                    VehicleSelectMakeModel.routeName,
-                                  );
-                                } else if (templateList[index].id == 'c2') {
-                                  Navigator.of(context).pushNamed(
-                                    VehicleSelectMake.routeName,
-                                  );
-                                }
-                              },
-                            );
-                          },
-                        ),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 1,
-                          mainAxisSpacing: 15.0,
-                          crossAxisSpacing: 15.0,
-                          childAspectRatio: 1.8,
+                    Expanded(
+                      // flex: 10,
+                      child: Container(
+                        color: AppTheme.iihsbackground,
+                        child: GridView(
+                          padding: const EdgeInsets.only(
+                              top: 10, left: 20, right: 20),
+                          physics: const BouncingScrollPhysics(),
+                          scrollDirection: Axis.vertical,
+                          children: List<Widget>.generate(
+                            templateList.length,
+                            (int index) {
+                              final int count = templateList.length;
+                              final Animation<double> animation =
+                                  Tween<double>(begin: 0.0, end: 1.0).animate(
+                                CurvedAnimation(
+                                  parent: animationController,
+                                  curve: Interval((1 / count) * index, 1.0,
+                                      curve: Curves.fastOutSlowIn),
+                                ),
+                              );
+                              animationController.forward();
+                              return TemplateListView(
+                                animation: animation,
+                                animationController: animationController,
+                                animationvaluechanger:
+                                    index % 2 == 0 ? 100 : -100,
+                                listData: templateList[index],
+                                callBack: () {
+                                  if (templateList[index].id == 'c1') {
+                                    Navigator.pushNamed(
+                                      context,
+                                      "/selectmakemodel",
+                                    );
+
+                                    // Navigator.of(context).pushNamed(
+                                    //   VehicleSelectMakeModel.routeName,
+                                    // );
+
+                                  } else if (templateList[index].id == 'c2') {
+                                    Navigator.of(context).pushNamed(
+                                      VehicleSelectMake.routeName,
+                                    );
+                                  }
+                                },
+                              );
+                            },
+                          ),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 1,
+                            mainAxisSpacing: 15.0,
+                            crossAxisSpacing: 15.0,
+                            childAspectRatio: 1.8,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  // Align(
-                  //   alignment: Alignment.bottomCenter,
-                  //   // left: 0,
-                  //   // right: 20,
-                  //   // bottom: 0,
-                  //   child: bottomNavigationBar,
+                    // Align(
+                    //   alignment: Alignment.bottomCenter,
+                    //   // left: 0,
+                    //   // right: 20,
+                    //   // bottom: 0,
+                    //   child: bottomNavigationBar,
 
-                  // ),
+                    // ),
 
-                  SizedBox(
-                    height: 70,
-                    child: bottomNavigationBar(context),
-                  ),
-                ],
+                    SizedBox(
+                      height: 70,
+                      child: bottomNavigationBar(context),
+                    ),
+                  ],
+                ),
               ),
             );
           }
@@ -345,25 +341,37 @@ class TemplateListView extends StatelessWidget {
               child: Stack(
                 // alignment: AlignmentDirectional.center,
                 children: <Widget>[
-                  Image.network(
-                    listData.buttonimage,
+                  Image.asset(
+                    listData.id == 'c1'
+                        ? 'assets/images/topSafetyPickDummy.png'
+                        : listData.id == 'c2'
+                            ? 'assets/images/dummySideView.png'
+                            : 'assets/images/logo-iihs.png',
                     alignment: Alignment.center,
                     height: double.infinity,
                     width: double.infinity,
                     fit: BoxFit.fill,
-                    loadingBuilder: (BuildContext context, Widget child,
-                        ImageChunkEvent loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Center(
-                        child: CircularProgressIndicator(
-                          value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
-                                  loadingProgress.expectedTotalBytes
-                              : null,
-                        ),
-                      );
-                    },
                   ),
+
+                  // Image.network(
+                  //   listData.buttonimage,
+                  //   alignment: Alignment.center,
+                  //   height: double.infinity,
+                  //   width: double.infinity,
+                  //   fit: BoxFit.fill,
+                  //   loadingBuilder: (BuildContext context, Widget child,
+                  //       ImageChunkEvent loadingProgress) {
+                  //     if (loadingProgress == null) return child;
+                  //     return Center(
+                  //       child: CircularProgressIndicator(
+                  //         value: loadingProgress.expectedTotalBytes != null
+                  //             ? loadingProgress.cumulativeBytesLoaded /
+                  //                 loadingProgress.expectedTotalBytes
+                  //             : null,
+                  //       ),
+                  //     );
+                  //   },
+                  // ),
 
                   // Image(
                   //   image: NetworkImage(listData.buttonimage),

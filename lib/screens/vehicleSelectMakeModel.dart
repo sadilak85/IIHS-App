@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:iihs/models/constants/app_theme.dart';
 import 'package:iihs/utils/apifunctions/vehiclemakes.dart';
 import 'package:iihs/utils/apifunctions/vehiclemodels.dart';
 import 'package:iihs/utils/apifunctions/vehicleseries.dart';
-import 'package:iihs/utils/apifunctions/modelyears.dart';
+import 'package:iihs/utils/apifunctions/vehiclemodelyears.dart';
 import 'package:iihs/utils/operations/dataoperations.dart';
 import 'package:iihs/models/constants/networkimages.dart';
-import 'package:iihs/screens/vehiclesOverview.dart';
+import 'package:iihs/screens/vehicleRatingsResults.dart';
 import 'package:iihs/models/vehicleData.dart';
+
+import '../models/constants/app_theme.dart';
+import '../models/constants/app_theme.dart';
+import '../models/constants/app_theme.dart';
+import '../models/constants/app_theme.dart';
 
 class VehicleSelectMakeModel extends StatefulWidget {
   static const routeName = '/vehicle-selectionbymakemodel-screen';
@@ -22,7 +30,11 @@ class VehicleSelectMakeModel extends StatefulWidget {
 
 class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
     with TickerProviderStateMixin {
-  // final double infoHeight = 364.0;
+  //
+  String _connectionStatus = 'Unknown';
+  final Connectivity _connectivity = Connectivity();
+  StreamSubscription<ConnectivityResult> _connectivitySubscription;
+
   AnimationController animationController;
   Animation<double> animation;
 
@@ -74,6 +86,9 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
     );
     setData();
     //BackButtonInterceptor.add(myInterceptor);
+    initConnectivity();
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
 
     super.initState();
   }
@@ -82,7 +97,41 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
   void dispose() {
     animationController.dispose();
     //BackButtonInterceptor.remove(myInterceptor);
+    _connectivitySubscription.cancel();
     super.dispose();
+  }
+
+// Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> initConnectivity() async {
+    ConnectivityResult result = ConnectivityResult.none;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      result = await _connectivity.checkConnectivity();
+    } on PlatformException catch (e) {
+      print(e.toString());
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) {
+      return Future.value(null);
+    }
+
+    return _updateConnectionStatus(result);
+  }
+
+  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    switch (result) {
+      case ConnectivityResult.wifi:
+      case ConnectivityResult.mobile:
+      case ConnectivityResult.none:
+        setState(() => _connectionStatus = result.toString());
+        break;
+      default:
+        setState(() => _connectionStatus = 'Failed to get connectivity.');
+        break;
+    }
   }
 
   Future<void> setData() async {
@@ -111,7 +160,7 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
 // After make selected, get the corresponding models as a list:
   Future<void> getModelsforMake(String make) async {
     EasyLoading.instance
-      ..indicatorType = EasyLoadingIndicatorType.cubeGrid
+      ..indicatorType = EasyLoadingIndicatorType.doubleBounce
       ..loadingStyle = EasyLoadingStyle.custom
       ..indicatorSize = 60.0
       ..progressColor = AppTheme.iihsbackground
@@ -208,324 +257,408 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
   @override
   Widget build(BuildContext context) {
     final Animation<Offset> _offsetAnimation = Tween<Offset>(
-      begin: const Offset(0.0, 0.5),
+      begin: const Offset(0.0, 0.3),
       end: Offset.zero,
     ).animate(CurvedAnimation(
       parent: animationController,
       curve: Curves.decelerate,
     ));
-
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.transparent,
-      body: FutureBuilder<List<String>>(
-        future: getALLMakesData(), // a Future<String> or null
-        builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
-          if (!snapshot.hasData) {
-            return Container(
-              color: AppTheme.iihsbackground_dark,
-              child: Center(
-                child: SpinKitCubeGrid(
-                  color: AppTheme.iihsbackground,
-                  size: 100.0,
-                ),
-              ),
-            );
-          } else if (snapshot.hasError) {
-            return Container(
-              color: AppTheme.iihsbackground_dark,
-              child: Center(
-                child: SpinKitCubeGrid(
-                  color: AppTheme.iihsbackground,
-                  size: 100.0,
-                ),
-              ),
-            );
-          } else {
-            return Stack(
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    AspectRatio(
-                      aspectRatio: 1,
-                      child: Image.network(
-                        crashratingpage,
-                        alignment: Alignment.center,
-                        fit: BoxFit.cover,
-                        loadingBuilder: (BuildContext context, Widget child,
-                            ImageChunkEvent loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes
-                                  : null,
-                            ),
-                          );
-                        },
+    print(_connectionStatus);
+    return _connectionStatus == 'Unknown'
+        ? SizedBox()
+        : _connectionStatus == 'ConnectivityResult.none'
+            ? Column(
+                children: [
+                  SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.all(58.0),
+                      child: Container(
+                        child: Image.asset(
+                          'assets/images/NetworkDown.png',
+                          alignment: Alignment.center,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
-                  ],
-                ),
-                Positioned(
-                  top: (MediaQuery.of(context).size.height * 0.30),
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: SlideTransition(
-                    position: _offsetAnimation,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Container(
-                      decoration: BoxDecoration(
-                        color: AppTheme.nearlyWhite,
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(25.0),
-                          topRight: Radius.circular(25.0),
+                      child: Text(
+                        "Oops! Check your internet connection!.",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w700,
                         ),
-                        boxShadow: <BoxShadow>[
-                          BoxShadow(
-                              color: AppTheme.grey.withOpacity(0.2),
-                              offset: const Offset(1.1, 1.1),
-                              blurRadius: 10.0),
-                        ],
                       ),
-                      child: Column(
-                        // mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          // Container(
-                          //   height: MediaQuery.of(context).size.height * 0.06,
-                          //   decoration: BoxDecoration(
-                          //     color: AppTheme.iihsyellow,
-                          //     borderRadius: BorderRadius.only(
-                          //       topLeft: Radius.circular(12),
-                          //       topRight: Radius.circular(12),
-                          //     ),
-                          //   ),
-                          //   child: Center(
-                          //     child: Text(
-                          //       'Vehicle Ratings',
-                          //       style: TextStyle(
-                          //         fontSize: 20,
-                          //         fontWeight: FontWeight.bold,
-                          //         color: AppTheme.darkText,
+                    ),
+                  ),
+                ],
+              )
+            : Scaffold(
+                resizeToAvoidBottomInset: false,
+                backgroundColor: AppTheme.iihsbackground,
+                body: FutureBuilder<List<String>>(
+                  future: getALLMakesData(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<String>> snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(
+                        child: SpinKitDoubleBounce(
+                          color: AppTheme.nearlyBlack,
+                          size: 100.0,
+                        ),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Center(
+                        child: SpinKitDoubleBounce(
+                          color: AppTheme.nearlyBlack,
+                          size: 100.0,
+                        ),
+                      );
+                    } else {
+                      return Stack(
+                        children: <Widget>[
+                          Column(
+                            children: <Widget>[
+                              AspectRatio(
+                                aspectRatio: 1.5,
+                                child: Image.network(
+                                  selectiontopimage,
+                                  alignment: Alignment.center,
+                                  fit: BoxFit.cover,
+                                  loadingBuilder: (BuildContext context,
+                                      Widget child,
+                                      ImageChunkEvent loadingProgress) {
+                                    if (loadingProgress == null) return child;
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        value: loadingProgress
+                                                    .expectedTotalBytes !=
+                                                null
+                                            ? loadingProgress
+                                                    .cumulativeBytesLoaded /
+                                                loadingProgress
+                                                    .expectedTotalBytes
+                                            : null,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          Positioned(
+                            top: (MediaQuery.of(context).size.height * 0.30),
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            child: SlideTransition(
+                              position: _offsetAnimation,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: AppTheme.nearlyWhite,
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(25.0),
+                                    topRight: Radius.circular(25.0),
+                                  ),
+                                  boxShadow: <BoxShadow>[
+                                    BoxShadow(
+                                        color: AppTheme.grey.withOpacity(0.2),
+                                        offset: const Offset(1.1, 1.1),
+                                        blurRadius: 10.0),
+                                  ],
+                                ),
+                                child: Column(
+                                  // mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    // Container(
+                                    //   height: MediaQuery.of(context).size.height * 0.06,
+                                    //   decoration: BoxDecoration(
+                                    //     color: AppTheme.iihsyellow,
+                                    //     borderRadius: BorderRadius.only(
+                                    //       topLeft: Radius.circular(12),
+                                    //       topRight: Radius.circular(12),
+                                    //     ),
+                                    //   ),
+                                    //   child: Center(
+                                    //     child: Text(
+                                    //       'Vehicle Ratings',
+                                    //       style: TextStyle(
+                                    //         fontSize: 20,
+                                    //         fontWeight: FontWeight.bold,
+                                    //         color: AppTheme.darkText,
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    // ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        left:
+                                            MediaQuery.of(context).size.width *
+                                                0.2,
+                                        right:
+                                            MediaQuery.of(context).size.width *
+                                                0.2,
+                                        top:
+                                            MediaQuery.of(context).size.height *
+                                                0.06,
+                                      ),
+                                      child: dropDownMenu('make'),
+                                    ),
+                                    AnimatedSwitcher(
+                                      duration:
+                                          const Duration(milliseconds: 100),
+                                      transitionBuilder: (Widget child,
+                                              Animation<double> animation) =>
+                                          ScaleTransition(
+                                              child: child, scale: animation),
+                                      child: displayModelBox
+                                          ? Padding(
+                                              padding: EdgeInsets.only(
+                                                left: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.2,
+                                                right: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.2,
+                                                top: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.03,
+                                              ),
+                                              child: dropDownMenu('model'),
+                                            )
+                                          : SizedBox(),
+                                    ),
+                                    AnimatedSwitcher(
+                                      duration:
+                                          const Duration(milliseconds: 100),
+                                      transitionBuilder: (Widget child,
+                                              Animation<double> animation) =>
+                                          ScaleTransition(
+                                              child: child, scale: animation),
+                                      child: displaySeriesBox
+                                          ? Padding(
+                                              padding: EdgeInsets.only(
+                                                left: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.2,
+                                                right: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.2,
+                                                top: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.03,
+                                              ),
+                                              child: dropDownMenu('series'),
+                                            )
+                                          : SizedBox(),
+                                    ),
+
+                                    AnimatedSwitcher(
+                                      duration:
+                                          const Duration(milliseconds: 100),
+                                      transitionBuilder: (Widget child,
+                                              Animation<double> animation) =>
+                                          ScaleTransition(
+                                              child: child, scale: animation),
+                                      child: displayYearsBox
+                                          ? Padding(
+                                              padding: EdgeInsets.only(
+                                                left: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.2,
+                                                right: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.2,
+                                                top: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.03,
+                                              ),
+                                              child: dropDownMenu('years'),
+                                            )
+                                          : SizedBox(),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          // Positioned(
+                          //   top: (MediaQuery.of(context).size.height * 0.24),
+                          //   left: MediaQuery.of(context).size.width * 0.25,
+                          //   right: MediaQuery.of(context).size.width * 0.25,
+                          //   child: ScaleTransition(
+                          //     alignment: Alignment.center,
+                          //     scale: CurvedAnimation(
+                          //         parent: animationController,
+                          //         curve: Curves.fastOutSlowIn),
+                          //     child: Card(
+                          //       color: AppTheme.iihsyellow,
+                          //       shape: RoundedRectangleBorder(
+                          //           borderRadius: BorderRadius.circular(12.0)),
+                          //       //elevation: 5.0,
+                          //       child: Container(
+                          //         //   width: MediaQuery.of(context).size.width * 0.6,
+                          //         // height: MediaQuery.of(context).size.height * 0.08,
+                          //         height: 50,
+                          //         child: Center(
+                          //           child: Text(
+                          //             'Vehicle Ratings',
+                          //             textAlign: TextAlign.left,
+                          //             style: TextStyle(
+                          //               fontWeight: FontWeight.bold,
+                          //               // fontWeight: FontWeight.w600,
+                          //               fontSize: 18,
+                          //               // letterSpacing: 0.27,
+                          //               color: AppTheme.darkerText,
+                          //             ),
+                          //           ),
+                          //         ),
                           //       ),
                           //     ),
                           //   ),
                           // ),
+                          Positioned(
+                            left: MediaQuery.of(context).size.width * 0.25,
+                            right: MediaQuery.of(context).size.width * 0.25,
+                            bottom: (MediaQuery.of(context).size.height * 0.05),
+                            child: AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 500),
+                              child: displaySearchButton
+                                  ? ScaleTransition(
+                                      alignment: Alignment.center,
+                                      scale: CurvedAnimation(
+                                          parent: animationController,
+                                          curve: Curves.fastOutSlowIn),
+                                      child: Card(
+                                        color: AppTheme.iihsyellow,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(12.0)),
+                                        elevation: 5.0,
+                                        child: TextButton.icon(
+                                          onPressed: () {
+                                            if (makereadycheck == false) {
+                                              _showErrorDialog(
+                                                  'Select a vehicle make!');
+                                            } else if (modelreadycheck ==
+                                                false) {
+                                              _showErrorDialog(
+                                                  'Select a vehicle model!');
+                                            } else if (seriesreadycheck ==
+                                                false) {
+                                              _showErrorDialog(
+                                                  'Select a model serie!');
+                                            } else if (yearsreadycheck ==
+                                                false) {
+                                              _showErrorDialog(
+                                                  'Select a year for serie!');
+                                            } else {
+                                              selectedvehicle = VehicleData(
+                                                makeid: _selectedMakeId,
+                                                makeslug: _selectedMakeSlug,
+                                                makename: _selectedMakeName,
+                                                modelid: _selectedModelId,
+                                                modelslug: _selectedModelSlug,
+                                                modelname: _selectedModelName,
+                                                modelyear: _selectedYearsName,
+                                                seriesid: _selectedSeriesId,
+                                                seriesvariantTypeId:
+                                                    _selectedVariantTypeId,
+                                                seriesslug: _selectedSeriesSlug,
+                                                seriesiihsUrl:
+                                                    _selectedSeriesiihsUrl,
+                                                seriesname: _selectedSeriesName,
+                                              );
+
+                                              Navigator.pushNamed(
+                                                context,
+                                                "/ratings",
+                                                arguments: selectedvehicle,
+                                              );
+
+                                              // Navigator.of(context).pushNamed(
+                                              //   VehicleRatingsResults.routeName,
+                                              //   '/ratings',
+                                              //   arguments: selectedvehicle,
+                                              // );
+                                            }
+                                          },
+                                          label: Text(
+                                            '',
+                                          ),
+                                          icon: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.directions_car_outlined,
+                                              ),
+                                              Icon(
+                                                Icons.keyboard_arrow_right,
+                                              ),
+                                            ],
+                                          ),
+                                          style: TextButton.styleFrom(
+                                            minimumSize: Size(150, 50),
+                                            primary: AppTheme.darkText,
+                                            //  backgroundColor: AppTheme.iihsyellow,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : SizedBox(),
+                            ),
+                          ),
                           Padding(
                             padding: EdgeInsets.only(
-                              left: MediaQuery.of(context).size.width * 0.2,
-                              right: MediaQuery.of(context).size.width * 0.2,
-                              top: MediaQuery.of(context).size.height * 0.1,
-                            ),
-                            child: dropDownMenu('make'),
-                          ),
-                          AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 100),
-                            transitionBuilder: (Widget child,
-                                    Animation<double> animation) =>
-                                ScaleTransition(child: child, scale: animation),
-                            child: displayModelBox
-                                ? Padding(
-                                    padding: EdgeInsets.only(
-                                      left: MediaQuery.of(context).size.width *
-                                          0.2,
-                                      right: MediaQuery.of(context).size.width *
-                                          0.2,
-                                      top: MediaQuery.of(context).size.height *
-                                          0.03,
+                                top: MediaQuery.of(context).padding.top),
+                            child: Container(
+                              alignment: Alignment.topLeft,
+                              child: SizedBox(
+                                width: AppBar().preferredSize.height,
+                                height: AppBar().preferredSize.height,
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(
+                                        AppBar().preferredSize.height),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.black45,
+                                        borderRadius: BorderRadius.circular(
+                                            AppBar().preferredSize.height),
+                                      ),
+                                      child: Icon(
+                                        Icons.arrow_back_sharp,
+                                        size: 25.0,
+                                        color: AppTheme.white,
+                                      ),
                                     ),
-                                    child: dropDownMenu('model'),
-                                  )
-                                : SizedBox(),
-                          ),
-                          AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 100),
-                            transitionBuilder: (Widget child,
-                                    Animation<double> animation) =>
-                                ScaleTransition(child: child, scale: animation),
-                            child: displaySeriesBox
-                                ? Padding(
-                                    padding: EdgeInsets.only(
-                                      left: MediaQuery.of(context).size.width *
-                                          0.2,
-                                      right: MediaQuery.of(context).size.width *
-                                          0.2,
-                                      top: MediaQuery.of(context).size.height *
-                                          0.03,
-                                    ),
-                                    child: dropDownMenu('series'),
-                                  )
-                                : SizedBox(),
-                          ),
-
-                          AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 100),
-                            transitionBuilder: (Widget child,
-                                    Animation<double> animation) =>
-                                ScaleTransition(child: child, scale: animation),
-                            child: displayYearsBox
-                                ? Padding(
-                                    padding: EdgeInsets.only(
-                                      left: MediaQuery.of(context).size.width *
-                                          0.2,
-                                      right: MediaQuery.of(context).size.width *
-                                          0.5,
-                                      top: MediaQuery.of(context).size.height *
-                                          0.03,
-                                    ),
-                                    child: dropDownMenu('years'),
-                                  )
-                                : SizedBox(),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: (MediaQuery.of(context).size.height * 0.26),
-                  left: MediaQuery.of(context).size.width * 0.25,
-                  right: MediaQuery.of(context).size.width * 0.25,
-                  child: ScaleTransition(
-                    alignment: Alignment.center,
-                    scale: CurvedAnimation(
-                        parent: animationController,
-                        curve: Curves.fastOutSlowIn),
-                    child: Card(
-                      color: AppTheme.iihsyellow,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.0)),
-                      //elevation: 5.0,
-                      child: Container(
-                        //   width: MediaQuery.of(context).size.width * 0.6,
-                        // height: MediaQuery.of(context).size.height * 0.08,
-                        height: 50,
-                        child: Center(
-                          child: Text(
-                            'Vehicle Ratings',
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              // fontWeight: FontWeight.w600,
-                              fontSize: 18,
-                              // letterSpacing: 0.27,
-                              color: AppTheme.darkerText,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  left: MediaQuery.of(context).size.width * 0.7,
-                  right: MediaQuery.of(context).size.width * 0.08,
-                  bottom: (MediaQuery.of(context).size.height * 0.05),
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 500),
-                    child: displaySearchButton
-                        ? ScaleTransition(
-                            alignment: Alignment.center,
-                            scale: CurvedAnimation(
-                                parent: animationController,
-                                curve: Curves.fastOutSlowIn),
-                            child: Card(
-                              color: AppTheme.iihsyellow,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12.0)),
-                              elevation: 5.0,
-                              child: TextButton.icon(
-                                onPressed: () {
-                                  if (makereadycheck == false) {
-                                    _showErrorDialog('Select a vehicle make!');
-                                  } else if (modelreadycheck == false) {
-                                    _showErrorDialog('Select a vehicle model!');
-                                  } else if (seriesreadycheck == false) {
-                                    _showErrorDialog('Select a model serie!');
-                                  } else if (yearsreadycheck == false) {
-                                    _showErrorDialog(
-                                        'Select a year for serie!');
-                                  } else {
-                                    selectedvehicle = VehicleData(
-                                      makeid: _selectedMakeId,
-                                      makeslug: _selectedMakeSlug,
-                                      makename: _selectedMakeName,
-                                      modelid: _selectedModelId,
-                                      modelslug: _selectedModelSlug,
-                                      modelname: _selectedModelName,
-                                      modelyears: _selectedYearsName,
-                                      seriesid: _selectedSeriesId,
-                                      seriesvariantTypeId:
-                                          _selectedVariantTypeId,
-                                      seriesslug: _selectedSeriesSlug,
-                                      seriesiihsUrl: _selectedSeriesiihsUrl,
-                                      seriesname: _selectedSeriesName,
-                                    );
-                                    Navigator.of(context).pushNamed(
-                                      VehicleRatingsOverview.routeName,
-                                      arguments: selectedvehicle,
-                                    );
-                                  }
-                                },
-                                label: Text(
-                                  '',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 20,
-                                    // letterSpacing: 0.27,
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
                                   ),
-                                ),
-                                icon: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.directions_car_outlined,
-                                    ),
-                                    Icon(
-                                      Icons.keyboard_arrow_right,
-                                    ),
-                                  ],
-                                ),
-                                style: TextButton.styleFrom(
-                                  minimumSize: Size(150, 50),
-                                  primary: AppTheme.darkText,
-                                  //  backgroundColor: AppTheme.iihsyellow,
                                 ),
                               ),
                             ),
-                          )
-                        : SizedBox(),
-                  ),
+                          ),
+                        ],
+                      );
+                    }
+                  },
                 ),
-                Padding(
-                  padding:
-                      EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-                  child: SizedBox(
-                    width: AppBar().preferredSize.height,
-                    height: AppBar().preferredSize.height,
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(
-                            AppBar().preferredSize.height),
-                        child: Icon(
-                          Icons.arrow_back,
-                          color: AppTheme.white,
-                        ),
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ),
-                  ),
-                )
-              ],
-            );
-          }
-        },
-      ),
-    );
+              );
   }
 
   Widget dropDownMenu(String type) {
@@ -555,12 +688,12 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
       _ismake = false;
       _isyear = true;
       itemlist = modelYearsListed;
-      _type = 'Years';
+      _type = 'Year';
       _enablemenu = enableYearsmenu;
     }
 
     return DropdownSearch<String>(
-      showSearchBox: _ismake ? true : false,
+      // showSearchBox: _ismake ? true : false,
       mode: Mode.DIALOG,
       maxHeight: MediaQuery.of(context).size.height * 0.7,
       popupTitle: Container(
@@ -580,9 +713,9 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                     ? 'Select a year'
                     : '$_selectedMakeName $_type',
             style: TextStyle(
-              fontSize: 22,
+              fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: AppTheme.darkText,
+              color: AppTheme.darkerText,
             ),
           ),
         ),
@@ -628,7 +761,7 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
 
       popupItemBuilder: _customPopupItemBuilder,
       items: itemlist,
-      label: 'Vehicle $_type',
+      label: _isyear ? '$_type' : 'Vehicle $_type',
       enabled: _enablemenu,
       onChanged: (String newValue) {
         if (type == 'make') {
@@ -747,18 +880,21 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
 
   Widget _customPopupItemBuilder(
       BuildContext context, String item, bool isSelected) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 8),
-      decoration: !isSelected
-          ? null
-          : BoxDecoration(
-              border: Border.all(color: Theme.of(context).primaryColor),
-              borderRadius: BorderRadius.circular(5),
-              color: Colors.white,
-            ),
-      child: ListTile(
-        selected: isSelected,
-        title: Text(item),
+    return Padding(
+      padding: const EdgeInsets.all(2.0),
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 8),
+        decoration: !isSelected
+            ? null
+            : BoxDecoration(
+                border: Border.all(color: AppTheme.nearlyBlack),
+                borderRadius: BorderRadius.circular(15),
+                color: AppTheme.iihsyellow,
+              ),
+        child: ListTile(
+          selected: isSelected,
+          title: Text(item),
+        ),
       ),
     );
   }

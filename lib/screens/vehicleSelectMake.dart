@@ -4,10 +4,9 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:iihs/models/constants/app_theme.dart';
 import 'package:iihs/utils/apifunctions/vehiclemakes.dart';
-import 'package:iihs/utils/apifunctions/vehiclemodels.dart';
 import 'package:iihs/utils/operations/dataoperations.dart';
 import 'package:iihs/models/constants/networkimages.dart';
-import 'package:iihs/screens/vehiclesOverview.dart';
+import 'package:iihs/screens/vehicleRatingsResults.dart';
 import 'package:iihs/models/vehicleData.dart';
 
 class VehicleSelectMake extends StatefulWidget {
@@ -111,7 +110,7 @@ class _VehicleSelectMakeState extends State<VehicleSelectMake>
                     AspectRatio(
                       aspectRatio: 1.2,
                       child: Image.network(
-                        crashratingpage,
+                        selectiontopimage,
                         alignment: Alignment.center,
                         fit: BoxFit.cover,
                         loadingBuilder: (BuildContext context, Widget child,
@@ -179,7 +178,7 @@ class _VehicleSelectMakeState extends State<VehicleSelectMake>
                                   );
 
                                   Navigator.of(context).pushNamed(
-                                    VehicleRatingsOverview.routeName,
+                                    VehicleRatingsResults.routeName,
                                     arguments: selectedvehicle,
                                   );
                                 }

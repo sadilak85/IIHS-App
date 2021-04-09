@@ -649,7 +649,9 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
     } else if (type == 'years') {
       _ismake = false;
       _isyear = true;
-      itemlist = modelYearsListed;
+      itemlist = modelYearsListed != null
+          ? modelYearsListed.reversed.toList()
+          : modelYearsListed;
       _type = 'Year';
       _enablemenu = enableYearsmenu;
     }

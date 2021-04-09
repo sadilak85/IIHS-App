@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:iihs/models/constants/app_theme.dart';
 import 'package:iihs/screens/main_page.dart';
@@ -62,27 +61,42 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
   Future<List<String>> getSelectedVehicleRatingData(
       VehicleData selectedvehicle) async {
     try {
-      var _vehicleInfoData = await CrashRatings().crashRatings(
+      var _vehicleClassInfo = await CrashRatings().crashRatingsgetClass(
           selectedvehicle.modelyear,
           selectedvehicle.makeslug,
           selectedvehicle.seriesslug);
-      vehicleInfoData = _vehicleInfoData;
+
+      vehicleInfoData = [_vehicleClassInfo];
+
+      var _vehicleImagesData = await CrashRatings().crashRatingsImages(
+          selectedvehicle.modelyear,
+          selectedvehicle.makeslug,
+          selectedvehicle.seriesslug);
+
+      vehicleInfoData.add(_vehicleImagesData);
+
+      var _vehicleFrontalRatingData = await CrashRatings().crashRatingsFrontal(
+          selectedvehicle.modelyear,
+          selectedvehicle.makeslug,
+          selectedvehicle.seriesslug);
+
+      vehicleInfoData = vehicleInfoData + _vehicleFrontalRatingData;
+
+      log(vehicleInfoData.toString());
     } catch (e) {
       print(e);
     }
-    log(vehicleInfoData.toString());
+
     return vehicleInfoData;
   }
 
   @override
   Widget build(BuildContext context) {
     VehicleData selectedvehicle = ModalRoute.of(context).settings.arguments;
-
     log(selectedvehicle.makename);
     log(selectedvehicle.modelname);
     log(selectedvehicle.seriesname);
     log(selectedvehicle.modelyear);
-
     return Scaffold(
       body: NestedScrollView(
         controller: _scrollViewController,
@@ -137,7 +151,7 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
         },
         body: TabBarView(
           children: <Widget>[
-            frontalRating(),
+            frontalRating(selectedvehicle),
             SizedBox(),
           ],
           controller: _tabController,
@@ -145,72 +159,39 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
       ),
       // floatingActionButton: [...]
     );
-
-    //         return Padding(
-    //           padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-    //           child: Column(
-    //             mainAxisAlignment: MainAxisAlignment.center,
-    //             crossAxisAlignment: CrossAxisAlignment.start,
-    //             children: <Widget>[
-    //               SizedBox(
-    //                 height: MediaQuery.of(context).size.height * 0.1,
-    //                 child: apptopBar(context),
-    //               ),
-    //               Expanded(
-    //                 flex: 2,
-    //                 child: Padding(
-    //                   padding: const EdgeInsets.all(8.0),
-    //                   child: Center(
-    //                     child: Container(
-    //                       child: Image.network(
-    //                         vehicleInfoData[2],
-    //                         filterQuality: FilterQuality.low,
-    //                         alignment: Alignment.center,
-    //                         fit: BoxFit.cover,
-    //                         loadingBuilder: (BuildContext context, Widget child,
-    //                             ImageChunkEvent loadingProgress) {
-    //                           if (loadingProgress == null) return child;
-    //                           return Center(
-    //                             child: CircularProgressIndicator(
-    //                               value: loadingProgress.expectedTotalBytes !=
-    //                                       null
-    //                                   ? loadingProgress.cumulativeBytesLoaded /
-    //                                       loadingProgress.expectedTotalBytes
-    //                                   : null,
-    //                             ),
-    //                           );
-    //                         },
-    //                       ),
-    //                     ),
-    //                   ),
-    //                 ),
-    //               ),
-    //               Expanded(
-    //                 flex: 4,
-    //                 child: Padding(
-    //                   padding: const EdgeInsets.all(8.0),
-    //                   child: Container(
-    //                     color: Theme.of(context).primaryColor,
-    //                     child: Text(
-    //                       vehicleInfoData.toString(),
-    //                     ),
-    //                   ),
-    //                 ),
-    //               ),
-    //             ],
-    //           ),
-    //         );
-    //       }
-    //     },
-    //   ),
-    // );
   }
 
-  Widget frontalRating() {
-    getSelectedVehicleRatingData(selectedvehicle);
-    return Container(
-      child: Text(
-        vehicleInfoData.toString(),
+  Widget frontalRating(arg) {
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.transparent,
+      body: FutureBuilder<List<String>>(
+        future: getSelectedVehicleRatingData(arg), // a Future<String> or null
+        builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+          if (snapshot.hasError) {
+            EasyLoading.show(
+              status: 'loading...',
+            );
+            return Container(
+              child: null,
+              // DO SOMETHING !!!!!!!!!!!!!!!!!!!  RETURN BACK ODER SO
+            );
+          } else if (!snapshot.hasData) {
+            EasyLoading.show(
+              status: 'loading...',
+            );
+            return Container(
+              child: null,
+            );
+          } else {
+            EasyLoading.dismiss();
+            return Container(
+              child: Text(
+                vehicleInfoData.toString(),
+              ),
+            );
+          }
+        },
       ),
     );
   }

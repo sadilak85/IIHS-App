@@ -14,8 +14,11 @@ import 'package:iihs/utils/apifunctions/vehiclemodelyears.dart';
 import 'package:iihs/utils/operations/dataoperations.dart';
 import 'package:iihs/models/constants/networkimages.dart';
 import 'package:iihs/screens/vehicleRatingsResults.dart';
+import 'package:iihs/screens/main_page.dart';
 import 'package:iihs/models/vehicleData.dart';
 
+import '../models/constants/app_theme.dart';
+import '../models/constants/app_theme.dart';
 import '../models/constants/app_theme.dart';
 import '../models/constants/app_theme.dart';
 import '../models/constants/app_theme.dart';
@@ -74,6 +77,29 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
 
   @override
   void initState() {
+    // EasyLoading.instance
+    //   ..indicatorType = EasyLoadingIndicatorType.doubleBounce
+    //   ..loadingStyle = EasyLoadingStyle.custom
+    //   ..indicatorSize = 60.0
+    //   ..progressColor = AppTheme.iihsbackground
+    //   ..backgroundColor = AppTheme.iihsbackground_dark
+    //   ..indicatorColor = AppTheme.iihsbackground
+    //   ..textColor = AppTheme.iihsbackground;
+
+    EasyLoading.instance
+      ..indicatorType = EasyLoadingIndicatorType.doubleBounce
+      ..loadingStyle = EasyLoadingStyle.custom
+      ..indicatorSize = 80.0
+      ..progressColor = AppTheme.iihsbackground
+      ..backgroundColor = AppTheme.nearlyWhite
+      ..indicatorColor = AppTheme.iihsbackground_dark
+      ..textColor = AppTheme.iihsbackground_dark
+      ..textStyle = TextStyle(
+        fontSize: 18,
+        color: AppTheme.darkerText,
+        fontWeight: FontWeight.w700,
+      );
+
     animationController = AnimationController(
       duration: const Duration(milliseconds: 2000),
       vsync: this,
@@ -85,6 +111,7 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
       ),
     );
     setData();
+
     //BackButtonInterceptor.add(myInterceptor);
     initConnectivity();
     _connectivitySubscription =
@@ -159,15 +186,6 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
 
 // After make selected, get the corresponding models as a list:
   Future<void> getModelsforMake(String make) async {
-    EasyLoading.instance
-      ..indicatorType = EasyLoadingIndicatorType.doubleBounce
-      ..loadingStyle = EasyLoadingStyle.custom
-      ..indicatorSize = 60.0
-      ..progressColor = AppTheme.iihsbackground
-      ..backgroundColor = AppTheme.iihsbackground_dark
-      ..indicatorColor = AppTheme.iihsbackground
-      ..textColor = AppTheme.iihsbackground;
-
     EasyLoading.show(
       status: 'loading...',
     );
@@ -254,6 +272,24 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
     );
   }
 
+  void onClose() {
+    EasyLoading.dismiss();
+    Navigator.of(context).pushReplacement(
+      PageRouteBuilder(
+        maintainState: true,
+        opaque: true,
+        pageBuilder: (context, _, __) => MainPageScreen(),
+        transitionDuration: const Duration(seconds: 2),
+        transitionsBuilder: (context, anim1, anim2, child) {
+          return FadeTransition(
+            child: child,
+            opacity: anim1,
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final Animation<Offset> _offsetAnimation = Tween<Offset>(
@@ -264,37 +300,35 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
       curve: Curves.decelerate,
     ));
     print(_connectionStatus);
+
+    if (_connectionStatus == 'ConnectivityResult.none') {
+      EasyLoading.show(
+          status: 'Oops! Check your internet connection to proceed!.');
+      Timer(const Duration(seconds: 5), onClose);
+    }
+
     return _connectionStatus == 'Unknown'
         ? SizedBox()
         : _connectionStatus == 'ConnectivityResult.none'
-            ? Column(
-                children: [
-                  SafeArea(
-                    child: Padding(
-                      padding: const EdgeInsets.all(58.0),
-                      child: Container(
-                        child: Image.asset(
-                          'assets/images/NetworkDown.png',
-                          alignment: Alignment.center,
-                          fit: BoxFit.cover,
+            ? Container(
+                color: AppTheme.nearlyWhite,
+                child: Column(
+                  children: [
+                    SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.all(30.0),
+                        child: Container(
+                          child: Image.asset(
+                            'assets/images/NetworkDown.png',
+                            height: MediaQuery.of(context).size.height * 0.3,
+                            alignment: Alignment.topCenter,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      child: Text(
-                        "Oops! Check your internet connection!.",
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               )
             : Scaffold(
                 resizeToAvoidBottomInset: false,
@@ -887,13 +921,18 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
         decoration: !isSelected
             ? null
             : BoxDecoration(
-                border: Border.all(color: AppTheme.nearlyBlack),
+                // border: Border.all(color: AppTheme.nearlyBlack),
                 borderRadius: BorderRadius.circular(15),
                 color: AppTheme.iihsyellow,
               ),
         child: ListTile(
           selected: isSelected,
-          title: Text(item),
+          title: Text(
+            item,
+            style: TextStyle(
+              color: AppTheme.darkerText,
+            ),
+          ),
         ),
       ),
     );

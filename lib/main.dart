@@ -82,6 +82,7 @@ class _MyAppState extends State<MyApp> {
           case '/selectmakemodel':
             return PageTransition(
               child: VehicleSelectMakeModel(),
+              curve: Curves.bounceIn,
               type: PageTransitionType.fade,
               duration: const Duration(milliseconds: 1000),
               settings: settings,

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-
+import 'dart:async';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:iihs/models/categories.dart';
 import 'package:iihs/utils/widgets/app_drawer.dart';
-import 'package:iihs/screens/vehicleSelectMakeModel.dart';
-import 'package:iihs/screens/vehicleSelectMake.dart';
 import 'package:iihs/models/constants/app_theme.dart';
 
 class MainPageScreen extends StatefulWidget {
@@ -19,26 +18,41 @@ class _MainPageScreenState extends State<MainPageScreen>
     with TickerProviderStateMixin {
   int _selectedPageIndex = 0;
   //final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<Categories> templateList = Categories.maincategories;
 
+  List<Categories> templateList = Categories.maincategories;
   AnimationController animationController;
 
   @override
   void initState() {
+    EasyLoading.instance
+      ..indicatorType = EasyLoadingIndicatorType.doubleBounce
+      ..loadingStyle = EasyLoadingStyle.custom
+      ..indicatorSize = 80.0
+      ..progressColor = AppTheme.iihsbackground
+      ..backgroundColor = Colors.transparent
+      ..indicatorColor = AppTheme.iihsbackground_dark
+      ..textColor = AppTheme.iihsbackground_dark
+      ..textStyle = TextStyle(
+        fontSize: 18,
+        color: AppTheme.darkerText,
+        fontWeight: FontWeight.w700,
+      );
     animationController = AnimationController(
         duration: const Duration(milliseconds: 2000), vsync: this);
+    //BackButtonInterceptor.add(myInterceptor);
     super.initState();
-  }
-
-  Future<bool> getData() async {
-    await Future<dynamic>.delayed(const Duration(milliseconds: 0));
-    return true;
   }
 
   @override
   void dispose() {
     animationController.dispose();
+    //BackButtonInterceptor.remove(myInterceptor);
     super.dispose();
+  }
+
+  Future<bool> getData() async {
+    await Future<dynamic>.delayed(const Duration(milliseconds: 0));
+    return true;
   }
 
   void _selectPage(int index) {
@@ -118,14 +132,10 @@ class _MainPageScreenState extends State<MainPageScreen>
                                       context,
                                       "/selectmakemodel",
                                     );
-
-                                    // Navigator.of(context).pushNamed(
-                                    //   VehicleSelectMakeModel.routeName,
-                                    // );
-
                                   } else if (templateList[index].id == 'c2') {
-                                    Navigator.of(context).pushNamed(
-                                      VehicleSelectMake.routeName,
+                                    Navigator.pushNamed(
+                                      context,
+                                      "/selectmake",
                                     );
                                   }
                                 },

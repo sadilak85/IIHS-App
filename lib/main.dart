@@ -89,6 +89,16 @@ class _MyAppState extends State<MyApp> {
             );
             break;
 
+          case '/selectmake':
+            return PageTransition(
+              child: VehicleSelectMake(),
+              curve: Curves.bounceIn,
+              type: PageTransitionType.fade,
+              duration: const Duration(milliseconds: 1000),
+              settings: settings,
+            );
+            break;
+
           default:
             return null;
         }

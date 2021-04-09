@@ -3,15 +3,10 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:iihs/models/constants/app_theme.dart';
 import 'package:iihs/screens/main_page.dart';
-import 'package:iihs/models/constants/networkimages.dart';
 import 'package:iihs/utils/apifunctions/vehicleratings.dart';
 import 'package:iihs/models/vehicleData.dart';
 
 import 'dart:developer';
-
-import '../models/constants/app_theme.dart';
-import '../models/constants/app_theme.dart';
-import '../models/constants/app_theme.dart';
 
 class VehicleRatingsResults extends StatefulWidget {
   static const routeName = '/vehicleratings-results-screen';
@@ -31,15 +26,6 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
 
   VehicleData selectedvehicle;
 
-  List<String> allMakeIdsListed, allMakeSlugsListed, allMakeNamesListed;
-  List<String> modelIdsListed, modelSlugsListed, modelNamesListed;
-  List<String> seriesIdsListed,
-      seriesVariantTypeIdsListed,
-      seriesSlugsListed,
-      seriesiihsUrlsListed,
-      seriesNamesListed;
-  List<String> modelYearsListed;
-
   List<String> vehicleInfoData = [];
 
   @override
@@ -54,10 +40,8 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
         curve: Interval(0, 1.0, curve: Curves.fastOutSlowIn),
       ),
     );
-
     _scrollViewController = ScrollController();
     _tabController = TabController(vsync: this, length: 2);
-
     setData();
     super.initState();
   }
@@ -82,7 +66,6 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
           selectedvehicle.modelyear,
           selectedvehicle.makeslug,
           selectedvehicle.seriesslug);
-
       vehicleInfoData = _vehicleInfoData;
     } catch (e) {
       print(e);
@@ -154,7 +137,7 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
         },
         body: TabBarView(
           children: <Widget>[
-            SizedBox(),
+            frontalRating(),
             SizedBox(),
           ],
           controller: _tabController,
@@ -221,5 +204,14 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
     //     },
     //   ),
     // );
+  }
+
+  Widget frontalRating() {
+    getSelectedVehicleRatingData(selectedvehicle);
+    return Container(
+      child: Text(
+        vehicleInfoData.toString(),
+      ),
+    );
   }
 }

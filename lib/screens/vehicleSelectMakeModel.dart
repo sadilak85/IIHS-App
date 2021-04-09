@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
-import 'package:connectivity/connectivity.dart';
 import 'package:iihs/models/constants/app_theme.dart';
 import 'package:iihs/utils/apifunctions/vehiclemakes.dart';
 import 'package:iihs/utils/apifunctions/vehiclemodels.dart';
@@ -13,16 +13,8 @@ import 'package:iihs/utils/apifunctions/vehicleseries.dart';
 import 'package:iihs/utils/apifunctions/vehiclemodelyears.dart';
 import 'package:iihs/utils/operations/dataoperations.dart';
 import 'package:iihs/models/constants/networkimages.dart';
-import 'package:iihs/screens/vehicleRatingsResults.dart';
 import 'package:iihs/screens/main_page.dart';
 import 'package:iihs/models/vehicleData.dart';
-
-import '../models/constants/app_theme.dart';
-import '../models/constants/app_theme.dart';
-import '../models/constants/app_theme.dart';
-import '../models/constants/app_theme.dart';
-import '../models/constants/app_theme.dart';
-import '../models/constants/app_theme.dart';
 
 class VehicleSelectMakeModel extends StatefulWidget {
   static const routeName = '/vehicle-selectionbymakemodel-screen';
@@ -77,29 +69,6 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
 
   @override
   void initState() {
-    // EasyLoading.instance
-    //   ..indicatorType = EasyLoadingIndicatorType.doubleBounce
-    //   ..loadingStyle = EasyLoadingStyle.custom
-    //   ..indicatorSize = 60.0
-    //   ..progressColor = AppTheme.iihsbackground
-    //   ..backgroundColor = AppTheme.iihsbackground_dark
-    //   ..indicatorColor = AppTheme.iihsbackground
-    //   ..textColor = AppTheme.iihsbackground;
-
-    EasyLoading.instance
-      ..indicatorType = EasyLoadingIndicatorType.doubleBounce
-      ..loadingStyle = EasyLoadingStyle.custom
-      ..indicatorSize = 80.0
-      ..progressColor = AppTheme.iihsbackground
-      ..backgroundColor = AppTheme.nearlyWhite
-      ..indicatorColor = AppTheme.iihsbackground_dark
-      ..textColor = AppTheme.iihsbackground_dark
-      ..textStyle = TextStyle(
-        fontSize: 18,
-        color: AppTheme.darkerText,
-        fontWeight: FontWeight.w700,
-      );
-
     animationController = AnimationController(
       duration: const Duration(milliseconds: 2000),
       vsync: this,
@@ -111,42 +80,30 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
       ),
     );
     setData();
-
-    //BackButtonInterceptor.add(myInterceptor);
     initConnectivity();
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
-
     super.initState();
   }
 
   @override
   void dispose() {
     animationController.dispose();
-    //BackButtonInterceptor.remove(myInterceptor);
     _connectivitySubscription.cancel();
     super.dispose();
   }
 
-// Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initConnectivity() async {
-    ConnectivityResult result = ConnectivityResult.none;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      result = await _connectivity.checkConnectivity();
-    } on PlatformException catch (e) {
-      print(e.toString());
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) {
-      return Future.value(null);
-    }
-
-    return _updateConnectionStatus(result);
+  Future<void> setData() async {
+    animationController.forward();
   }
+  // bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+  //   //if (info.ifRouteChanged(context)) return false;
+
+  //   //Navigator.of(context, rootNavigator: true).pop();
+
+  //   Navigator.pop(context);
+  //   return true;
+  // }
 
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
     switch (result) {
@@ -161,18 +118,23 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
     }
   }
 
-  Future<void> setData() async {
-    animationController.forward();
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> initConnectivity() async {
+    ConnectivityResult result = ConnectivityResult.none;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      result = await _connectivity.checkConnectivity();
+    } on PlatformException catch (e) {
+      print(e.toString());
+    }
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) {
+      return Future.value(null);
+    }
+    return _updateConnectionStatus(result);
   }
-
-  // bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-  //   //if (info.ifRouteChanged(context)) return false;
-
-  //   //Navigator.of(context, rootNavigator: true).pop();
-
-  //   Navigator.pop(context);
-  //   return true;
-  // }
 
 // First get all available makes as a list to create a list for user choice:
   Future<List<String>> getALLMakesData() async {
@@ -274,20 +236,24 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
 
   void onClose() {
     EasyLoading.dismiss();
-    Navigator.of(context).pushReplacement(
-      PageRouteBuilder(
-        maintainState: true,
-        opaque: true,
-        pageBuilder: (context, _, __) => MainPageScreen(),
-        transitionDuration: const Duration(seconds: 2),
-        transitionsBuilder: (context, anim1, anim2, child) {
-          return FadeTransition(
-            child: child,
-            opacity: anim1,
-          );
-        },
-      ),
-    );
+    if (_connectionStatus == 'ConnectivityResult.none') {
+      Navigator.of(context).pushReplacement(
+        PageRouteBuilder(
+          maintainState: true,
+          opaque: true,
+          pageBuilder: (context, _, __) => MainPageScreen(),
+          transitionDuration: const Duration(seconds: 2),
+          transitionsBuilder: (context, anim1, anim2, child) {
+            return FadeTransition(
+              child: child,
+              opacity: anim1,
+            );
+          },
+        ),
+      );
+    } else {
+      EasyLoading.showSuccess('online');
+    }
   }
 
   @override
@@ -299,7 +265,6 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
       parent: animationController,
       curve: Curves.decelerate,
     ));
-    print(_connectionStatus);
 
     if (_connectionStatus == 'ConnectivityResult.none') {
       EasyLoading.show(
@@ -317,7 +282,8 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                     SafeArea(
                       child: Padding(
                         padding: const EdgeInsets.all(30.0),
-                        child: Container(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20.0),
                           child: Image.asset(
                             'assets/images/NetworkDown.png',
                             height: MediaQuery.of(context).size.height * 0.3,
@@ -384,7 +350,7 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                             ],
                           ),
                           Positioned(
-                            top: (MediaQuery.of(context).size.height * 0.30),
+                            top: (MediaQuery.of(context).size.height * 0.25),
                             bottom: 0,
                             left: 0,
                             right: 0,
@@ -408,26 +374,30 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                                   // mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    // Container(
-                                    //   height: MediaQuery.of(context).size.height * 0.06,
-                                    //   decoration: BoxDecoration(
-                                    //     color: AppTheme.iihsyellow,
-                                    //     borderRadius: BorderRadius.only(
-                                    //       topLeft: Radius.circular(12),
-                                    //       topRight: Radius.circular(12),
-                                    //     ),
-                                    //   ),
-                                    //   child: Center(
-                                    //     child: Text(
-                                    //       'Vehicle Ratings',
-                                    //       style: TextStyle(
-                                    //         fontSize: 20,
-                                    //         fontWeight: FontWeight.bold,
-                                    //         color: AppTheme.darkText,
-                                    //       ),
-                                    //     ),
-                                    //   ),
-                                    // ),
+                                    Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.06,
+                                      decoration: BoxDecoration(
+                                        color: AppTheme.iihsyellow,
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(12),
+                                          topRight: Radius.circular(12),
+                                          bottomLeft: Radius.circular(12),
+                                          bottomRight: Radius.circular(12),
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          'Vehicle Ratings',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppTheme.darkText,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                     Padding(
                                       padding: EdgeInsets.only(
                                         left:
@@ -438,7 +408,7 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                                                 0.2,
                                         top:
                                             MediaQuery.of(context).size.height *
-                                                0.06,
+                                                0.04,
                                       ),
                                       child: dropDownMenu('make'),
                                     ),
@@ -496,7 +466,6 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                                             )
                                           : SizedBox(),
                                     ),
-
                                     AnimatedSwitcher(
                                       duration:
                                           const Duration(milliseconds: 100),
@@ -529,45 +498,10 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                               ),
                             ),
                           ),
-                          // Positioned(
-                          //   top: (MediaQuery.of(context).size.height * 0.24),
-                          //   left: MediaQuery.of(context).size.width * 0.25,
-                          //   right: MediaQuery.of(context).size.width * 0.25,
-                          //   child: ScaleTransition(
-                          //     alignment: Alignment.center,
-                          //     scale: CurvedAnimation(
-                          //         parent: animationController,
-                          //         curve: Curves.fastOutSlowIn),
-                          //     child: Card(
-                          //       color: AppTheme.iihsyellow,
-                          //       shape: RoundedRectangleBorder(
-                          //           borderRadius: BorderRadius.circular(12.0)),
-                          //       //elevation: 5.0,
-                          //       child: Container(
-                          //         //   width: MediaQuery.of(context).size.width * 0.6,
-                          //         // height: MediaQuery.of(context).size.height * 0.08,
-                          //         height: 50,
-                          //         child: Center(
-                          //           child: Text(
-                          //             'Vehicle Ratings',
-                          //             textAlign: TextAlign.left,
-                          //             style: TextStyle(
-                          //               fontWeight: FontWeight.bold,
-                          //               // fontWeight: FontWeight.w600,
-                          //               fontSize: 18,
-                          //               // letterSpacing: 0.27,
-                          //               color: AppTheme.darkerText,
-                          //             ),
-                          //           ),
-                          //         ),
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
                           Positioned(
                             left: MediaQuery.of(context).size.width * 0.25,
                             right: MediaQuery.of(context).size.width * 0.25,
-                            bottom: (MediaQuery.of(context).size.height * 0.05),
+                            bottom: (MediaQuery.of(context).size.height * 0.04),
                             child: AnimatedSwitcher(
                               duration: const Duration(milliseconds: 500),
                               child: displaySearchButton
@@ -622,12 +556,6 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                                                 "/ratings",
                                                 arguments: selectedvehicle,
                                               );
-
-                                              // Navigator.of(context).pushNamed(
-                                              //   VehicleRatingsResults.routeName,
-                                              //   '/ratings',
-                                              //   arguments: selectedvehicle,
-                                              // );
                                             }
                                           },
                                           label: Text(

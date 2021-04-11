@@ -14,8 +14,14 @@ class VehicleData {
   final String seriesslug;
   final String seriesiihsUrl;
   final String seriesname;
-  final String vehicleclass;
-  final String vehiclemainimage;
+  String vehicleclass;
+  String vehiclemainimage;
+  bool frontalRatingsModerateOverlapExists;
+  Map<dynamic, dynamic> frontalRatingsModerateOverlap;
+  bool frontalRatingsSmallOverlapExists;
+  Map<dynamic, dynamic> frontalRatingsSmallOverlap;
+  bool frontalRatingsSmallOverlapPassengerExists;
+  Map<dynamic, dynamic> frontalRatingsSmallOverlapPassenger;
 
   VehicleData({
     @required this.makeid,

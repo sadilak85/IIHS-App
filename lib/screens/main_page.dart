@@ -25,7 +25,7 @@ class _MainPageScreenState extends State<MainPageScreen>
   @override
   void initState() {
     EasyLoading.instance
-      ..indicatorType = EasyLoadingIndicatorType.doubleBounce
+      ..indicatorType = EasyLoadingIndicatorType.chasingDots
       ..loadingStyle = EasyLoadingStyle.custom
       ..indicatorSize = 80.0
       ..progressColor = AppTheme.iihsbackground
@@ -35,7 +35,7 @@ class _MainPageScreenState extends State<MainPageScreen>
       ..textStyle = TextStyle(
         fontSize: 18,
         color: AppTheme.darkerText,
-        fontWeight: FontWeight.w700,
+        // fontWeight: FontWeight.w700,
       );
     animationController = AnimationController(
         duration: const Duration(milliseconds: 2000), vsync: this);
@@ -71,14 +71,14 @@ class _MainPageScreenState extends State<MainPageScreen>
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
           if (!snapshot.hasData) {
             return Center(
-              child: SpinKitDoubleBounce(
+              child: SpinKitChasingDots(
                 color: AppTheme.nearlyBlack,
                 size: 100.0,
               ),
             );
           } else if (snapshot.hasError) {
             return Center(
-              child: SpinKitDoubleBounce(
+              child: SpinKitChasingDots(
                 color: AppTheme.nearlyBlack,
                 size: 100.0,
               ),

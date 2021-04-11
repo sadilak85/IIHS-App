@@ -305,14 +305,14 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                       AsyncSnapshot<List<String>> snapshot) {
                     if (!snapshot.hasData) {
                       return Center(
-                        child: SpinKitDoubleBounce(
+                        child: SpinKitChasingDots(
                           color: AppTheme.nearlyBlack,
                           size: 100.0,
                         ),
                       );
                     } else if (snapshot.hasError) {
                       return Center(
-                        child: SpinKitDoubleBounce(
+                        child: SpinKitChasingDots(
                           color: AppTheme.nearlyBlack,
                           size: 100.0,
                         ),
@@ -657,7 +657,6 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
     }
 
     return DropdownSearch<String>(
-      // showSearchBox: _ismake ? true : false,
       mode: Mode.DIALOG,
       maxHeight: MediaQuery.of(context).size.height * 0.7,
       popupTitle: Container(

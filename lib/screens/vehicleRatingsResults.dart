@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:iihs/models/constants/app_theme.dart';
-import 'package:iihs/screens/main_page.dart';
 import 'package:iihs/utils/apifunctions/vehicleratings.dart';
 import 'package:iihs/models/vehicleData.dart';
+import 'package:iihs/utils/widgets/app_drawer.dart';
 
 import 'dart:developer';
 
@@ -17,15 +18,8 @@ class VehicleRatingsResults extends StatefulWidget {
 class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
     with TickerProviderStateMixin {
   //
-  ScrollController _scrollViewController;
-  TabController _tabController;
-
   AnimationController animationController;
   Animation<double> animation;
-
-  VehicleData selectedvehicle;
-
-  List<String> vehicleInfoData = [];
 
   @override
   void initState() {
@@ -39,8 +33,6 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
         curve: Interval(0, 1.0, curve: Curves.fastOutSlowIn),
       ),
     );
-    _scrollViewController = ScrollController();
-    _tabController = TabController(vsync: this, length: 2);
     setData();
     super.initState();
   }
@@ -48,8 +40,6 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
   @override
   void dispose() {
     animationController.dispose();
-    _scrollViewController.dispose();
-    _tabController.dispose();
     super.dispose();
   }
 
@@ -58,36 +48,14 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
   }
 
 // Vehicle Ratings Data:
-  Future<List<String>> getSelectedVehicleRatingData(
+  Future<VehicleData> getSelectedVehicleRatingData(
       VehicleData selectedvehicle) async {
     try {
-      var _vehicleClassInfo = await CrashRatings().crashRatingsgetClass(
-          selectedvehicle.modelyear,
-          selectedvehicle.makeslug,
-          selectedvehicle.seriesslug);
-
-      vehicleInfoData = [_vehicleClassInfo];
-
-      var _vehicleImagesData = await CrashRatings().crashRatingsImages(
-          selectedvehicle.modelyear,
-          selectedvehicle.makeslug,
-          selectedvehicle.seriesslug);
-
-      vehicleInfoData.add(_vehicleImagesData);
-
-      var _vehicleFrontalRatingData = await CrashRatings().crashRatingsFrontal(
-          selectedvehicle.modelyear,
-          selectedvehicle.makeslug,
-          selectedvehicle.seriesslug);
-
-      vehicleInfoData = vehicleInfoData + _vehicleFrontalRatingData;
-
-      log(vehicleInfoData.toString());
+      selectedvehicle = await CrashRatings().crashRatingsData(selectedvehicle);
     } catch (e) {
       print(e);
     }
-
-    return vehicleInfoData;
+    return selectedvehicle;
   }
 
   @override
@@ -97,67 +65,132 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
     log(selectedvehicle.modelname);
     log(selectedvehicle.seriesname);
     log(selectedvehicle.modelyear);
-    return Scaffold(
-      body: NestedScrollView(
-        controller: _scrollViewController,
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          //<-- headerSliverBuilder
-          return <Widget>[
-            SliverAppBar(
-              title: Center(
-                child: Text(
-                  'Vehicle Ratings',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    // fontWeight: FontWeight.w600,
-                    fontSize: 20,
-                    // letterSpacing: 0.27,
-                    color: AppTheme.darkerText,
-                  ),
-                ),
-              ),
-
-              actions: <Widget>[
-                IconButton(
-                    icon: Icon(Icons.home),
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(
-                        MainPageScreen.routeName,
-                      );
-                    }),
-              ],
-
-              backgroundColor: AppTheme.iihsyellow,
-              pinned: true, //<-- pinned to true
-              floating: true, //<-- floating to true
-              forceElevated:
-                  innerBoxIsScrolled, //<-- forceElevated to innerBoxIsScrolled
-              bottom: TabBar(
-                tabs: <Tab>[
-                  Tab(
-                    text: "STATISTICS",
-                  ),
-                  Tab(
-                    text: "HISTORY",
-                  ),
-                ],
-                labelColor: AppTheme.darkText,
-                indicatorColor: AppTheme.darkText,
-                controller: _tabController,
-              ),
+    return FutureBuilder<VehicleData>(
+      future: getSelectedVehicleRatingData(selectedvehicle),
+      builder: (BuildContext context, AsyncSnapshot<VehicleData> snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: SpinKitChasingDots(
+              color: AppTheme.nearlyBlack,
+              size: 100.0,
             ),
-          ];
-        },
-        body: TabBarView(
-          children: <Widget>[
-            frontalRating(selectedvehicle),
-            SizedBox(),
-          ],
-          controller: _tabController,
-        ),
-      ),
-      // floatingActionButton: [...]
+          );
+        } else if (snapshot.hasError) {
+          return Center(
+            child: SpinKitChasingDots(
+              color: AppTheme.nearlyBlack,
+              size: 100.0,
+            ),
+          );
+        } else {
+          return DefaultTabController(
+            length: 6,
+            child: Scaffold(
+                backgroundColor: AppTheme.iihsbackground,
+                endDrawer: AppDrawer(),
+                appBar: AppBar(
+                  backgroundColor: AppTheme.iihsyellow,
+                  centerTitle: true,
+                  leading: IconButton(
+                    icon: Icon(Icons.arrow_back_sharp),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  title: Center(
+                    child: Text(
+                      'Vehicle Ratings',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        // fontWeight: FontWeight.w600,
+                        fontSize: 20,
+                        // letterSpacing: 0.27,
+                        color: AppTheme.darkerText,
+                      ),
+                    ),
+                  ),
+
+                  bottom: PreferredSize(
+                    child: TabBar(
+                        isScrollable: true,
+                        unselectedLabelColor:
+                            AppTheme.nearlyBlack.withOpacity(0.5),
+                        indicatorColor: AppTheme.nearlyBlack,
+                        tabs: [
+                          Tab(
+                            child: Text(
+                              'Overall',
+                              // style: TextStyle(
+                              //   fontSize: 14,
+                              //   color: AppTheme.darkerText,
+                              // ),
+                            ),
+                          ),
+                          Tab(
+                            child: Text('Investment'),
+                          ),
+                          Tab(
+                            child: Text(selectedvehicle
+                                    .frontalRatingsModerateOverlapExists
+                                ? selectedvehicle
+                                    .frontalRatingsModerateOverlapExists
+                                    .toString()
+                                : 'keke'),
+                          ),
+                          Tab(
+                            child: Text('Current Balance'),
+                          ),
+                          Tab(
+                            child: Text('Tab 5'),
+                          ),
+                          Tab(
+                            child: Text('Tab 6'),
+                          )
+                        ]),
+                    preferredSize: Size.fromHeight(
+                        MediaQuery.of(context).size.height * 0.1),
+                  ),
+                  // actions: <Widget>[
+                  //   Padding(
+                  //     padding: const EdgeInsets.only(right: 16.0),
+                  //     child: Icon(Icons.add_alert),
+                  //   ),
+                  // ],
+                ),
+                body: TabBarView(
+                  children: <Widget>[
+                    frontalRating(selectedvehicle),
+                    Container(
+                      child: Center(
+                        child: Text('Tab 2'),
+                      ),
+                    ),
+                    Container(
+                      child: Center(
+                        child: Text('Tab 3'),
+                      ),
+                    ),
+                    Container(
+                      child: Center(
+                        child: Text('Tab 4'),
+                      ),
+                    ),
+                    Container(
+                      child: Center(
+                        child: Text('Tab 5'),
+                      ),
+                    ),
+                    Container(
+                      child: Center(
+                        child: Text('Tab 6'),
+                      ),
+                    ),
+                  ],
+                )),
+          );
+        }
+      },
     );
   }
 
@@ -165,9 +198,9 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
-      body: FutureBuilder<List<String>>(
+      body: FutureBuilder<VehicleData>(
         future: getSelectedVehicleRatingData(arg), // a Future<String> or null
-        builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<VehicleData> snapshot) {
           if (snapshot.hasError) {
             EasyLoading.show(
               status: 'loading...',
@@ -185,10 +218,31 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
             );
           } else {
             EasyLoading.dismiss();
-            return Container(
-              child: Text(
-                vehicleInfoData.toString(),
-              ),
+            return Column(
+              children: [
+                Container(
+                  child: Text(
+                    arg.vehicleclass,
+                  ),
+                ),
+                Container(
+                  child: Text(
+                    arg.frontalRatingsModerateOverlap['overallRating']
+                        .toString(),
+                  ),
+                ),
+                Container(
+                  child: Text(
+                    arg.frontalRatingsSmallOverlap['overallRating'].toString(),
+                  ),
+                ),
+                Container(
+                  child: Text(
+                    arg.frontalRatingsSmallOverlapPassenger['overallRating']
+                        .toString(),
+                  ),
+                ),
+              ],
             );
           }
         },

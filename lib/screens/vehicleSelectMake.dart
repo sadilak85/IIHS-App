@@ -134,7 +134,7 @@ class _VehicleSelectMakeState extends State<VehicleSelectMake>
   @override
   Widget build(BuildContext context) {
     final Animation<Offset> _offsetAnimation = Tween<Offset>(
-      begin: const Offset(0.0, 0.5),
+      begin: const Offset(0.0, 0.3),
       end: Offset.zero,
     ).animate(CurvedAnimation(
       parent: animationController,
@@ -180,14 +180,14 @@ class _VehicleSelectMakeState extends State<VehicleSelectMake>
                       AsyncSnapshot<List<String>> snapshot) {
                     if (!snapshot.hasData) {
                       return Center(
-                        child: SpinKitDoubleBounce(
+                        child: SpinKitChasingDots(
                           color: AppTheme.nearlyBlack,
                           size: 100.0,
                         ),
                       );
                     } else if (snapshot.hasError) {
                       return Center(
-                        child: SpinKitDoubleBounce(
+                        child: SpinKitChasingDots(
                           color: AppTheme.nearlyBlack,
                           size: 100.0,
                         ),
@@ -225,7 +225,7 @@ class _VehicleSelectMakeState extends State<VehicleSelectMake>
                             ],
                           ),
                           Positioned(
-                            top: (MediaQuery.of(context).size.height * 0.38),
+                            top: (MediaQuery.of(context).size.height * 0.25),
                             bottom: 0,
                             left: 0,
                             right: 0,

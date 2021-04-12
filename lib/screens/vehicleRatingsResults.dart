@@ -96,6 +96,8 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
               ? _length++
               : _length = _length;
 
+          log(selectedvehicle.frontalRatingsModerateOverlapExists.toString());
+          log(_length.toString());
           return DefaultTabController(
             length: _length + 1,
             child: Scaffold(

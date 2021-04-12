@@ -47,28 +47,35 @@ class CrashRatings {
           crashRatingsFrontalModerateOverlap(xmlData);
       selectedvehicle.frontalRatingsModerateOverlap =
           frontalRatingsModerateOverlapValues;
-      selectedvehicle.frontalRatingsModerateOverlapExists =
-          xml.XmlDocument.parse(xmlData)
+      (["", "()", null].contains(xml.XmlDocument.parse(xmlData)
               .findAllElements('frontalRatingsModerateOverlap')
-              .isNotEmpty;
+              .map((e) => e.text)
+              .toString()))
+          ? selectedvehicle.frontalRatingsModerateOverlapExists = false
+          : selectedvehicle.frontalRatingsModerateOverlapExists = true;
 
       Map<dynamic, dynamic> frontalRatingsSmallOverlapValues =
           crashRatingsFrontalSmallOverlap(xmlData);
       selectedvehicle.frontalRatingsSmallOverlap =
           frontalRatingsSmallOverlapValues;
-      selectedvehicle.frontalRatingsSmallOverlapExists =
-          xml.XmlDocument.parse(xmlData)
+
+      (["", "()", null].contains(xml.XmlDocument.parse(xmlData)
               .findAllElements('frontalRatingsSmallOverlap')
-              .isNotEmpty;
+              .map((e) => e.text)
+              .toString()))
+          ? selectedvehicle.frontalRatingsSmallOverlapExists = false
+          : selectedvehicle.frontalRatingsSmallOverlapExists = true;
 
       Map<dynamic, dynamic> frontalRatingsSmallOverlapPassengerValues =
           crashRatingsFrontalSmallOverlapPassenger(xmlData);
       selectedvehicle.frontalRatingsSmallOverlapPassenger =
           frontalRatingsSmallOverlapPassengerValues;
-      selectedvehicle.frontalRatingsSmallOverlapPassengerExists =
-          xml.XmlDocument.parse(xmlData)
+      (["", "()", null].contains(xml.XmlDocument.parse(xmlData)
               .findAllElements('frontalRatingsSmallOverlapPassenger')
-              .isNotEmpty;
+              .map((e) => e.text)
+              .toString()))
+          ? selectedvehicle.frontalRatingsSmallOverlapPassengerExists = false
+          : selectedvehicle.frontalRatingsSmallOverlapPassengerExists = true;
 
       return selectedvehicle;
     } catch (e) {

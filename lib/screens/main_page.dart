@@ -33,7 +33,7 @@ class _MainPageScreenState extends State<MainPageScreen>
       ..indicatorColor = AppTheme.iihsbackground_dark
       ..textColor = AppTheme.iihsbackground_dark
       ..textStyle = TextStyle(
-        fontSize: 18,
+        fontSize: 16,
         color: AppTheme.darkerText,
         // fontWeight: FontWeight.w700,
       );

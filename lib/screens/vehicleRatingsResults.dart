@@ -68,23 +68,36 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
     return FutureBuilder<VehicleData>(
       future: getSelectedVehicleRatingData(selectedvehicle),
       builder: (BuildContext context, AsyncSnapshot<VehicleData> snapshot) {
-        if (!snapshot.hasData) {
-          return Center(
-            child: SpinKitChasingDots(
-              color: AppTheme.nearlyBlack,
-              size: 100.0,
-            ),
+        if (snapshot.hasError) {
+          EasyLoading.show(
+            status: 'loading...',
           );
-        } else if (snapshot.hasError) {
-          return Center(
-            child: SpinKitChasingDots(
-              color: AppTheme.nearlyBlack,
-              size: 100.0,
-            ),
+          return Container(
+            child: null,
+            // DO SOMETHING !!!!!!!!!!!!!!!!!!!  RETURN BACK ODER SO
+          );
+        } else if (!snapshot.hasData) {
+          EasyLoading.show(
+            status: 'loading...',
+          );
+          return Container(
+            child: null,
           );
         } else {
+          EasyLoading.dismiss();
+          int _length = 0;
+          selectedvehicle.frontalRatingsModerateOverlapExists
+              ? _length++
+              : _length = _length;
+          selectedvehicle.frontalRatingsSmallOverlapExists
+              ? _length++
+              : _length = _length;
+          selectedvehicle.frontalRatingsSmallOverlapPassengerExists
+              ? _length++
+              : _length = _length;
+
           return DefaultTabController(
-            length: 6,
+            length: _length + 1,
             child: Scaffold(
                 backgroundColor: AppTheme.iihsbackground,
                 endDrawer: AppDrawer(),
@@ -97,57 +110,68 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
                       Navigator.pop(context);
                     },
                   ),
-                  title: Center(
-                    child: Text(
-                      'Vehicle Ratings',
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        // fontWeight: FontWeight.w600,
-                        fontSize: 20,
-                        // letterSpacing: 0.27,
-                        color: AppTheme.darkerText,
-                      ),
+                  title: Text(
+                    selectedvehicle.makename,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      // fontWeight: FontWeight.w600,
+                      fontSize: 20,
+                      // letterSpacing: 0.27,
+                      color: AppTheme.darkerText,
                     ),
                   ),
-
                   bottom: PreferredSize(
-                    child: TabBar(
-                        isScrollable: true,
-                        unselectedLabelColor:
-                            AppTheme.nearlyBlack.withOpacity(0.5),
-                        indicatorColor: AppTheme.nearlyBlack,
-                        tabs: [
-                          Tab(
-                            child: Text(
-                              'Overall',
-                              // style: TextStyle(
-                              //   fontSize: 14,
-                              //   color: AppTheme.darkerText,
-                              // ),
+                    child: Column(
+                      children: [
+                        Text(
+                          selectedvehicle.seriesname,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            // fontWeight: FontWeight.w600,
+                            fontSize: 20,
+                            // letterSpacing: 0.27,
+                            color: AppTheme.darkerText,
+                          ),
+                        ),
+                        TabBar(
+                          labelStyle: TextStyle(
+                            fontSize: 18,
+                            color: AppTheme.darkerText,
+                          ),
+                          isScrollable: true,
+                          unselectedLabelStyle: TextStyle(
+                            fontSize: 16,
+                          ),
+                          unselectedLabelColor:
+                              AppTheme.nearlyBlack.withOpacity(0.5),
+                          indicatorColor: AppTheme.nearlyBlack,
+                          tabs: [
+                            Tab(
+                              child: Text(
+                                'Overall',
+                              ),
                             ),
-                          ),
-                          Tab(
-                            child: Text('Investment'),
-                          ),
-                          Tab(
-                            child: Text(selectedvehicle
-                                    .frontalRatingsModerateOverlapExists
-                                ? selectedvehicle
-                                    .frontalRatingsModerateOverlapExists
-                                    .toString()
-                                : 'keke'),
-                          ),
-                          Tab(
-                            child: Text('Current Balance'),
-                          ),
-                          Tab(
-                            child: Text('Tab 5'),
-                          ),
-                          Tab(
-                            child: Text('Tab 6'),
-                          )
-                        ]),
+                            if (selectedvehicle
+                                .frontalRatingsModerateOverlapExists)
+                              Tab(
+                                child: Text('Front Moderate Overlap'),
+                              ),
+                            if (selectedvehicle
+                                .frontalRatingsSmallOverlapExists)
+                              Tab(
+                                child: Text('SmallOverlap'),
+                              ),
+                            if (selectedvehicle
+                                .frontalRatingsSmallOverlapPassengerExists)
+                              Tab(
+                                child: Text('SmallOverlap Passenger'),
+                              ),
+                          ],
+                        ),
+                      ],
+                    ),
                     preferredSize: Size.fromHeight(
                         MediaQuery.of(context).size.height * 0.1),
                   ),
@@ -161,31 +185,24 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
                 body: TabBarView(
                   children: <Widget>[
                     frontalRating(selectedvehicle),
-                    Container(
-                      child: Center(
-                        child: Text('Tab 2'),
+                    if (selectedvehicle.frontalRatingsModerateOverlapExists)
+                      Container(
+                        child: Text(selectedvehicle
+                            .frontalRatingsModerateOverlap
+                            .toString()),
                       ),
-                    ),
-                    Container(
-                      child: Center(
-                        child: Text('Tab 3'),
+                    if (selectedvehicle.frontalRatingsSmallOverlapExists)
+                      Container(
+                        child: Text(selectedvehicle.frontalRatingsSmallOverlap
+                            .toString()),
                       ),
-                    ),
-                    Container(
-                      child: Center(
-                        child: Text('Tab 4'),
+                    if (selectedvehicle
+                        .frontalRatingsSmallOverlapPassengerExists)
+                      Container(
+                        child: Text(selectedvehicle
+                            .frontalRatingsSmallOverlapPassenger
+                            .toString()),
                       ),
-                    ),
-                    Container(
-                      child: Center(
-                        child: Text('Tab 5'),
-                      ),
-                    ),
-                    Container(
-                      child: Center(
-                        child: Text('Tab 6'),
-                      ),
-                    ),
                   ],
                 )),
           );
@@ -198,54 +215,30 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
-      body: FutureBuilder<VehicleData>(
-        future: getSelectedVehicleRatingData(arg), // a Future<String> or null
-        builder: (BuildContext context, AsyncSnapshot<VehicleData> snapshot) {
-          if (snapshot.hasError) {
-            EasyLoading.show(
-              status: 'loading...',
-            );
-            return Container(
-              child: null,
-              // DO SOMETHING !!!!!!!!!!!!!!!!!!!  RETURN BACK ODER SO
-            );
-          } else if (!snapshot.hasData) {
-            EasyLoading.show(
-              status: 'loading...',
-            );
-            return Container(
-              child: null,
-            );
-          } else {
-            EasyLoading.dismiss();
-            return Column(
-              children: [
-                Container(
-                  child: Text(
-                    arg.vehicleclass,
-                  ),
-                ),
-                Container(
-                  child: Text(
-                    arg.frontalRatingsModerateOverlap['overallRating']
-                        .toString(),
-                  ),
-                ),
-                Container(
-                  child: Text(
-                    arg.frontalRatingsSmallOverlap['overallRating'].toString(),
-                  ),
-                ),
-                Container(
-                  child: Text(
-                    arg.frontalRatingsSmallOverlapPassenger['overallRating']
-                        .toString(),
-                  ),
-                ),
-              ],
-            );
-          }
-        },
+      body: Column(
+        children: [
+          Container(
+            child: Text(
+              arg.vehicleclass,
+            ),
+          ),
+          Container(
+            child: Text(
+              arg.frontalRatingsModerateOverlap['overallRating'].toString(),
+            ),
+          ),
+          Container(
+            child: Text(
+              arg.frontalRatingsSmallOverlap['overallRating'].toString(),
+            ),
+          ),
+          Container(
+            child: Text(
+              arg.frontalRatingsSmallOverlapPassenger['overallRating']
+                  .toString(),
+            ),
+          ),
+        ],
       ),
     );
   }

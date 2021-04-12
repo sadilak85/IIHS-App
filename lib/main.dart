@@ -36,18 +36,18 @@ class _MyAppState extends State<MyApp> {
         bottomAppBarColor: Colors.grey,
         canvasColor: Colors.white,
         //canvasColor: Color.fromRGBO(255, 254, 229, 1),
-        fontFamily: 'Roboto',
-        textTheme: ThemeData.light().textTheme.copyWith(
-              headline1: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-              headline2: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: AppTheme.iihsyellow,
-              ),
-            ),
+        fontFamily: AppTheme.fontName,
+        // textTheme: ThemeData.light().textTheme.copyWith(
+        //       headline1: TextStyle(
+        //         fontSize: 20,
+        //         fontWeight: FontWeight.bold,
+        //       ),
+        //       headline2: TextStyle(
+        //         fontSize: 22,
+        //         fontWeight: FontWeight.bold,
+        //         color: AppTheme.iihsyellow,
+        //       ),
+        //     ),
         pageTransitionsTheme: PageTransitionsTheme(
           builders: {
             TargetPlatform.android: CustomPageTransitionBuilder(),

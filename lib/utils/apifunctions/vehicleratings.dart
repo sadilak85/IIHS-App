@@ -50,7 +50,7 @@ class CrashRatings {
       selectedvehicle.frontalRatingsModerateOverlapExists =
           xml.XmlDocument.parse(xmlData)
               .findAllElements('frontalRatingsModerateOverlap')
-              .isEmpty;
+              .isNotEmpty;
 
       Map<dynamic, dynamic> frontalRatingsSmallOverlapValues =
           crashRatingsFrontalSmallOverlap(xmlData);
@@ -59,7 +59,7 @@ class CrashRatings {
       selectedvehicle.frontalRatingsSmallOverlapExists =
           xml.XmlDocument.parse(xmlData)
               .findAllElements('frontalRatingsSmallOverlap')
-              .isEmpty;
+              .isNotEmpty;
 
       Map<dynamic, dynamic> frontalRatingsSmallOverlapPassengerValues =
           crashRatingsFrontalSmallOverlapPassenger(xmlData);
@@ -68,7 +68,7 @@ class CrashRatings {
       selectedvehicle.frontalRatingsSmallOverlapPassengerExists =
           xml.XmlDocument.parse(xmlData)
               .findAllElements('frontalRatingsSmallOverlapPassenger')
-              .isEmpty;
+              .isNotEmpty;
 
       return selectedvehicle;
     } catch (e) {

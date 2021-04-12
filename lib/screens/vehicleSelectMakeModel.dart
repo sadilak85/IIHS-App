@@ -408,7 +408,7 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                                                 0.2,
                                         top:
                                             MediaQuery.of(context).size.height *
-                                                0.04,
+                                                0.06,
                                       ),
                                       child: dropDownMenu('make'),
                                     ),
@@ -430,10 +430,6 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                                                         .size
                                                         .width *
                                                     0.2,
-                                                top: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.03,
                                               ),
                                               child: dropDownMenu('model'),
                                             )
@@ -457,10 +453,6 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                                                         .size
                                                         .width *
                                                     0.2,
-                                                top: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.03,
                                               ),
                                               child: dropDownMenu('series'),
                                             )
@@ -484,10 +476,6 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                                                         .size
                                                         .width *
                                                     0.2,
-                                                top: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.03,
                                               ),
                                               child: dropDownMenu('years'),
                                             )
@@ -501,7 +489,7 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                           Positioned(
                             left: MediaQuery.of(context).size.width * 0.25,
                             right: MediaQuery.of(context).size.width * 0.25,
-                            bottom: (MediaQuery.of(context).size.height * 0.04),
+                            bottom: (MediaQuery.of(context).size.height * 0.05),
                             child: AnimatedSwitcher(
                               duration: const Duration(milliseconds: 500),
                               child: displaySearchButton
@@ -656,87 +644,93 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
       _enablemenu = enableYearsmenu;
     }
 
-    return DropdownSearch<String>(
-      mode: Mode.DIALOG,
-      maxHeight: MediaQuery.of(context).size.height * 0.7,
-      popupTitle: Container(
-        height: 50,
-        decoration: BoxDecoration(
-          color: AppTheme.iihsyellow,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(12),
-            topRight: Radius.circular(12),
-          ),
-        ),
-        child: Center(
-          child: Text(
-            _ismake
-                ? 'Vehicle $_type'
-                : _isyear
-                    ? 'Select a year'
-                    : '$_selectedMakeName $_type',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: AppTheme.darkerText,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        child: DropdownSearch<String>(
+          mode: Mode.DIALOG,
+          maxHeight: MediaQuery.of(context).size.height * 0.7,
+          popupTitle: Container(
+            height: MediaQuery.of(context).size.height * 0.06,
+            decoration: BoxDecoration(
+              color: AppTheme.iihsyellow,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12),
+                topRight: Radius.circular(12),
+              ),
+            ),
+            child: Center(
+              child: Text(
+                _ismake
+                    ? 'Vehicle $_type'
+                    : _isyear
+                        ? 'Select a year'
+                        : '$_selectedMakeName $_type',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.darkerText,
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-      popupShape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(12),
-          topRight: Radius.circular(12),
-          bottomRight: Radius.circular(12),
-          bottomLeft: Radius.circular(12),
-        ),
-      ),
-      dropdownSearchDecoration: InputDecoration(
-        filled: true,
-        fillColor: AppTheme.nearlyWhite,
-        border: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: AppTheme.nearlyBlack,
+          popupShape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(12),
+              topRight: Radius.circular(12),
+              bottomRight: Radius.circular(12),
+              bottomLeft: Radius.circular(12),
+            ),
           ),
+          // dropdownSearchDecoration: InputDecoration(
+          //   labelStyle: TextStyle(
+          //     fontSize: 14,
+          //     color: AppTheme.darkerText,
+          //   ),
+          //   border: OutlineInputBorder(
+          //     borderSide: BorderSide(
+          //       color: AppTheme.nearlyBlack,
+          //     ),
+          //   ),
+          // ),
+          showClearButton: !_ismake,
+          clearButtonBuilder: (_) => const Icon(
+            Icons.clear,
+            size: 18,
+            color: Colors.black,
+          ),
+          //validator: (v) => v == null ? "required field" : null,
+          showAsSuffixIcons: true,
+          dropdownButtonBuilder: (_) => const Icon(
+            Icons.arrow_drop_down,
+            size: 24,
+            color: Colors.black,
+          ),
+          showSelectedItem: true,
+          selectedItem: (type == 'model')
+              ? _selectedmodeldropdown
+              : (type == 'series')
+                  ? _selectedseriesdropdown
+                  : (type == 'years')
+                      ? _selectedyearsdropdown
+                      : null,
+          popupItemBuilder: _customPopupItemBuilder,
+          items: itemlist,
+          label: _isyear ? '$_type' : 'Vehicle $_type',
+          enabled: _enablemenu,
+          onChanged: (String newValue) {
+            if (type == 'make') {
+              funcMakeonChanged(newValue);
+            } else if (type == 'model') {
+              funcModelonChanged(newValue);
+            } else if (type == 'series') {
+              funcSeriesonChanged(newValue);
+            } else if (type == 'years') {
+              funcYearsonChanged(newValue);
+            }
+          },
         ),
       ),
-      showClearButton: !_ismake,
-      clearButtonBuilder: (_) => const Icon(
-        Icons.clear,
-        size: 18,
-        color: Colors.black,
-      ),
-      //validator: (v) => v == null ? "required field" : null,
-      showAsSuffixIcons: true,
-      dropdownButtonBuilder: (_) => const Icon(
-        Icons.arrow_drop_down,
-        size: 24,
-        color: Colors.black,
-      ),
-      showSelectedItem: true,
-      selectedItem: (type == 'model')
-          ? _selectedmodeldropdown
-          : (type == 'series')
-              ? _selectedseriesdropdown
-              : (type == 'years')
-                  ? _selectedyearsdropdown
-                  : null,
-
-      popupItemBuilder: _customPopupItemBuilder,
-      items: itemlist,
-      label: _isyear ? '$_type' : 'Vehicle $_type',
-      enabled: _enablemenu,
-      onChanged: (String newValue) {
-        if (type == 'make') {
-          funcMakeonChanged(newValue);
-        } else if (type == 'model') {
-          funcModelonChanged(newValue);
-        } else if (type == 'series') {
-          funcSeriesonChanged(newValue);
-        } else if (type == 'years') {
-          funcYearsonChanged(newValue);
-        }
-      },
     );
   }
 
@@ -866,4 +860,5 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
       ),
     );
   }
+  //
 }

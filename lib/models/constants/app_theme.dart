@@ -4,8 +4,12 @@ class AppTheme {
   AppTheme._();
 
   static const Color iihsbackground = Color.fromRGBO(245, 245, 247, 1);
-  static const Color iihsyellow = Color.fromRGBO(255, 204, 51, 1);
   static const Color iihsbackground_dark = Color.fromRGBO(82, 82, 82, 1);
+  static const Color iihsyellow = Color.fromRGBO(255, 204, 51, 1);
+  static const Color iihsratingsgreen = Color.fromRGBO(64, 180, 73, 1);
+  static const Color iihsratingsyellow = Color.fromRGBO(255, 232, 51, 1);
+  static const Color iihsratingsorange = Color.fromRGBO(255, 153, 0, 1);
+  static const Color iihsratingsred = Color.fromRGBO(255, 0, 0, 1);
 
   static const Color notWhite = Color(0xFFEDF0F2);
   static const Color nearlyWhite = Color(0xFFFEFEFE);

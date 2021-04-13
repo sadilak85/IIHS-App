@@ -498,71 +498,78 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                                       scale: CurvedAnimation(
                                           parent: animationController,
                                           curve: Curves.fastOutSlowIn),
-                                      child: Card(
-                                        color: AppTheme.iihsyellow,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(12.0)),
-                                        elevation: 5.0,
-                                        child: TextButton.icon(
-                                          onPressed: () {
-                                            if (makereadycheck == false) {
-                                              _showErrorDialog(
-                                                  'Select a vehicle make!');
-                                            } else if (modelreadycheck ==
-                                                false) {
-                                              _showErrorDialog(
-                                                  'Select a vehicle model!');
-                                            } else if (seriesreadycheck ==
-                                                false) {
-                                              _showErrorDialog(
-                                                  'Select a model serie!');
-                                            } else if (yearsreadycheck ==
-                                                false) {
-                                              _showErrorDialog(
-                                                  'Select a year for serie!');
-                                            } else {
-                                              selectedvehicle = VehicleData(
-                                                makeid: _selectedMakeId,
-                                                makeslug: _selectedMakeSlug,
-                                                makename: _selectedMakeName,
-                                                modelid: _selectedModelId,
-                                                modelslug: _selectedModelSlug,
-                                                modelname: _selectedModelName,
-                                                modelyear: _selectedYearsName,
-                                                seriesid: _selectedSeriesId,
-                                                seriesvariantTypeId:
-                                                    _selectedVariantTypeId,
-                                                seriesslug: _selectedSeriesSlug,
-                                                seriesiihsUrl:
-                                                    _selectedSeriesiihsUrl,
-                                                seriesname: _selectedSeriesName,
-                                              );
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                          left: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.12,
+                                          right: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.12,
+                                        ),
+                                        child: Card(
+                                          color: AppTheme.iihsyellow,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(12.0)),
+                                          elevation: 5.0,
+                                          child: TextButton.icon(
+                                            onPressed: () {
+                                              if (makereadycheck == false) {
+                                                _showErrorDialog(
+                                                    'Select a vehicle make!');
+                                              } else if (modelreadycheck ==
+                                                  false) {
+                                                _showErrorDialog(
+                                                    'Select a vehicle model!');
+                                              } else if (seriesreadycheck ==
+                                                  false) {
+                                                _showErrorDialog(
+                                                    'Select a model serie!');
+                                              } else if (yearsreadycheck ==
+                                                  false) {
+                                                _showErrorDialog(
+                                                    'Select a year for serie!');
+                                              } else {
+                                                selectedvehicle = VehicleData(
+                                                  makeid: _selectedMakeId,
+                                                  makeslug: _selectedMakeSlug,
+                                                  makename: _selectedMakeName,
+                                                  modelid: _selectedModelId,
+                                                  modelslug: _selectedModelSlug,
+                                                  modelname: _selectedModelName,
+                                                  modelyear: _selectedYearsName,
+                                                  seriesid: _selectedSeriesId,
+                                                  seriesvariantTypeId:
+                                                      _selectedVariantTypeId,
+                                                  seriesslug:
+                                                      _selectedSeriesSlug,
+                                                  seriesiihsUrl:
+                                                      _selectedSeriesiihsUrl,
+                                                  seriesname:
+                                                      _selectedSeriesName,
+                                                );
 
-                                              Navigator.pushNamed(
-                                                context,
-                                                "/ratings",
-                                                arguments: selectedvehicle,
-                                              );
-                                            }
-                                          },
-                                          label: Text(
-                                            '',
-                                          ),
-                                          icon: Row(
-                                            children: [
-                                              Icon(
-                                                Icons.directions_car_outlined,
-                                              ),
-                                              Icon(
-                                                Icons.keyboard_arrow_right,
-                                              ),
-                                            ],
-                                          ),
-                                          style: TextButton.styleFrom(
-                                            minimumSize: Size(150, 50),
-                                            primary: AppTheme.darkText,
-                                            //  backgroundColor: AppTheme.iihsyellow,
+                                                Navigator.pushNamed(
+                                                  context,
+                                                  "/ratings",
+                                                  arguments: selectedvehicle,
+                                                );
+                                              }
+                                            },
+                                            label: Text(
+                                              '',
+                                            ),
+                                            icon: Icon(
+                                              Icons.directions_car_outlined,
+                                            ),
+                                            style: TextButton.styleFrom(
+                                              minimumSize: Size(150, 50),
+                                              primary: AppTheme.darkText,
+                                              //  backgroundColor: AppTheme.iihsyellow,
+                                            ),
                                           ),
                                         ),
                                       ),

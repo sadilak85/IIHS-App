@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iihs/models/constants/app_theme.dart';
 import 'package:iihs/screens/drawer_contact_screen.dart';
 //import '../utils/custom_route.dart';
 
@@ -9,10 +10,19 @@ class AppDrawer extends StatelessWidget {
       child: Column(
         children: <Widget>[
           AppBar(
+            backgroundColor: AppTheme.iihsyellow,
+            elevation: 10,
             actions: <Widget>[
               Container(),
             ],
-            title: Text('Explore'),
+            title: Container(
+              alignment: Alignment.centerRight,
+              child: Image.asset(
+                'assets/images/logo-iihs.png',
+                height: 40,
+                fit: BoxFit.fitHeight,
+              ),
+            ),
             automaticallyImplyLeading: false,
           ),
           Divider(),

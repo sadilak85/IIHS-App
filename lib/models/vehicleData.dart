@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:iihs/utils/apifunctions/crashratings.dart';
 
-class VehicleData {
+class VehicleData extends CrashRatings {
   final String makeid;
   final String makeslug;
   final String makename;
@@ -14,14 +15,7 @@ class VehicleData {
   final String seriesslug;
   final String seriesiihsUrl;
   final String seriesname;
-  String vehicleclass;
   String vehiclemainimage;
-  bool frontalRatingsModerateOverlapExists;
-  Map<dynamic, dynamic> frontalRatingsModerateOverlap;
-  bool frontalRatingsSmallOverlapExists;
-  Map<dynamic, dynamic> frontalRatingsSmallOverlap;
-  bool frontalRatingsSmallOverlapPassengerExists;
-  Map<dynamic, dynamic> frontalRatingsSmallOverlapPassenger;
 
   VehicleData({
     @required this.makeid,
@@ -36,7 +30,6 @@ class VehicleData {
     this.seriesslug,
     this.seriesiihsUrl,
     this.seriesname,
-    this.vehicleclass,
     this.vehiclemainimage,
   });
 }

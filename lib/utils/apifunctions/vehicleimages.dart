@@ -29,4 +29,31 @@ class VehicleImages {
       print(e);
     }
   }
+
+  Future<dynamic> crashRatingsImages(
+      String year, String make, String series) async {
+    const crashrating = '$versionratings/single/';
+    try {
+      NetworkHelper networkHelper = NetworkHelper(
+          '$iihsApiURL$crashrating$year/$make/$series?apikey=$apiKey');
+      var xmlData = await networkHelper.getData();
+      var rawdata = xml.XmlDocument.parse(xmlData);
+
+      final photoids = rawdata.findAllElements('photo');
+      String photoUrl;
+      if (photoids.toString() != '()') {
+        final photoid =
+            photoids.map((e) => e.getAttribute('id')).first.toString();
+        photoUrl = '$iihsURL/api/ratings/images/$photoid';
+      } else {
+        photoUrl = '?????';
+      }
+      return photoUrl;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  //
 }

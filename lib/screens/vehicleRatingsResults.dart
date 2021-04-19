@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:iihs/models/constants/app_theme.dart';
-import 'package:iihs/utils/apifunctions/vehicleratings.dart';
+import 'package:iihs/utils/apifunctions/crashratings.dart';
 import 'package:iihs/models/vehicleData.dart';
 import 'package:iihs/utils/widgets/app_drawer.dart';
 
@@ -105,7 +105,7 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
             length: _length + 1,
             child: Scaffold(
                 backgroundColor: AppTheme.iihsbackground,
-                endDrawer: AppDrawer(),
+                //  endDrawer: AppDrawer(),
                 appBar: AppBar(
                   backgroundColor: AppTheme.iihsyellow,
                   centerTitle: true,
@@ -116,7 +116,7 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
                     },
                   ),
                   title: Text(
-                    selectedvehicle.makename,
+                    'Vehicle Ratings',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -127,76 +127,42 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
                     ),
                   ),
                   bottom: PreferredSize(
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            // IconButton(
-                            //   icon: Icon(Icons.arrow_back_sharp),
-                            //   onPressed: () {
-                            //     Navigator.pop(context);
-                            //   },
-                            // ),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 15.0, right: 15.0),
-                                child: Container(
-                                  child: Text(
-                                    selectedvehicle.seriesname,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      // fontWeight: FontWeight.w600,
-                                      fontSize: 18,
-                                      // letterSpacing: 0.27,
-                                      color: AppTheme.darkerText,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        TabBar(
-                          labelStyle: TextStyle(
-                            fontSize: 16,
-                            color: AppTheme.darkerText,
+                    child: TabBar(
+                      labelStyle: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.darkerText,
+                      ),
+                      isScrollable: true,
+                      unselectedLabelStyle: TextStyle(
+                        fontSize: 14,
+                      ),
+                      unselectedLabelColor:
+                          AppTheme.nearlyBlack.withOpacity(0.5),
+                      indicatorColor: AppTheme.nearlyBlack,
+                      tabs: [
+                        Tab(
+                          child: Text(
+                            'Overall',
                           ),
-                          isScrollable: true,
-                          unselectedLabelStyle: TextStyle(
-                            fontSize: 14,
-                          ),
-                          unselectedLabelColor:
-                              AppTheme.nearlyBlack.withOpacity(0.5),
-                          indicatorColor: AppTheme.nearlyBlack,
-                          tabs: [
-                            Tab(
-                              child: Text(
-                                'Overall',
-                              ),
-                            ),
-                            if (selectedvehicle
-                                .frontalRatingsModerateOverlapExists)
-                              Tab(
-                                child: Text('Front Moderate Overlap'),
-                              ),
-                            if (selectedvehicle
-                                .frontalRatingsSmallOverlapExists)
-                              Tab(
-                                child: Text('SmallOverlap'),
-                              ),
-                            if (selectedvehicle
-                                .frontalRatingsSmallOverlapPassengerExists)
-                              Tab(
-                                child: Text('SmallOverlap Passenger'),
-                              ),
-                          ],
                         ),
+                        if (selectedvehicle.frontalRatingsModerateOverlapExists)
+                          Tab(
+                            child: Text('Front Moderate Overlap'),
+                          ),
+                        if (selectedvehicle.frontalRatingsSmallOverlapExists)
+                          Tab(
+                            child: Text('SmallOverlap'),
+                          ),
+                        if (selectedvehicle
+                            .frontalRatingsSmallOverlapPassengerExists)
+                          Tab(
+                            child: Text('SmallOverlap Passenger'),
+                          ),
                       ],
                     ),
                     preferredSize: Size.fromHeight(
-                        MediaQuery.of(context).size.height * 0.1),
+                        MediaQuery.of(context).size.height * 0.05),
                   ),
                   // actions: <Widget>[
                   //   Padding(
@@ -240,6 +206,35 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
       backgroundColor: Colors.transparent,
       body: ListView(
         children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+            child: Text(
+              arg.makename,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                // fontWeight: FontWeight.w600,
+                fontSize: 20,
+                // letterSpacing: 0.27,
+                color: AppTheme.darkerText,
+              ),
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+            child: Text(
+              arg.seriesname,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                // fontWeight: FontWeight.w600,
+                fontSize: 18,
+                // letterSpacing: 0.27,
+                color: AppTheme.darkerText,
+              ),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.only(top: 8.0, bottom: 8),
             child: Container(

@@ -1,7 +1,5 @@
 import 'package:xml/xml.dart' as xml;
 
-import 'dart:developer';
-
 Map<dynamic, dynamic> crashRatingsFrontalModerateOverlap(xmlData) {
   try {
     var frontalRatingsModerateOverlapValues = Map();
@@ -89,13 +87,23 @@ Map<dynamic, dynamic> crashRatingsFrontalModerateOverlap(xmlData) {
       videoUrls.toString(),
     )) frontalRatingsModerateOverlapValues['videoUrls'] = videoUrls;
 
-    final videtitles = videoelts
+    final videoDownloadUrls = videoelts
+        .expand((category) => category.findElements('downloadUrl'))
+        .map((skill) => skill.text);
+
+    if (!["", "()", null].contains(
+      videoDownloadUrls.toString(),
+    ))
+      frontalRatingsModerateOverlapValues['videoDownloadUrls'] =
+          videoDownloadUrls;
+
+    final videotitles = videoelts
         .expand((category) => category.findElements('title'))
         .map((skill) => skill.text);
 
     if (!["", "()", null].contains(
-      videtitles.toString(),
-    )) frontalRatingsModerateOverlapValues['videtitles'] = videtitles;
+      videotitles.toString(),
+    )) frontalRatingsModerateOverlapValues['videotitles'] = videotitles;
 
     return frontalRatingsModerateOverlapValues;
   } catch (e) {
@@ -190,13 +198,23 @@ Map<dynamic, dynamic> crashRatingsFrontalSmallOverlap(xmlData) {
     if (!["", "()", null].contains(
       videoUrls.toString(),
     )) frontalRatingsSmallOverlapValues['videoUrls'] = videoUrls;
-    final videtitles = videoelts
+
+    final videoDownloadUrls = videoelts
+        .expand((category) => category.findElements('downloadUrl'))
+        .map((skill) => skill.text);
+
+    if (!["", "()", null].contains(
+      videoDownloadUrls.toString(),
+    ))
+      frontalRatingsSmallOverlapValues['videoDownloadUrls'] = videoDownloadUrls;
+
+    final videotitles = videoelts
         .expand((category) => category.findElements('title'))
         .map((skill) => skill.text);
 
     if (!["", "()", null].contains(
-      videtitles.toString(),
-    )) frontalRatingsSmallOverlapValues['videtitles'] = videtitles;
+      videotitles.toString(),
+    )) frontalRatingsSmallOverlapValues['videotitles'] = videotitles;
 
     return frontalRatingsSmallOverlapValues;
   } catch (e) {
@@ -331,13 +349,24 @@ Map<dynamic, dynamic> crashRatingsFrontalSmallOverlapPassenger(xmlData) {
     if (!["", "()", null].contains(
       videoUrls.toString(),
     )) frontalRatingsSmallOverlapPassengerValues['videoUrls'] = videoUrls;
-    final videtitles = videoelts
+
+    final videoDownloadUrls = videoelts
+        .expand((category) => category.findElements('downloadUrl'))
+        .map((skill) => skill.text);
+
+    if (!["", "()", null].contains(
+      videoDownloadUrls.toString(),
+    ))
+      frontalRatingsSmallOverlapPassengerValues['videoDownloadUrls'] =
+          videoDownloadUrls;
+
+    final videotitles = videoelts
         .expand((category) => category.findElements('title'))
         .map((skill) => skill.text);
 
     if (!["", "()", null].contains(
-      videtitles.toString(),
-    )) frontalRatingsSmallOverlapPassengerValues['videtitles'] = videtitles;
+      videotitles.toString(),
+    )) frontalRatingsSmallOverlapPassengerValues['videotitles'] = videotitles;
 
     return frontalRatingsSmallOverlapPassengerValues;
   } catch (e) {

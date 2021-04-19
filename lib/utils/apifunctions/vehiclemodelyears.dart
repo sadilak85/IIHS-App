@@ -4,7 +4,7 @@ import 'package:iihs/models/constants/apiauth.dart';
 
 class ModelYears {
   Future<dynamic> getModelYears() async {
-    const modelyears = '$versionratings/modelyears';
+    const modelyears = '$v4ratings/modelyears';
     NetworkHelper networkHelper =
         NetworkHelper('$iihsApiURL$modelyears?apikey=$apiKey');
     var xmlData = await networkHelper.getData();
@@ -17,7 +17,7 @@ class ModelYears {
 
   Future<dynamic> getModelYearsforMakeModelSeries(
       String make, String modelseries) async {
-    const modelyears = '$versionratings/modelyears-for-series';
+    const modelyears = '$v4ratings/modelyears-for-series';
     NetworkHelper networkHelper = NetworkHelper(
         '$iihsApiURL$modelyears/$make/$modelseries?apikey=$apiKey');
     var xmlData = await networkHelper.getData();

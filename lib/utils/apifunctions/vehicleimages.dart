@@ -32,7 +32,7 @@ class VehicleImages {
 
   Future<dynamic> crashRatingsImages(
       String year, String make, String series) async {
-    const crashrating = '$versionratings/single/';
+    const crashrating = '$v4ratings/single/';
     try {
       NetworkHelper networkHelper = NetworkHelper(
           '$iihsApiURL$crashrating$year/$make/$series?apikey=$apiKey');

@@ -4,7 +4,7 @@ import 'package:iihs/models/constants/apiauth.dart';
 
 class VehicleModels {
   Future<dynamic> getModels(String make) async {
-    const modelformake = '$versionratings/models-for-make/';
+    const modelformake = '$v4ratings/models-for-make/';
     try {
       NetworkHelper networkHelper =
           NetworkHelper('$iihsApiURL$modelformake$make?apikey=$apiKey');

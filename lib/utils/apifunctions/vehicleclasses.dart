@@ -4,7 +4,7 @@ import 'package:iihs/models/constants/apiauth.dart';
 
 class VehicleClasses {
   Future<dynamic> getClasses(String year) async {
-    const classes = '$versionratings/classes/';
+    const classes = '$v4ratings/classes/';
     NetworkHelper networkHelper =
         NetworkHelper('$iihsApiURL$classes$year?apikey=$apiKey');
     var xmlData = await networkHelper.getData();
@@ -41,7 +41,7 @@ class VehicleClasses {
   }
 
   Future<dynamic> getALLClasses() async {
-    const classes = '$versionratings/all-classes/';
+    const classes = '$v4ratings/all-classes/';
     NetworkHelper networkHelper =
         NetworkHelper('$iihsApiURL$classes?apikey=$apiKey');
     var xmlData = await networkHelper.getData();

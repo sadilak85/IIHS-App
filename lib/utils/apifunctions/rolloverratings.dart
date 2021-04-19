@@ -85,13 +85,21 @@ Map<dynamic, dynamic> crashRatingsRollover(xmlData) {
       videoUrls.toString(),
     )) rolloverRatingsValues['videoUrls'] = videoUrls;
 
-    final videtitles = videoelts
+    final videoDownloadUrls = videoelts
+        .expand((category) => category.findElements('downloadUrl'))
+        .map((skill) => skill.text);
+
+    if (!["", "()", null].contains(
+      videoDownloadUrls.toString(),
+    )) rolloverRatingsValues['videoDownloadUrls'] = videoDownloadUrls;
+
+    final videotitles = videoelts
         .expand((category) => category.findElements('title'))
         .map((skill) => skill.text);
 
     if (!["", "()", null].contains(
-      videtitles.toString(),
-    )) rolloverRatingsValues['videtitles'] = videtitles;
+      videotitles.toString(),
+    )) rolloverRatingsValues['videotitles'] = videotitles;
 
     return rolloverRatingsValues;
   } catch (e) {

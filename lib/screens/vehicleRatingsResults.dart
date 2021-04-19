@@ -143,21 +143,21 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
                       tabs: [
                         Tab(
                           child: Text(
-                            'Overall',
+                            'Overview',
                           ),
                         ),
                         if (selectedvehicle.frontalRatingsModerateOverlapExists)
                           Tab(
-                            child: Text('Front Moderate Overlap'),
+                            child: Text('Moderate overlap front'),
                           ),
                         if (selectedvehicle.frontalRatingsSmallOverlapExists)
                           Tab(
-                            child: Text('SmallOverlap'),
+                            child: Text('Small overlap front'),
                           ),
                         if (selectedvehicle
                             .frontalRatingsSmallOverlapPassengerExists)
                           Tab(
-                            child: Text('SmallOverlap Passenger'),
+                            child: Text('Small overlap front: passenger side'),
                           ),
                       ],
                     ),

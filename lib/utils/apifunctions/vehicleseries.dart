@@ -4,7 +4,7 @@ import 'package:iihs/models/constants/apiauth.dart';
 
 class VehicleSeries {
   Future<dynamic> getSeries(String year, String make) async {
-    const series = '$versionratings/series/';
+    const series = '$v4ratings/series/';
     NetworkHelper networkHelper =
         NetworkHelper('$iihsApiURL$series$year/$make?apikey=$apiKey');
     var xmlData = await networkHelper.getData();
@@ -47,7 +47,7 @@ class VehicleSeries {
   }
 
   Future<dynamic> getALLSeries(String make) async {
-    const series = '$versionratings/all-series/';
+    const series = '$v4ratings/all-series/';
     NetworkHelper networkHelper =
         NetworkHelper('$iihsApiURL$series$make?apikey=$apiKey');
     var xmlData = await networkHelper.getData();
@@ -90,7 +90,7 @@ class VehicleSeries {
   }
 
   Future<dynamic> getSeriesforMakeModel(String make, String model) async {
-    const seriesformakemodel = '$versionratings/series-for-makemodel/';
+    const seriesformakemodel = '$v4ratings/series-for-makemodel/';
     NetworkHelper networkHelper = NetworkHelper(
         '$iihsApiURL$seriesformakemodel$make/$model?apikey=$apiKey');
     var xmlData = await networkHelper.getData();

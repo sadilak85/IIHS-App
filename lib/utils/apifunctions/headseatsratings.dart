@@ -72,13 +72,21 @@ Map<dynamic, dynamic> crashRatingsRear(xmlData) {
       videoUrls.toString(),
     )) rearRatingsValues['videoUrls'] = videoUrls;
 
-    final videtitles = videoelts
+    final videoDownloadUrls = videoelts
+        .expand((category) => category.findElements('downloadUrl'))
+        .map((skill) => skill.text);
+
+    if (!["", "()", null].contains(
+      videoDownloadUrls.toString(),
+    )) rearRatingsValues['videoDownloadUrls'] = videoDownloadUrls;
+
+    final videotitles = videoelts
         .expand((category) => category.findElements('title'))
         .map((skill) => skill.text);
 
     if (!["", "()", null].contains(
-      videtitles.toString(),
-    )) rearRatingsValues['videtitles'] = videtitles;
+      videotitles.toString(),
+    )) rearRatingsValues['videotitles'] = videotitles;
 
     return rearRatingsValues;
   } catch (e) {

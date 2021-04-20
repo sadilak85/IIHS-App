@@ -1,7 +1,5 @@
 import 'package:xml/xml.dart' as xml;
 
-import 'dart:developer';
-
 Map<dynamic, dynamic> crashRatingsSide(xmlData) {
   try {
     var sideRatingsValues = Map();
@@ -109,13 +107,13 @@ Map<dynamic, dynamic> crashRatingsSide(xmlData) {
         .expand((category) => category.findElements('videos'))
         .expand((category) => category.findElements('video'));
 
-    final videoUrls = videoelts
+    final videoPlayerUrls = videoelts
         .expand((category) => category.findElements('playerUrl'))
         .map((skill) => skill.text);
 
     if (!["", "()", null].contains(
-      videoUrls.toString(),
-    )) sideRatingsValues['videoUrls'] = videoUrls;
+      videoPlayerUrls.toString(),
+    )) sideRatingsValues['videoPlayerUrls'] = videoPlayerUrls;
 
     final videoDownloadUrls = videoelts
         .expand((category) => category.findElements('downloadUrl'))

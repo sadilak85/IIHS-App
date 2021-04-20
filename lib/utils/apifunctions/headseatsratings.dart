@@ -19,6 +19,8 @@ Map<dynamic, dynamic> crashRatingsRear(xmlData) {
         .expand((category) => category.findElements('overallRating'))
         .map((skill) => skill.text);
 
+    log(overallRating.toString());
+
     final dynamicRating = rearRatings
         .expand((category) => category.findElements('dynamicRating'))
         .map((skill) => skill.text);
@@ -64,13 +66,13 @@ Map<dynamic, dynamic> crashRatingsRear(xmlData) {
         .expand((category) => category.findElements('videos'))
         .expand((category) => category.findElements('video'));
 
-    final videoUrls = videoelts
+    final videoPlayerUrls = videoelts
         .expand((category) => category.findElements('playerUrl'))
         .map((skill) => skill.text);
 
     if (!["", "()", null].contains(
-      videoUrls.toString(),
-    )) rearRatingsValues['videoUrls'] = videoUrls;
+      videoPlayerUrls.toString(),
+    )) rearRatingsValues['videoPlayerUrls'] = videoPlayerUrls;
 
     final videoDownloadUrls = videoelts
         .expand((category) => category.findElements('downloadUrl'))

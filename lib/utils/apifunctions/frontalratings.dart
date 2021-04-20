@@ -79,13 +79,13 @@ Map<dynamic, dynamic> crashRatingsFrontalModerateOverlap(xmlData) {
         .expand((category) => category.findElements('videos'))
         .expand((category) => category.findElements('video'));
 
-    final videoUrls = videoelts
+    final videoPlayerUrls = videoelts
         .expand((category) => category.findElements('playerUrl'))
         .map((skill) => skill.text);
 
     if (!["", "()", null].contains(
-      videoUrls.toString(),
-    )) frontalRatingsModerateOverlapValues['videoUrls'] = videoUrls;
+      videoPlayerUrls.toString(),
+    )) frontalRatingsModerateOverlapValues['videoPlayerUrls'] = videoPlayerUrls;
 
     final videoDownloadUrls = videoelts
         .expand((category) => category.findElements('downloadUrl'))
@@ -191,13 +191,13 @@ Map<dynamic, dynamic> crashRatingsFrontalSmallOverlap(xmlData) {
         .expand((category) => category.findElements('videos'))
         .expand((category) => category.findElements('video'));
 
-    final videoUrls = videoelts
+    final videoPlayerUrls = videoelts
         .expand((category) => category.findElements('playerUrl'))
         .map((skill) => skill.text);
 
     if (!["", "()", null].contains(
-      videoUrls.toString(),
-    )) frontalRatingsSmallOverlapValues['videoUrls'] = videoUrls;
+      videoPlayerUrls.toString(),
+    )) frontalRatingsSmallOverlapValues['videoPlayerUrls'] = videoPlayerUrls;
 
     final videoDownloadUrls = videoelts
         .expand((category) => category.findElements('downloadUrl'))
@@ -342,13 +342,15 @@ Map<dynamic, dynamic> crashRatingsFrontalSmallOverlapPassenger(xmlData) {
         .expand((category) => category.findElements('videos'))
         .expand((category) => category.findElements('video'));
 
-    final videoUrls = videoelts
+    final videoPlayerUrls = videoelts
         .expand((category) => category.findElements('playerUrl'))
         .map((skill) => skill.text);
 
     if (!["", "()", null].contains(
-      videoUrls.toString(),
-    )) frontalRatingsSmallOverlapPassengerValues['videoUrls'] = videoUrls;
+      videoPlayerUrls.toString(),
+    ))
+      frontalRatingsSmallOverlapPassengerValues['videoPlayerUrls'] =
+          videoPlayerUrls;
 
     final videoDownloadUrls = videoelts
         .expand((category) => category.findElements('downloadUrl'))

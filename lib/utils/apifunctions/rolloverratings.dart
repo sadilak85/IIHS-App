@@ -1,7 +1,5 @@
 import 'package:xml/xml.dart' as xml;
 
-import 'dart:developer';
-
 Map<dynamic, dynamic> crashRatingsRollover(xmlData) {
   try {
     var rolloverRatingsValues = Map();
@@ -77,13 +75,13 @@ Map<dynamic, dynamic> crashRatingsRollover(xmlData) {
         .expand((category) => category.findElements('videos'))
         .expand((category) => category.findElements('video'));
 
-    final videoUrls = videoelts
+    final videoPlayerUrls = videoelts
         .expand((category) => category.findElements('playerUrl'))
         .map((skill) => skill.text);
 
     if (!["", "()", null].contains(
-      videoUrls.toString(),
-    )) rolloverRatingsValues['videoUrls'] = videoUrls;
+      videoPlayerUrls.toString(),
+    )) rolloverRatingsValues['videoPlayerUrls'] = videoPlayerUrls;
 
     final videoDownloadUrls = videoelts
         .expand((category) => category.findElements('downloadUrl'))

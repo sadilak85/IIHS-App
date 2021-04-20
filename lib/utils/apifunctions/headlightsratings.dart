@@ -41,17 +41,18 @@ Map<dynamic, dynamic> crashRatingsHeadlight(xmlData) {
         .expand((category) => category.findElements('chartUrl'))
         .map((skill) => skill.text);
 
-    final testSubject = headlightRatings
-        .expand((category) => category.findElements('testSubject'))
-        .map((skill) => skill.text);
-
     headlightRatingsValues['isPrimary'] = isPrimary;
     headlightRatingsValues['isQualified'] = isQualified;
-
+    headlightRatingsValues['qualifyingText'] = qualifyingText;
     headlightRatingsValues['overallRating'] = overallRating;
-
-    headlightRatingsValues['testSubject'] = testSubject;
-
+    headlightRatingsValues['highBeamAssist'] = highBeamAssist;
+    headlightRatingsValues['curveAdaptive'] = curveAdaptive;
+    headlightRatingsValues['sourceHighBeamDescription'] =
+        sourceHighBeamDescription;
+    headlightRatingsValues['sourceLowBeamDescription'] =
+        sourceLowBeamDescription;
+    headlightRatingsValues['chartUrl'] = chartUrl;
+    //
     final photoelts = headlightRatings
         .expand((category) => category.findElements('photos'))
         .expand((category) => category.findElements('photo'));
@@ -60,7 +61,7 @@ Map<dynamic, dynamic> crashRatingsHeadlight(xmlData) {
     if (!["", "()", null].contains(
       photoids.toString(),
     )) headlightRatingsValues['photoids'] = photoids;
-
+    //
     final photocaptions = photoelts
         .expand((category) => category.findElements('caption'))
         .map((skill) => skill.text);
@@ -68,19 +69,18 @@ Map<dynamic, dynamic> crashRatingsHeadlight(xmlData) {
     if (!["", "()", null].contains(
       photocaptions.toString(),
     )) headlightRatingsValues['photocaptions'] = photocaptions;
-
+    //
     final videoelts = headlightRatings
         .expand((category) => category.findElements('videos'))
         .expand((category) => category.findElements('video'));
-
-    final videoUrls = videoelts
+    final videoPlayerUrls = videoelts
         .expand((category) => category.findElements('playerUrl'))
         .map((skill) => skill.text);
 
     if (!["", "()", null].contains(
-      videoUrls.toString(),
-    )) headlightRatingsValues['videoUrls'] = videoUrls;
-
+      videoPlayerUrls.toString(),
+    )) headlightRatingsValues['videoPlayerUrls'] = videoPlayerUrls;
+    //
     final videoDownloadUrls = videoelts
         .expand((category) => category.findElements('downloadUrl'))
         .map((skill) => skill.text);
@@ -88,7 +88,7 @@ Map<dynamic, dynamic> crashRatingsHeadlight(xmlData) {
     if (!["", "()", null].contains(
       videoDownloadUrls.toString(),
     )) headlightRatingsValues['videoDownloadUrls'] = videoDownloadUrls;
-
+    //
     final videotitles = videoelts
         .expand((category) => category.findElements('title'))
         .map((skill) => skill.text);
@@ -96,6 +96,16 @@ Map<dynamic, dynamic> crashRatingsHeadlight(xmlData) {
     if (!["", "()", null].contains(
       videotitles.toString(),
     )) headlightRatingsValues['videotitles'] = videotitles;
+    //
+    final trimLevels = headlightRatings
+        .expand((category) => category.findElements('trimLevels'))
+        .expand((category) => category.findElements('trim'));
+
+    final trimLevelsDescription =
+        trimLevels.map((e) => e.getAttribute('description'));
+    if (!["", "()", null].contains(
+      trimLevelsDescription.toString(),
+    )) headlightRatingsValues['trimLevelsDescription'] = trimLevelsDescription;
 
     return headlightRatingsValues;
   } catch (e) {

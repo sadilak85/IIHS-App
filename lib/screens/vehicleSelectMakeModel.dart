@@ -304,18 +304,34 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                   builder: (BuildContext context,
                       AsyncSnapshot<List<String>> snapshot) {
                     if (!snapshot.hasData) {
-                      return Center(
-                        child: SpinKitChasingDots(
-                          color: AppTheme.nearlyBlack,
-                          size: 100.0,
-                        ),
+                      return Stack(
+                        children: [
+                          Center(
+                            child: Image.asset(
+                              'assets/images/logo-iihs.png',
+                              height: 60,
+                            ),
+                          ),
+                          SpinKitChasingDots(
+                            color: AppTheme.nearlyBlack,
+                            size: 100.0,
+                          ),
+                        ],
                       );
                     } else if (snapshot.hasError) {
-                      return Center(
-                        child: SpinKitChasingDots(
-                          color: AppTheme.nearlyBlack,
-                          size: 100.0,
-                        ),
+                      return Stack(
+                        children: [
+                          Center(
+                            child: Image.asset(
+                              'assets/images/logo-iihs.png',
+                              height: 60,
+                            ),
+                          ),
+                          SpinKitChasingDots(
+                            color: AppTheme.nearlyBlack,
+                            size: 100.0,
+                          ),
+                        ],
                       );
                     } else {
                       return Stack(

@@ -100,6 +100,12 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
           selectedvehicle.frontalRatingsSmallOverlapPassengerExists
               ? _length++
               : _length = _length;
+          selectedvehicle.sideRatingsExists ? _length++ : _length = _length;
+          selectedvehicle.rolloverRatingsExists ? _length++ : _length = _length;
+          selectedvehicle.rearRatingsExists ? _length++ : _length = _length;
+          selectedvehicle.headlightRatingsExists
+              ? _length++
+              : _length = _length;
 
           return DefaultTabController(
             length: _length + 1,
@@ -159,6 +165,22 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
                           Tab(
                             child: Text('Small overlap front: passenger side'),
                           ),
+                        if (selectedvehicle.sideRatingsExists)
+                          Tab(
+                            child: Text('Side'),
+                          ),
+                        if (selectedvehicle.rolloverRatingsExists)
+                          Tab(
+                            child: Text('Roof strength'),
+                          ),
+                        if (selectedvehicle.rearRatingsExists)
+                          Tab(
+                            child: Text('Head restraints & seats'),
+                          ),
+                        if (selectedvehicle.headlightRatingsExists)
+                          Tab(
+                            child: Text('Headlights'),
+                          ),
                       ],
                     ),
                     preferredSize: Size.fromHeight(
@@ -191,6 +213,23 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
                         child: Text(selectedvehicle
                             .frontalRatingsSmallOverlapPassenger
                             .toString()),
+                      ),
+                    if (selectedvehicle.sideRatingsExists)
+                      Container(
+                        child: Text(selectedvehicle.sideRatings.toString()),
+                      ),
+                    if (selectedvehicle.rolloverRatingsExists)
+                      Container(
+                        child: Text(selectedvehicle.rolloverRatings.toString()),
+                      ),
+                    if (selectedvehicle.rearRatingsExists)
+                      Container(
+                        child: Text(selectedvehicle.rearRatings.toString()),
+                      ),
+                    if (selectedvehicle.headlightRatingsExists)
+                      Container(
+                        child:
+                            Text(selectedvehicle.headlightRatings.toString()),
                       ),
                   ],
                 )),
@@ -282,64 +321,117 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
             ),
           ),
           //
-          if (arg.frontalRatingsModerateOverlapExists)
-            if (["Good", "(Good)", "good", "(good)"].contains(
-              arg.frontalRatingsModerateOverlap['overallRating'].toString(),
-            ))
-              ratingIndicator('Moderate overlap front', 'G'),
-
-          if (["Acceptable", "(Acceptable)", "acceptable", "(acceptable)"]
-              .contains(
-            arg.frontalRatingsModerateOverlap['overallRating'].toString(),
-          ))
-            ratingIndicator('Moderate overlap front', 'A'),
-          if (["Marginal", "(Marginal)", "marginal", "(marginal)"].contains(
-            arg.frontalRatingsModerateOverlap['overallRating'].toString(),
-          ))
-            ratingIndicator('Moderate overlap front', 'M'),
-          if (["Poor", "(Poor)", "poor", "(poor)"].contains(
-            arg.frontalRatingsModerateOverlap['overallRating'].toString(),
-          ))
-            ratingIndicator('Moderate overlap front', 'P'),
-          //
+          // Small overlap front: driver-side Ratings:
           if (arg.frontalRatingsSmallOverlapExists)
-            if (["Good", "(Good)", "good", "(good)"].contains(
-              arg.frontalRatingsSmallOverlap['overallRating'].toString(),
-            ))
+            if (arg.frontalRatingsSmallOverlap['overallRating']
+                .toString()
+                .contains("Good"))
               ratingIndicator('Small overlap front: driver-side', 'G'),
-          if (["Acceptable", "(Acceptable)", "acceptable", "(acceptable)"]
-              .contains(
-            arg.frontalRatingsSmallOverlap['overallRating'].toString(),
-          ))
+          if (arg.frontalRatingsSmallOverlap['overallRating']
+              .toString()
+              .contains("Acceptable"))
             ratingIndicator('Small overlap front: driver-side', 'A'),
-          if (["Marginal", "(Marginal)", "marginal", "(marginal)"].contains(
-            arg.frontalRatingsSmallOverlap['overallRating'].toString(),
-          ))
+          if (arg.frontalRatingsSmallOverlap['overallRating']
+              .toString()
+              .contains("Marginal"))
             ratingIndicator('Small overlap front: driver-side', 'M'),
-          if (["Poor", "(Poor)", "poor", "(poor)"].contains(
-            arg.frontalRatingsSmallOverlap['overallRating'].toString(),
-          ))
+          if (arg.frontalRatingsSmallOverlap['overallRating']
+              .toString()
+              .contains("Poor"))
             ratingIndicator('Small overlap front: driver-side', 'P'),
-          //
+          // Small overlap front: passenger-side Ratings:
           if (arg.frontalRatingsSmallOverlapPassengerExists)
-            if (["Good", "(Good)", "good", "(good)"].contains(
-              arg.frontalRatingsSmallOverlapPassenger['overallRating']
-                  .toString(),
-            ))
+            if (arg.frontalRatingsSmallOverlapPassenger['overallRating']
+                .toString()
+                .contains("Good"))
               ratingIndicator('Small overlap front: passenger-side', 'G'),
-          if (["Acceptable", "(Acceptable)", "acceptable", "(acceptable)"]
-              .contains(
-            arg.frontalRatingsSmallOverlapPassenger['overallRating'].toString(),
-          ))
+          if (arg.frontalRatingsSmallOverlapPassenger['overallRating']
+              .toString()
+              .contains("Acceptable"))
             ratingIndicator('Small overlap front: passenger-side', 'A'),
-          if (["Marginal", "(Marginal)", "marginal", "(marginal)"].contains(
-            arg.frontalRatingsSmallOverlapPassenger['overallRating'].toString(),
-          ))
+          if (arg.frontalRatingsSmallOverlapPassenger['overallRating']
+              .toString()
+              .contains("Marginal"))
             ratingIndicator('Small overlap front: passenger-side', 'M'),
-          if (["Poor", "(Poor)", "poor", "(poor)"].contains(
-            arg.frontalRatingsSmallOverlapPassenger['overallRating'].toString(),
-          ))
+          if (arg.frontalRatingsSmallOverlapPassenger['overallRating']
+              .toString()
+              .contains("Poor"))
             ratingIndicator('Small overlap front: passenger-side', 'P'),
+          // Moderate overlap front Ratings:
+          if (arg.frontalRatingsModerateOverlapExists)
+            if (arg.frontalRatingsModerateOverlap['overallRating']
+                .toString()
+                .contains("Good"))
+              ratingIndicator('Moderate overlap front', 'G'),
+          if (arg.frontalRatingsModerateOverlap['overallRating']
+              .toString()
+              .contains("Acceptable"))
+            ratingIndicator('Moderate overlap front', 'A'),
+          if (arg.frontalRatingsModerateOverlap['overallRating']
+              .toString()
+              .contains("Marginal"))
+            ratingIndicator('Moderate overlap front', 'M'),
+          if (arg.frontalRatingsModerateOverlap['overallRating']
+              .toString()
+              .contains("Poor"))
+            ratingIndicator('Moderate overlap front', 'P'),
+          // Side Ratings:
+          if (arg.sideRatingsExists)
+            if (arg.sideRatings['overallRating'].toString().contains("Good"))
+              ratingIndicator('Side', 'G'),
+          if (arg.sideRatings['overallRating']
+              .toString()
+              .contains("Acceptable"))
+            ratingIndicator('Side', 'A'),
+          if (arg.sideRatings['overallRating'].toString().contains("Marginal"))
+            ratingIndicator('Side', 'M'),
+          if (arg.sideRatings['overallRating'].toString().contains("Poor"))
+            ratingIndicator('Side', 'P'),
+          // Roof Strength Ratings:
+          if (arg.rolloverRatingsExists)
+            if (arg.rolloverRatings['overallRating']
+                .toString()
+                .contains("Good"))
+              ratingIndicator('Roof strength', 'G'),
+          if (arg.rolloverRatings['overallRating']
+              .toString()
+              .contains("Acceptable"))
+            ratingIndicator('Roof strength', 'A'),
+          if (arg.rolloverRatings['overallRating']
+              .toString()
+              .contains("Marginal"))
+            ratingIndicator('Roof strength', 'M'),
+          if (arg.rolloverRatings['overallRating'].toString().contains("Poor"))
+            ratingIndicator('Roof strength', 'P'),
+          // Head restraints & seats Ratings
+          if (arg.rearRatingsExists)
+            if (arg.rearRatings['overallRating'].toString().contains("Good"))
+              ratingIndicator('Head restraints & seats', 'G'),
+          if (arg.rearRatings['overallRating']
+              .toString()
+              .contains("Acceptable"))
+            ratingIndicator('Head restraints & seats', 'A'),
+          if (arg.rearRatings['overallRating'].toString().contains("Marginal"))
+            ratingIndicator('Head restraints & seats', 'M'),
+          if (arg.rearRatings['overallRating'].toString().contains("Poor"))
+            ratingIndicator('Head restraints & seats', 'P'),
+          // Headlights Ratings:
+          if (arg.headlightRatingsExists)
+            if (arg.headlightRatings['overallRating']
+                .toString()
+                .contains("Good"))
+              ratingIndicator('Headlights', 'G'),
+          if (arg.headlightRatings['overallRating']
+              .toString()
+              .contains("Acceptable"))
+            ratingIndicator('Headlights', 'A'),
+          if (arg.headlightRatings['overallRating']
+              .toString()
+              .contains("Marginal"))
+            ratingIndicator('Headlights', 'M'),
+          if (arg.headlightRatings['overallRating'].toString().contains("Poor"))
+            ratingIndicator('Headlights', 'P'),
+          //
           //
         ],
       ),

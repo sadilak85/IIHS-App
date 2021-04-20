@@ -1,7 +1,5 @@
 import 'package:xml/xml.dart' as xml;
 
-import 'dart:developer';
-
 Map<dynamic, dynamic> crashRatingsSide(xmlData) {
   try {
     var sideRatingsValues = Map();

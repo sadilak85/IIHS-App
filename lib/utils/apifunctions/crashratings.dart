@@ -3,6 +3,7 @@ import 'package:iihs/utils/apifunctions/frontalratings.dart';
 import 'package:iihs/utils/apifunctions/sideratings.dart';
 import 'package:iihs/utils/apifunctions/rolloverratings.dart';
 import 'package:iihs/utils/apifunctions/headseatsratings.dart';
+import 'package:iihs/utils/apifunctions/headlightsratings.dart';
 import 'package:iihs/utils/helpers/networking.dart';
 import 'package:iihs/models/constants/apiauth.dart';
 import 'package:iihs/models/vehicleData.dart';
@@ -23,6 +24,8 @@ class CrashRatings {
   Map<dynamic, dynamic> sideRatings;
   bool rearRatingsExists;
   Map<dynamic, dynamic> rearRatings;
+  bool headlightRatingsExists;
+  Map<dynamic, dynamic> headlightRatings;
 
   Future<dynamic> crashRatingsData(VehicleData selectedvehicle) async {
     const crashrating = '$v4ratings/single/';
@@ -33,6 +36,8 @@ class CrashRatings {
       NetworkHelper networkHelper = NetworkHelper(
           '$iihsApiURL$crashrating$year/$make/$series?apikey=$apiKey');
       var xmlData = await networkHelper.getData();
+
+      // log(xmlData.toString());
 
       selectedvehicle.vehicleclass = crashRatingsgetClass(xmlData);
 
@@ -97,6 +102,16 @@ class CrashRatings {
               .toString()))
           ? selectedvehicle.rearRatingsExists = false
           : selectedvehicle.rearRatingsExists = true;
+      //
+      Map<dynamic, dynamic> headlightRatingsValues =
+          crashRatingsHeadlight(xmlData);
+      selectedvehicle.headlightRatings = headlightRatingsValues;
+      (["", "()", null].contains(xml.XmlDocument.parse(xmlData)
+              .findAllElements('headlightRatings')
+              .map((e) => e.text)
+              .toString()))
+          ? selectedvehicle.headlightRatingsExists = false
+          : selectedvehicle.headlightRatingsExists = true;
       //
       return selectedvehicle;
     } catch (e) {

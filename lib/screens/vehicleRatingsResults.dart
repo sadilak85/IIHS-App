@@ -415,6 +415,21 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
             ratingIndicator('Head restraints & seats', 'M'),
           if (arg.rearRatings['overallRating'].toString().contains("Poor"))
             ratingIndicator('Head restraints & seats', 'P'),
+
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0, bottom: 8, left: 20),
+            child: Container(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Crash avoidance & mitigation",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: AppTheme.darkerText,
+                ),
+              ),
+            ),
+          ),
           // Headlights Ratings:
           if (arg.headlightRatingsExists)
             if (arg.headlightRatings['overallRating']
@@ -433,6 +448,442 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
             ratingIndicator('Headlights', 'P'),
           //
           //
+          Padding(
+            padding: const EdgeInsets.only(
+              top: 18.0,
+
+              left: 20,
+              right: 330,
+              //right: MediaQuery.of(context).size.width * 0.8,
+            ),
+            child: Container(
+              color: Colors.black,
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: Text(
+                    "Key",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    bottom: 8,
+                    left: 20,
+                    right: 2,
+                  ),
+                  child: Container(
+                    color: Colors.white,
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            top: 25,
+                            bottom: 12,
+                            left: 25,
+                            right: 25,
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 30,
+                                height: 30,
+                                color: AppTheme.iihsratingsgreen,
+                                child: Center(
+                                  child: Text(
+                                    'G',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: AppTheme.darkerText,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 20,
+                                ),
+                                child: Container(
+                                  child: Text(
+                                    'Good',
+                                    //textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: AppTheme.darkerText,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 12,
+                            left: 25,
+                            right: 25,
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 30,
+                                height: 30,
+                                color: AppTheme.iihsratingsyellow,
+                                child: Center(
+                                  child: Text(
+                                    'A',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: AppTheme.darkerText,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 20,
+                                ),
+                                child: Container(
+                                  child: Text(
+                                    'Acceptable',
+                                    //textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: AppTheme.darkerText,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 12,
+                            left: 25,
+                            right: 25,
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 30,
+                                height: 30,
+                                color: AppTheme.iihsratingsorange,
+                                child: Center(
+                                  child: Text(
+                                    'M',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: AppTheme.darkerText,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 20,
+                                ),
+                                child: Container(
+                                  child: Text(
+                                    'Marginal',
+                                    //textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: AppTheme.darkerText,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 25,
+                            left: 25,
+                            right: 25,
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 30,
+                                height: 30,
+                                color: AppTheme.iihsratingsred,
+                                child: Center(
+                                  child: Text(
+                                    'P',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: AppTheme.darkerText,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 20,
+                                ),
+                                child: Container(
+                                  child: Text(
+                                    'Poor',
+                                    //textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: AppTheme.darkerText,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    bottom: 8,
+                    left: 2,
+                    right: 20,
+                  ),
+                  child: Container(
+                    color: Colors.white,
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            top: 25,
+                            bottom: 12,
+                            left: 25,
+                            right: 25,
+                          ),
+                          child: Row(
+                            children: [
+                              Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      bottom: 3,
+                                    ),
+                                    child: Container(
+                                      width: 30,
+                                      height: 8,
+                                      decoration: BoxDecoration(
+                                        color: AppTheme.iihsratingsgreen,
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(3),
+                                          topRight: Radius.circular(3),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      bottom: 3,
+                                    ),
+                                    child: Container(
+                                      width: 30,
+                                      height: 8,
+                                      color: AppTheme.iihsratingsgreen,
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 30,
+                                    height: 8,
+                                    decoration: BoxDecoration(
+                                      color: AppTheme.iihsratingsgreen,
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(3),
+                                        bottomRight: Radius.circular(3),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 20,
+                                ),
+                                child: Container(
+                                  child: Text(
+                                    'Superior',
+                                    //textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: AppTheme.darkerText,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 12,
+                            left: 25,
+                            right: 25,
+                          ),
+                          child: Row(
+                            children: [
+                              Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      bottom: 3,
+                                    ),
+                                    child: Container(
+                                      width: 30,
+                                      height: 8,
+                                      decoration: BoxDecoration(
+                                        color: AppTheme.iihsratingskeygrey,
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(3),
+                                          topRight: Radius.circular(3),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      bottom: 3,
+                                    ),
+                                    child: Container(
+                                      width: 30,
+                                      height: 8,
+                                      color: AppTheme.iihsratingsgreen,
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 30,
+                                    height: 8,
+                                    decoration: BoxDecoration(
+                                      color: AppTheme.iihsratingsgreen,
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(3),
+                                        bottomRight: Radius.circular(3),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 20,
+                                ),
+                                child: Container(
+                                  child: Text(
+                                    'Advanced',
+                                    //textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: AppTheme.darkerText,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 67,
+                            left: 25,
+                            right: 25,
+                          ),
+                          child: Row(
+                            children: [
+                              Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      bottom: 3,
+                                    ),
+                                    child: Container(
+                                      width: 30,
+                                      height: 8,
+                                      decoration: BoxDecoration(
+                                        color: AppTheme.iihsratingskeygrey,
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(3),
+                                          topRight: Radius.circular(3),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      bottom: 3,
+                                    ),
+                                    child: Container(
+                                      width: 30,
+                                      height: 8,
+                                      color: AppTheme.iihsratingskeygrey,
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 30,
+                                    height: 8,
+                                    decoration: BoxDecoration(
+                                      color: AppTheme.iihsratingsgreen,
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(3),
+                                        bottomRight: Radius.circular(3),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 20,
+                                ),
+                                child: Container(
+                                  child: Text(
+                                    'Basic',
+                                    //textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: AppTheme.darkerText,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );

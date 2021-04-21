@@ -10,6 +10,7 @@ class AppTheme {
   static const Color iihsratingsyellow = Color.fromRGBO(255, 232, 51, 1);
   static const Color iihsratingsorange = Color.fromRGBO(255, 153, 0, 1);
   static const Color iihsratingsred = Color.fromRGBO(255, 0, 0, 1);
+  static const Color iihsratingskeygrey = Color.fromRGBO(204, 204, 204, 1);
 
   static const Color notWhite = Color(0xFFEDF0F2);
   static const Color nearlyWhite = Color(0xFFFEFEFE);

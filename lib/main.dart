@@ -3,13 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:iihs/models/constants/app_theme.dart';
-import 'package:iihs/utils/helpers/custom_route.dart';
+import 'package:iihs/utils/helpers/CustomRoute.dart';
 import 'package:iihs/screens/vehicleSelectMakeModel.dart';
 import 'package:iihs/screens/vehicleSelectMake.dart';
 import 'package:iihs/screens/vehiclesOverview.dart';
 import 'package:iihs/screens/vehicleRatingsResults.dart';
 import 'package:iihs/screens/drawer_contact_screen.dart';
-import 'package:iihs/screens/main_page.dart';
+import 'package:iihs/screens/MainPageScreen.dart';
 
 void main() => runApp(MyApp());
 

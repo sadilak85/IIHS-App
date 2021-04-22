@@ -1,14 +1,16 @@
 import 'package:xml/xml.dart' as xml;
-import 'package:iihs/utils/apifunctions/frontalratings.dart';
-import 'package:iihs/utils/apifunctions/sideratings.dart';
-import 'package:iihs/utils/apifunctions/rolloverratings.dart';
-import 'package:iihs/utils/apifunctions/headseatsratings.dart';
-import 'package:iihs/utils/apifunctions/headlightsratings.dart';
-import 'package:iihs/utils/helpers/networking.dart';
+import 'package:iihs/utils/apifunctions/crashRatingsFrontal.dart';
+import 'package:iihs/utils/apifunctions/crashRatingsSide.dart';
+import 'package:iihs/utils/apifunctions/crashRatingsRollover.dart';
+import 'package:iihs/utils/apifunctions/crashRatingsRear.dart';
+import 'package:iihs/utils/apifunctions/crashRatingsHeadlight.dart';
+import 'package:iihs/utils/apifunctions/crashRatingsfrontCrashPrevention.dart';
+import 'package:iihs/utils/apifunctions/crashRatingspedestrianAvoidance.dart';
+import 'package:iihs/utils/helpers/NetworkHelper.dart';
 import 'package:iihs/models/constants/apiauth.dart';
 import 'package:iihs/models/vehicleData.dart';
 
-import 'dart:developer';
+//import 'dart:developer';
 
 class CrashRatings {
   String vehicleclass;
@@ -26,6 +28,10 @@ class CrashRatings {
   Map<dynamic, dynamic> rearRatings;
   bool headlightRatingsExists;
   Map<dynamic, dynamic> headlightRatings;
+  bool frontCrashPreventionRatingsExists;
+  Map<dynamic, dynamic> frontCrashPreventionRatings;
+  bool pedestrianAvoidanceRatingsExists;
+  Map<dynamic, dynamic> pedestrianAvoidanceRatings;
 
   Future<dynamic> crashRatingsData(VehicleData selectedvehicle) async {
     const crashrating = '$v4ratings/single/';
@@ -112,6 +118,31 @@ class CrashRatings {
               .toString()))
           ? selectedvehicle.headlightRatingsExists = false
           : selectedvehicle.headlightRatingsExists = true;
+      //
+      Map<dynamic, dynamic> frontCrashPreventionRatingsValues =
+          crashRatingsfrontCrashPrevention(xmlData);
+      selectedvehicle.frontCrashPreventionRatings =
+          frontCrashPreventionRatingsValues;
+      (["", "()", null].contains(xml.XmlDocument.parse(xmlData)
+              .findAllElements('frontCrashPreventionRatings')
+              .map((e) => e.text)
+              .toString()))
+          ? selectedvehicle.frontCrashPreventionRatingsExists = false
+          : selectedvehicle.frontCrashPreventionRatingsExists = true;
+      //
+      //
+      Map<dynamic, dynamic> pedestrianAvoidanceRatingsValues =
+          crashRatingspedestrianAvoidance(xmlData);
+      selectedvehicle.pedestrianAvoidanceRatings =
+          pedestrianAvoidanceRatingsValues;
+      (["", "()", null].contains(xml.XmlDocument.parse(xmlData)
+              .findAllElements('pedestrianAvoidanceRatings')
+              .map((e) => e.text)
+              .toString()))
+          ? selectedvehicle.pedestrianAvoidanceRatingsExists = false
+          : selectedvehicle.pedestrianAvoidanceRatingsExists = true;
+      //
+      //
       //
       return selectedvehicle;
     } catch (e) {

@@ -1,5 +1,5 @@
 import 'package:xml/xml.dart' as xml;
-import 'package:iihs/utils/helpers/networking.dart';
+import 'package:iihs/utils/helpers/NetworkHelper.dart';
 import 'package:iihs/models/constants/apiauth.dart';
 
 class ModelYears {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:iihs/utils/apifunctions/crashratings.dart';
+import 'package:iihs/utils/apifunctions/crashRatings.dart';
 
 class VehicleData extends CrashRatings {
   final String makeid;

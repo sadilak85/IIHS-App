@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iihs/models/constants/app_theme.dart';
 
-ratingsOverviewTab(arg) {
+ratingsOverviewTab(arg, context) {
   return Scaffold(
     resizeToAvoidBottomInset: false,
     backgroundColor: Colors.transparent,
@@ -243,12 +243,12 @@ ratingsOverviewTab(arg) {
         // KEY VIEW:
         //
         Padding(
-          padding: const EdgeInsets.only(
+          padding: EdgeInsets.only(
             top: 18.0,
 
             left: 20,
-            right: 330,
-            //right: MediaQuery.of(context).size.width * 0.8,
+            //right: 330,
+            right: MediaQuery.of(context).size.width * 0.8,
           ),
           child: Container(
             color: Colors.black,
@@ -287,8 +287,7 @@ ratingsOverviewTab(arg) {
                         padding: const EdgeInsets.only(
                           top: 25,
                           bottom: 12,
-                          left: 25,
-                          right: 25,
+                          left: 15,
                         ),
                         child: Row(
                           children: [
@@ -310,14 +309,14 @@ ratingsOverviewTab(arg) {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(
-                                left: 20,
+                                left: 10,
                               ),
                               child: Container(
                                 child: Text(
                                   'Good',
                                   //textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     color: AppTheme.darkerText,
                                   ),
                                 ),
@@ -329,8 +328,7 @@ ratingsOverviewTab(arg) {
                       Padding(
                         padding: const EdgeInsets.only(
                           bottom: 12,
-                          left: 25,
-                          right: 25,
+                          left: 15,
                         ),
                         child: Row(
                           children: [
@@ -344,7 +342,7 @@ ratingsOverviewTab(arg) {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     color: AppTheme.darkerText,
                                   ),
                                 ),
@@ -352,14 +350,14 @@ ratingsOverviewTab(arg) {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(
-                                left: 20,
+                                left: 10,
                               ),
                               child: Container(
                                 child: Text(
                                   'Acceptable',
                                   //textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     color: AppTheme.darkerText,
                                   ),
                                 ),
@@ -371,8 +369,7 @@ ratingsOverviewTab(arg) {
                       Padding(
                         padding: const EdgeInsets.only(
                           bottom: 12,
-                          left: 25,
-                          right: 25,
+                          left: 15,
                         ),
                         child: Row(
                           children: [
@@ -386,7 +383,7 @@ ratingsOverviewTab(arg) {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     color: AppTheme.darkerText,
                                   ),
                                 ),
@@ -394,14 +391,14 @@ ratingsOverviewTab(arg) {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(
-                                left: 20,
+                                left: 10,
                               ),
                               child: Container(
                                 child: Text(
                                   'Marginal',
                                   //textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     color: AppTheme.darkerText,
                                   ),
                                 ),
@@ -413,8 +410,7 @@ ratingsOverviewTab(arg) {
                       Padding(
                         padding: const EdgeInsets.only(
                           bottom: 25,
-                          left: 25,
-                          right: 25,
+                          left: 15,
                         ),
                         child: Row(
                           children: [
@@ -428,7 +424,7 @@ ratingsOverviewTab(arg) {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     color: AppTheme.darkerText,
                                   ),
                                 ),
@@ -436,14 +432,14 @@ ratingsOverviewTab(arg) {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(
-                                left: 20,
+                                left: 10,
                               ),
                               child: Container(
                                 child: Text(
                                   'Poor',
                                   //textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     color: AppTheme.darkerText,
                                   ),
                                 ),
@@ -473,8 +469,7 @@ ratingsOverviewTab(arg) {
                         padding: const EdgeInsets.only(
                           top: 25,
                           bottom: 12,
-                          left: 25,
-                          right: 25,
+                          left: 15,
                         ),
                         child: Row(
                           children: [
@@ -521,14 +516,14 @@ ratingsOverviewTab(arg) {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(
-                                left: 20,
+                                left: 10,
                               ),
                               child: Container(
                                 child: Text(
                                   'Superior',
                                   //textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     color: AppTheme.darkerText,
                                   ),
                                 ),
@@ -540,8 +535,7 @@ ratingsOverviewTab(arg) {
                       Padding(
                         padding: const EdgeInsets.only(
                           bottom: 12,
-                          left: 25,
-                          right: 25,
+                          left: 15,
                         ),
                         child: Row(
                           children: [
@@ -588,14 +582,14 @@ ratingsOverviewTab(arg) {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(
-                                left: 20,
+                                left: 10,
                               ),
                               child: Container(
                                 child: Text(
                                   'Advanced',
                                   //textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     color: AppTheme.darkerText,
                                   ),
                                 ),
@@ -607,8 +601,7 @@ ratingsOverviewTab(arg) {
                       Padding(
                         padding: const EdgeInsets.only(
                           bottom: 67,
-                          left: 25,
-                          right: 25,
+                          left: 15,
                         ),
                         child: Row(
                           children: [
@@ -655,14 +648,14 @@ ratingsOverviewTab(arg) {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(
-                                left: 20,
+                                left: 10,
                               ),
                               child: Container(
                                 child: Text(
                                   'Basic',
                                   //textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     color: AppTheme.darkerText,
                                   ),
                                 ),

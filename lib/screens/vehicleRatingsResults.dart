@@ -210,7 +210,7 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
                 ),
                 body: TabBarView(
                   children: <Widget>[
-                    ratingsOverviewTab(selectedvehicle),
+                    ratingsOverviewTab(selectedvehicle, context),
                     if (selectedvehicle.frontalRatingsModerateOverlapExists)
                       Container(
                         child: Text(selectedvehicle

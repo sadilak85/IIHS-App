@@ -8,9 +8,41 @@ ratingsOverviewTab(arg, context) {
     body: ListView(
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            alignment: Alignment.center,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: arg.vehiclemainimage != null
+                  ? Image.network(
+                      arg.vehiclemainimage.toString(),
+                      filterQuality: FilterQuality.low,
+                      alignment: Alignment.center,
+                      fit: BoxFit.cover,
+                      loadingBuilder: (BuildContext context, Widget child,
+                          ImageChunkEvent loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes
+                                : null,
+                          ),
+                        );
+                      },
+                    )
+                  : Image.asset(
+                      'assets/images/logo-iihs.png',
+                      fit: BoxFit.scaleDown,
+                    ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(10),
           child: Text(
-            arg.makename,
+            arg.modelyear + ' ' + arg.makename,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.bold,
@@ -21,7 +53,6 @@ ratingsOverviewTab(arg, context) {
             ),
           ),
         ),
-
         Padding(
           padding: const EdgeInsets.only(left: 15.0, right: 15.0),
           child: Text(
@@ -36,24 +67,9 @@ ratingsOverviewTab(arg, context) {
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 8.0, bottom: 8),
-          child: Container(
-            alignment: Alignment.center,
-            child: Text(
-              arg.vehiclemainimage ?? 'no image',
-              //textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-                color: AppTheme.darkerText,
-              ),
-            ),
-          ),
-        ),
 
         Padding(
-          padding: const EdgeInsets.only(top: 80.0, bottom: 8),
+          padding: const EdgeInsets.all(8),
           child: Container(
             alignment: Alignment.center,
             child: Text(
@@ -67,6 +83,7 @@ ratingsOverviewTab(arg, context) {
             ),
           ),
         ),
+
         //
         Padding(
           padding: const EdgeInsets.only(top: 8.0, bottom: 8, left: 20),
@@ -207,38 +224,38 @@ ratingsOverviewTab(arg, context) {
         if (arg.frontCrashPreventionRatingsExists)
           if (arg.frontCrashPreventionRatings['overallRating']
               .toString()
-              .contains("Good"))
-            ratingIndicator('Headlights', 'G'),
+              .contains("Superior"))
+            ratingIndicator(
+                'Front crash prevention: \nvehicle-to-vehicle', 'Super'),
         if (arg.frontCrashPreventionRatings['overallRating']
             .toString()
-            .contains("Acceptable"))
-          ratingIndicator('Headlights', 'A'),
+            .contains("Advanced"))
+          ratingIndicator(
+              'Front crash prevention: \nvehicle-to-vehicle', 'Adv'),
         if (arg.frontCrashPreventionRatings['overallRating']
             .toString()
-            .contains("Marginal"))
-          ratingIndicator('Headlights', 'M'),
-        if (arg.frontCrashPreventionRatings['overallRating']
-            .toString()
-            .contains("Poor"))
-          ratingIndicator('Headlights', 'P'),
+            .contains("Basic"))
+          ratingIndicator(
+              'Front crash prevention: \nvehicle-to-vehicle', 'Basic'),
+
         // Front crash prevention: vehicle-to-pedestrian Ratings:
         if (arg.pedestrianAvoidanceRatingsExists)
           if (arg.pedestrianAvoidanceRatings['overallRating']
               .toString()
-              .contains("Good"))
-            ratingIndicator('Headlights', 'G'),
+              .contains("Superior"))
+            ratingIndicator(
+                'Front crash prevention: vehicle-to-pedestrian', 'Super'),
         if (arg.pedestrianAvoidanceRatings['overallRating']
             .toString()
-            .contains("Acceptable"))
-          ratingIndicator('Headlights', 'A'),
+            .contains("Advanced"))
+          ratingIndicator(
+              'Front crash prevention: vehicle-to-pedestrian', 'Adv'),
         if (arg.pedestrianAvoidanceRatings['overallRating']
             .toString()
-            .contains("Marginal"))
-          ratingIndicator('Headlights', 'M'),
-        if (arg.pedestrianAvoidanceRatings['overallRating']
-            .toString()
-            .contains("Poor"))
-          ratingIndicator('Headlights', 'P'),
+            .contains("Basic"))
+          ratingIndicator(
+              'Front crash prevention: vehicle-to-pedestrian', 'Basic'),
+
         //
         // KEY VIEW:
         //
@@ -693,30 +710,157 @@ Widget ratingIndicator(_text, _ind) {
             ),
           ),
         ),
-        Container(
-          width: 30,
-          height: 30,
-          color: _ind == 'G'
-              ? AppTheme.iihsratingsgreen
-              : _ind == 'A'
-                  ? AppTheme.iihsratingsyellow
-                  : _ind == 'M'
-                      ? AppTheme.iihsratingsorange
-                      : _ind == 'P'
-                          ? AppTheme.iihsratingsred
-                          : AppTheme.iihsratingsgreen,
-          child: Center(
-            child: Text(
-              _ind,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                color: AppTheme.darkerText,
+        if (_ind != 'Super' && _ind != 'Adv' && _ind != 'Basic')
+          Container(
+            width: 30,
+            height: 30,
+            color: _ind == 'G'
+                ? AppTheme.iihsratingsgreen
+                : _ind == 'A'
+                    ? AppTheme.iihsratingsyellow
+                    : _ind == 'M'
+                        ? AppTheme.iihsratingsorange
+                        : _ind == 'P'
+                            ? AppTheme.iihsratingsred
+                            : AppTheme.iihsratingsgreen,
+            child: Center(
+              child: Text(
+                _ind,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: AppTheme.darkerText,
+                ),
               ),
             ),
           ),
-        ),
+        if (_ind == 'Super')
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                  bottom: 3,
+                ),
+                child: Container(
+                  width: 30,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: AppTheme.iihsratingsgreen,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(3),
+                      topRight: Radius.circular(3),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  bottom: 3,
+                ),
+                child: Container(
+                  width: 30,
+                  height: 8,
+                  color: AppTheme.iihsratingsgreen,
+                ),
+              ),
+              Container(
+                width: 30,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: AppTheme.iihsratingsgreen,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(3),
+                    bottomRight: Radius.circular(3),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        if (_ind == 'Adv')
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                  bottom: 3,
+                ),
+                child: Container(
+                  width: 30,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: AppTheme.iihsratingskeygrey,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(3),
+                      topRight: Radius.circular(3),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  bottom: 3,
+                ),
+                child: Container(
+                  width: 30,
+                  height: 8,
+                  color: AppTheme.iihsratingsgreen,
+                ),
+              ),
+              Container(
+                width: 30,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: AppTheme.iihsratingsgreen,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(3),
+                    bottomRight: Radius.circular(3),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        if (_ind == 'Basic')
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                  bottom: 3,
+                ),
+                child: Container(
+                  width: 30,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: AppTheme.iihsratingskeygrey,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(3),
+                      topRight: Radius.circular(3),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  bottom: 3,
+                ),
+                child: Container(
+                  width: 30,
+                  height: 8,
+                  color: AppTheme.iihsratingskeygrey,
+                ),
+              ),
+              Container(
+                width: 30,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: AppTheme.iihsratingsgreen,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(3),
+                    bottomRight: Radius.circular(3),
+                  ),
+                ),
+              ),
+            ],
+          ),
       ],
     ),
   );

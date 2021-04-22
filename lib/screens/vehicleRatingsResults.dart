@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:iihs/models/constants/app_theme.dart';
 import 'package:iihs/utils/apifunctions/crashRatings.dart';
+import 'package:iihs/utils/apifunctions/vehicleimages.dart';
 import 'package:iihs/models/vehicleData.dart';
 import 'package:iihs/utils/widgets/ratingsOverviewTab.dart';
 
@@ -18,19 +19,12 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
     with TickerProviderStateMixin {
   //
   AnimationController animationController;
-  Animation<double> animation;
 
   @override
   void initState() {
     animationController = AnimationController(
-      duration: const Duration(milliseconds: 2000),
+      duration: const Duration(milliseconds: 3000),
       vsync: this,
-    );
-    animation = Tween<double>(begin: 0.5, end: 1.0).animate(
-      CurvedAnimation(
-        parent: animationController,
-        curve: Interval(0, 1.0, curve: Curves.fastOutSlowIn),
-      ),
     );
     setData();
     super.initState();
@@ -51,6 +45,11 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
       VehicleData selectedvehicle) async {
     try {
       selectedvehicle = await CrashRatings().crashRatingsData(selectedvehicle);
+
+      selectedvehicle.vehiclemainimage = await VehicleImages().getMainImage(
+          selectedvehicle.makename,
+          selectedvehicle.seriesslug,
+          selectedvehicle.modelyear);
     } catch (e) {
       print(e);
     }
@@ -64,6 +63,15 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
     log(selectedvehicle.modelname);
     log(selectedvehicle.seriesname);
     log(selectedvehicle.modelyear);
+
+    final Animation<Offset> _offsetAnimation = Tween<Offset>(
+      begin: const Offset(0.2, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: animationController,
+      curve: Curves.decelerate,
+    ));
+
     return FutureBuilder<VehicleData>(
       future: getSelectedVehicleRatingData(selectedvehicle),
       builder: (BuildContext context, AsyncSnapshot<VehicleData> snapshot) {
@@ -208,55 +216,60 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
                   //   ),
                   // ],
                 ),
-                body: TabBarView(
-                  children: <Widget>[
-                    ratingsOverviewTab(selectedvehicle, context),
-                    if (selectedvehicle.frontalRatingsModerateOverlapExists)
-                      Container(
-                        child: Text(selectedvehicle
-                            .frontalRatingsModerateOverlap
-                            .toString()),
-                      ),
-                    if (selectedvehicle.frontalRatingsSmallOverlapExists)
-                      Container(
-                        child: Text(selectedvehicle.frontalRatingsSmallOverlap
-                            .toString()),
-                      ),
-                    if (selectedvehicle
-                        .frontalRatingsSmallOverlapPassengerExists)
-                      Container(
-                        child: Text(selectedvehicle
-                            .frontalRatingsSmallOverlapPassenger
-                            .toString()),
-                      ),
-                    if (selectedvehicle.sideRatingsExists)
-                      Container(
-                        child: Text(selectedvehicle.sideRatings.toString()),
-                      ),
-                    if (selectedvehicle.rolloverRatingsExists)
-                      Container(
-                        child: Text(selectedvehicle.rolloverRatings.toString()),
-                      ),
-                    if (selectedvehicle.rearRatingsExists)
-                      Container(
-                        child: Text(selectedvehicle.rearRatings.toString()),
-                      ),
-                    if (selectedvehicle.headlightRatingsExists)
-                      Container(
-                        child:
-                            Text(selectedvehicle.headlightRatings.toString()),
-                      ),
-                    if (selectedvehicle.frontCrashPreventionRatingsExists)
-                      Container(
-                        child: Text(selectedvehicle.frontCrashPreventionRatings
-                            .toString()),
-                      ),
-                    if (selectedvehicle.pedestrianAvoidanceRatingsExists)
-                      Container(
-                        child: Text(selectedvehicle.pedestrianAvoidanceRatings
-                            .toString()),
-                      ),
-                  ],
+                body: SlideTransition(
+                  position: _offsetAnimation,
+                  child: TabBarView(
+                    children: <Widget>[
+                      ratingsOverviewTab(selectedvehicle, context),
+                      if (selectedvehicle.frontalRatingsModerateOverlapExists)
+                        Container(
+                          child: Text(selectedvehicle
+                              .frontalRatingsModerateOverlap
+                              .toString()),
+                        ),
+                      if (selectedvehicle.frontalRatingsSmallOverlapExists)
+                        Container(
+                          child: Text(selectedvehicle.frontalRatingsSmallOverlap
+                              .toString()),
+                        ),
+                      if (selectedvehicle
+                          .frontalRatingsSmallOverlapPassengerExists)
+                        Container(
+                          child: Text(selectedvehicle
+                              .frontalRatingsSmallOverlapPassenger
+                              .toString()),
+                        ),
+                      if (selectedvehicle.sideRatingsExists)
+                        Container(
+                          child: Text(selectedvehicle.sideRatings.toString()),
+                        ),
+                      if (selectedvehicle.rolloverRatingsExists)
+                        Container(
+                          child:
+                              Text(selectedvehicle.rolloverRatings.toString()),
+                        ),
+                      if (selectedvehicle.rearRatingsExists)
+                        Container(
+                          child: Text(selectedvehicle.rearRatings.toString()),
+                        ),
+                      if (selectedvehicle.headlightRatingsExists)
+                        Container(
+                          child:
+                              Text(selectedvehicle.headlightRatings.toString()),
+                        ),
+                      if (selectedvehicle.frontCrashPreventionRatingsExists)
+                        Container(
+                          child: Text(selectedvehicle
+                              .frontCrashPreventionRatings
+                              .toString()),
+                        ),
+                      if (selectedvehicle.pedestrianAvoidanceRatingsExists)
+                        Container(
+                          child: Text(selectedvehicle.pedestrianAvoidanceRatings
+                              .toString()),
+                        ),
+                    ],
+                  ),
                 )),
           );
         }

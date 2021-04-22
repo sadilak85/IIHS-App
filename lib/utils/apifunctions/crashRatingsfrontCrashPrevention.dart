@@ -1,5 +1,7 @@
 import 'package:xml/xml.dart' as xml;
 
+import 'dart:developer';
+
 Map<dynamic, dynamic> crashRatingsfrontCrashPrevention(xmlData) {
   try {
     var frontCrashPreventionRatingsValues = Map();
@@ -22,6 +24,8 @@ Map<dynamic, dynamic> crashRatingsfrontCrashPrevention(xmlData) {
     final overallRating = frontCrashPreventionRatings
         .expand((category) => category.findElements('overallRating'))
         .map((skill) => skill.text);
+
+    log(overallRating.toString());
 
     final highBeamAssist = frontCrashPreventionRatings
         .expand((category) => category.findElements('highBeamAssist'))

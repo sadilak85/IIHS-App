@@ -74,7 +74,7 @@ class _MyAppState extends State<MyApp> {
             return PageTransition(
               child: VehicleRatingsResults(),
               type: PageTransitionType.fade,
-              duration: const Duration(milliseconds: 1000),
+              duration: const Duration(milliseconds: 3000),
               settings: settings,
             );
             break;
@@ -84,7 +84,7 @@ class _MyAppState extends State<MyApp> {
               child: VehicleSelectMakeModel(),
               curve: Curves.bounceIn,
               type: PageTransitionType.fade,
-              duration: const Duration(milliseconds: 1000),
+              duration: const Duration(milliseconds: 2000),
               settings: settings,
             );
             break;

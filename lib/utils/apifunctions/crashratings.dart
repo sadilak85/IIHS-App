@@ -10,7 +10,7 @@ import 'package:iihs/utils/helpers/NetworkHelper.dart';
 import 'package:iihs/models/constants/apiauth.dart';
 import 'package:iihs/models/vehicleData.dart';
 
-//import 'dart:developer';
+// import 'dart:developer';
 
 class CrashRatings {
   String vehicleclass;
@@ -43,7 +43,7 @@ class CrashRatings {
           '$iihsApiURL$crashrating$year/$make/$series?apikey=$apiKey');
       var xmlData = await networkHelper.getData();
 
-      // log(xmlData.toString());
+      //log(xmlData.toString());
 
       selectedvehicle.vehicleclass = crashRatingsgetClass(xmlData);
 

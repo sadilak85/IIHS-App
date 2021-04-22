@@ -1,6 +1,6 @@
 import 'package:xml/xml.dart' as xml;
 
-import 'dart:developer';
+//import 'dart:developer';
 
 Map<dynamic, dynamic> crashRatingsRear(xmlData) {
   try {
@@ -18,8 +18,6 @@ Map<dynamic, dynamic> crashRatingsRear(xmlData) {
     final overallRating = rearRatings
         .expand((category) => category.findElements('overallRating'))
         .map((skill) => skill.text);
-
-    log(overallRating.toString());
 
     final dynamicRating = rearRatings
         .expand((category) => category.findElements('dynamicRating'))

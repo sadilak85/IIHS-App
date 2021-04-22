@@ -27,7 +27,7 @@ class _ContactScreenState extends State<ContactScreen> {
                     top: MediaQuery.of(context).padding.top,
                     left: 16,
                     right: 16),
-                child: Image.asset('assets/images/logo-iihs.png'),
+                child: Image.asset('assets/images/logo-iihs-in-app.png'),
               ),
               Container(
                 padding: const EdgeInsets.only(top: 8),

@@ -48,9 +48,9 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/images/icon-iihs.png"
+  image_path: "assets/images/logo-iihs.png"
   adaptive_icon_background: "#ffffff"
-  adaptive_icon_foreground: "assets/images/icon-iihs.png"
+  adaptive_icon_foreground: "assets/images/logo-iihs.png"
 
 
 # For information on the generic Dart part of this file, see the

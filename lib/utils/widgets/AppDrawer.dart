@@ -18,14 +18,13 @@ class AppDrawer extends StatelessWidget {
             title: Container(
               alignment: Alignment.centerRight,
               child: Image.asset(
-                'assets/images/logo-iihs.png',
+                'assets/images/logo-iihs-in-app.png',
                 height: 40,
                 fit: BoxFit.fitHeight,
               ),
             ),
             automaticallyImplyLeading: false,
           ),
-          Divider(),
           Divider(),
           ListTile(
             leading: Icon(Icons.person_outlined),
@@ -36,16 +35,16 @@ class AppDrawer extends StatelessWidget {
           ),
           Divider(),
           ListTile(
-            leading: Icon(Icons.poll_outlined),
-            title: Text('IIHS Vehicle Rating'),
+            leading: Icon(Icons.emoji_events_outlined),
+            title: Text('Award winners'),
             onTap: () {
               Navigator.of(context).pushReplacementNamed('/');
             },
           ),
           Divider(),
           ListTile(
-            leading: Icon(Icons.directions_car_outlined),
-            title: Text('Search by Make/Model'),
+            leading: Icon(Icons.directions_car),
+            title: Text('Search by make/model'),
             onTap: () {
               Navigator.of(context).pushNamed(ContactScreen.routeName);
             },
@@ -53,7 +52,23 @@ class AppDrawer extends StatelessWidget {
           Divider(),
           ListTile(
             leading: Icon(Icons.directions_car_outlined),
-            title: Text('Search by Type/Class'),
+            title: Text('Search by size/type'),
+            onTap: () {
+              Navigator.of(context).pushNamed(ContactScreen.routeName);
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.language_outlined),
+            title: Text('IIHS news'),
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed('/');
+            },
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.info_outline),
+            title: Text('About our tests'),
             onTap: () {
               Navigator.of(context).pushNamed(ContactScreen.routeName);
             },
@@ -61,7 +76,7 @@ class AppDrawer extends StatelessWidget {
           Divider(),
           ListTile(
             leading: Icon(Icons.help_outline),
-            title: Text('About Crash Ratings'),
+            title: Text('About us'),
             onTap: () {
               Navigator.of(context).pushNamed(ContactScreen.routeName);
             },
@@ -69,7 +84,7 @@ class AppDrawer extends StatelessWidget {
           Divider(),
           ListTile(
             leading: Icon(Icons.perm_phone_msg_outlined),
-            title: Text('Contact IIHS'),
+            title: Text('Contact us'),
             onTap: () {
               Navigator.of(context).pushNamed(ContactScreen.routeName);
             },

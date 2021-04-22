@@ -81,7 +81,7 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
           );
           return Center(
             child: Image.asset(
-              'assets/images/logo-iihs.png',
+              'assets/images/logo-iihs-in-app.png',
               height: 60,
             ),
           );
@@ -91,7 +91,7 @@ class _VehicleRatingsResultsState extends State<VehicleRatingsResults>
           );
           return Center(
             child: Image.asset(
-              'assets/images/logo-iihs.png',
+              'assets/images/logo-iihs-in-app.png',
               height: 60,
             ),
           );

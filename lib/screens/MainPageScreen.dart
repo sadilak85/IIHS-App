@@ -64,8 +64,39 @@ class _MainPageScreenState extends State<MainPageScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppTheme.iihsbackground,
       endDrawer: AppDrawer(),
+      bottomNavigationBar: BottomNavigationBar(
+        iconSize: 26,
+        onTap: _selectPage,
+        backgroundColor: Colors.white,
+        unselectedItemColor: Theme.of(context).bottomAppBarColor,
+        selectedItemColor: Colors.black,
+        currentIndex: _selectedPageIndex,
+        type: BottomNavigationBarType.shifting,
+        items: [
+          BottomNavigationBarItem(
+            backgroundColor: Theme.of(context).primaryColor,
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            backgroundColor: Theme.of(context).primaryColor,
+            icon: Icon(Icons.poll),
+            label: 'Ratings',
+          ),
+          BottomNavigationBarItem(
+            backgroundColor: Theme.of(context).primaryColor,
+            icon: Icon(Icons.language_outlined),
+            label: 'News',
+          ),
+          BottomNavigationBarItem(
+            backgroundColor: Theme.of(context).primaryColor,
+            icon: Icon(Icons.person),
+            label: 'my Profile',
+          ),
+        ],
+      ),
       body: FutureBuilder<bool>(
         future: getData(),
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
@@ -94,17 +125,16 @@ class _MainPageScreenState extends State<MainPageScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     SizedBox(
-                      height: 80,
+                      height: MediaQuery.of(context).size.height * 0.115,
                       child: apptopBar(context),
                     ),
-
                     Expanded(
                       // flex: 10,
                       child: Container(
                         color: AppTheme.iihsbackground,
                         child: GridView(
                           padding: const EdgeInsets.only(
-                              top: 10, left: 20, right: 20),
+                              top: 10, left: 30, right: 30),
                           physics: const BouncingScrollPhysics(),
                           scrollDirection: Axis.vertical,
                           children: List<Widget>.generate(
@@ -132,7 +162,7 @@ class _MainPageScreenState extends State<MainPageScreen>
                                       context,
                                       "/selectmakemodel",
                                     );
-                                  } else if (templateList[index].id == 'c2') {
+                                  } else if (templateList[index].id == 'c3') {
                                     Navigator.pushNamed(
                                       context,
                                       "/selectmake",
@@ -152,19 +182,10 @@ class _MainPageScreenState extends State<MainPageScreen>
                         ),
                       ),
                     ),
-                    // Align(
-                    //   alignment: Alignment.bottomCenter,
-                    //   // left: 0,
-                    //   // right: 20,
-                    //   // bottom: 0,
-                    //   child: bottomNavigationBar,
-
+                    // SizedBox(
+                    //   height: MediaQuery.of(context).size.height * 0.09,
+                    //   child: bottomNavigationBar(context),
                     // ),
-
-                    SizedBox(
-                      height: 70,
-                      child: bottomNavigationBar(context),
-                    ),
                   ],
                 ),
               ),
@@ -189,7 +210,7 @@ class _MainPageScreenState extends State<MainPageScreen>
               ],
                   colors: [
                 AppTheme.iihsbackground,
-                Colors.black,
+                AppTheme.iihsyellow,
               ])),
 
           // color: Colors.black,
@@ -198,11 +219,11 @@ class _MainPageScreenState extends State<MainPageScreen>
           alignment: Alignment.bottomLeft,
           child: IconButton(
             icon: Container(
-              color: Colors.black,
+              color: AppTheme.iihsyellow,
               child: Icon(
                 Icons.search,
                 size: 30.0,
-                color: AppTheme.iihsyellow,
+                color: Colors.black,
               ),
             ),
             onPressed: () => null,
@@ -225,7 +246,7 @@ class _MainPageScreenState extends State<MainPageScreen>
                   padding: EdgeInsets.only(
                       top: 10.0, left: 40.0, right: 0.0, bottom: 10.0),
                   child: Image.asset(
-                    'assets/images/logo-iihs.png',
+                    'assets/images/logo-iihs-in-app.png',
                     width: 80,
                     height: 50,
                     fit: BoxFit.contain,
@@ -235,7 +256,7 @@ class _MainPageScreenState extends State<MainPageScreen>
                   child: IconButton(
                       icon: Icon(
                         Icons.menu,
-                        size: 30.0,
+                        size: 25.0,
                         color: Colors.black,
                       ),
                       onPressed: () => Scaffold.of(context).openEndDrawer()
@@ -253,26 +274,22 @@ class _MainPageScreenState extends State<MainPageScreen>
   Widget bottomNavigationBar(context) {
     return Stack(
       children: <Widget>[
-        Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  stops: [
-                0.2,
-                0.5,
-              ],
-                  colors: [
-                AppTheme.iihsbackground,
-                Colors.black,
-              ])),
-
-//          color: Colors.black,
-          // padding:
-          //     EdgeInsets.only(top: 0.0, left: 0.0, right: 0.0, bottom: 10.0),
-          alignment: Alignment.bottomRight,
-          child: SizedBox(),
-        ),
+        // Container(
+        //   decoration: BoxDecoration(
+        //       gradient: LinearGradient(
+        //           begin: Alignment.topLeft,
+        //           end: Alignment.bottomRight,
+        //           stops: [
+        //         0.2,
+        //         0.5,
+        //       ],
+        //           colors: [
+        //         AppTheme.iihsbackground,
+        //         AppTheme.iihsyellow,
+        //       ])),
+        //   alignment: Alignment.bottomRight,
+        //   child: SizedBox(),
+        // ),
         Positioned(
           right: 25,
           left: 0,
@@ -283,7 +300,7 @@ class _MainPageScreenState extends State<MainPageScreen>
               // topLeft: Radius.circular(40),
             ),
             child: BottomNavigationBar(
-              iconSize: 28,
+              iconSize: 26,
               onTap: _selectPage,
               backgroundColor: Colors.white,
               unselectedItemColor: Theme.of(context).bottomAppBarColor,
@@ -303,8 +320,8 @@ class _MainPageScreenState extends State<MainPageScreen>
                 ),
                 BottomNavigationBarItem(
                   backgroundColor: Theme.of(context).primaryColor,
-                  icon: Icon(Icons.directions_car),
-                  label: 'my Car',
+                  icon: Icon(Icons.language_outlined),
+                  label: 'News',
                 ),
                 BottomNavigationBarItem(
                   backgroundColor: Theme.of(context).primaryColor,
@@ -346,50 +363,30 @@ class TemplateListView extends StatelessWidget {
           child: Transform(
             transform: Matrix4.translationValues(
                 animationvaluechanger * (1.0 - animation.value), 0.0, 0.0),
-            child: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
+              ),
+              elevation: 8,
               child: Stack(
                 // alignment: AlignmentDirectional.center,
                 children: <Widget>[
-                  Image.asset(
-                    listData.id == 'c1'
-                        ? 'assets/images/topSafetyPickDummy.png'
-                        : listData.id == 'c2'
-                            ? 'assets/images/dummySideView.png'
-                            : 'assets/images/logo-iihs.png',
+                  Container(
                     alignment: Alignment.center,
-                    height: double.infinity,
-                    width: double.infinity,
-                    fit: BoxFit.fill,
+                    child: Image.asset(
+                        listData.id == 'c1'
+                            ? 'assets/images/topSafetyPickDummy.png'
+                            : listData.id == 'c2'
+                                ? 'assets/images/topSafetyPickDummy.png'
+                                : listData.id == 'c3'
+                                    ? 'assets/images/dummySideView.png'
+                                    : 'assets/images/logo-iihs-in-app.png',
+                        //height: double.infinity,
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        fit: BoxFit.fitWidth),
                   ),
-
-                  // Image.network(
-                  //   listData.buttonimage,
-                  //   alignment: Alignment.center,
-                  //   height: double.infinity,
-                  //   width: double.infinity,
-                  //   fit: BoxFit.fill,
-                  //   loadingBuilder: (BuildContext context, Widget child,
-                  //       ImageChunkEvent loadingProgress) {
-                  //     if (loadingProgress == null) return child;
-                  //     return Center(
-                  //       child: CircularProgressIndicator(
-                  //         value: loadingProgress.expectedTotalBytes != null
-                  //             ? loadingProgress.cumulativeBytesLoaded /
-                  //                 loadingProgress.expectedTotalBytes
-                  //             : null,
-                  //       ),
-                  //     );
-                  //   },
-                  // ),
-
-                  // Image(
-                  //   image: NetworkImage(listData.buttonimage),
-                  //   alignment: Alignment.center,
-                  //   height: double.infinity,
-                  //   width: double.infinity,
-                  //   fit: BoxFit.fill,
-                  // ),
                   Align(
                     alignment: Alignment.bottomRight,
                     child: Padding(

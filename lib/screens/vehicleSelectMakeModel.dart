@@ -308,7 +308,7 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                         children: [
                           Center(
                             child: Image.asset(
-                              'assets/images/logo-iihs.png',
+                              'assets/images/logo-iihs-in-app.png',
                               height: 60,
                             ),
                           ),
@@ -323,7 +323,7 @@ class _VehicleSelectMakeModelState extends State<VehicleSelectMakeModel>
                         children: [
                           Center(
                             child: Image.asset(
-                              'assets/images/logo-iihs.png',
+                              'assets/images/logo-iihs-in-app.png',
                               height: 60,
                             ),
                           ),

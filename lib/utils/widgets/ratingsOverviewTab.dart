@@ -33,7 +33,7 @@ ratingsOverviewTab(arg, context) {
                       },
                     )
                   : Image.asset(
-                      'assets/images/logo-iihs.png',
+                      'assets/images/logo-iihs-in-app.png',
                       fit: BoxFit.scaleDown,
                     ),
             ),

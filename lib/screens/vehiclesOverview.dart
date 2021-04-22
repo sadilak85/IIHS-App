@@ -332,7 +332,7 @@ class TemplateListView extends StatelessWidget {
                                     },
                                   )
                                 : Image.asset(
-                                    'assets/images/logo-iihs.png',
+                                    'assets/images/logo-iihs-in-app.png',
                                     fit: BoxFit.scaleDown,
                                   ),
                           ),

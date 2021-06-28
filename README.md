@@ -8,11 +8,16 @@ Main Page design view:
 
 <img src="https://github.com/sadilak85/IIHS/blob/main/git_pics/Page1.png" width="30%"> 
 
+
 Selection page view:
+
 <img src="https://github.com/sadilak85/IIHS/blob/main/git_pics/Page2.png" width="30%"> 
 
+
 Ratings page view:
+
 <img src="https://github.com/sadilak85/IIHS/blob/main/git_pics/Page3.png" width="30%"> 
+
 
 ### Prerequisites
 

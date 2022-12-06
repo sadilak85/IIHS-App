@@ -1,6 +1,6 @@
 # IIHS Safety App
 
-IIHS (Prototype) Mobile Application Project
+IIHS Mobile Application Project (Prototype) 
 
 ## Getting Started
 
